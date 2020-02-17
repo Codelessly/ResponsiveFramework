@@ -33,7 +33,7 @@ import 'package:flutter/material.dart';
 /// the available width. The height scales proportionally
 /// using an aspect ratio automatically calculated
 /// from the nearest [ResponsiveBreakpoint]. As the
-/// width increases, the height increases too.
+/// width increases, the height increases proportionally.
 ///
 /// An arbitrary number of breakpoints can be set.
 /// Resizing/scaling behavior can be mixed and
