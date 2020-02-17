@@ -47,7 +47,7 @@ An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be 
 
     BSD Zero Clause License
 
-    Copyright © 2020 Ray Li
+    Copyright © 2020 Codelessly
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose with or without fee is hereby granted.
