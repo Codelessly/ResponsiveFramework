@@ -1,5 +1,5 @@
 name: responsive_framework
-description: A new Flutter package project.
+description: Make Flutter apps responsive. Automatically adapt UI to different screen sizes.
 version: 0.0.1
 homepage: https://codelessly.com
 repository: https://github.com/Codelessly/ResponsiveFramework
