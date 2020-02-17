@@ -1,4 +1,4 @@
-library responsive_wrapper;
+library responsive_framework;
 
 import 'dart:ui';
 
