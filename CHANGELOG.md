@@ -1,3 +1,5 @@
-## [0.0.1] - TODO: Add release date.
+# Changelog
 
-* TODO: Describe initial release.
+## 0.0.1
+
+- Prerelease #1
