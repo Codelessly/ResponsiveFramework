@@ -77,7 +77,7 @@ class ResponsiveWrapper extends StatefulWidget {
     Widget child, {
     List<ResponsiveBreakpoint> breakpoints = const [],
     double maxWidth,
-    double minWidth = 600,
+    double minWidth = 450,
     bool defaultScale = false,
     double defaultScaleFactor = 1,
     Widget background,
@@ -142,19 +142,25 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   get breakpoints => widget.breakpoints;
 
-  /// Get screen width density pixels calculation.
+  /// Get screen width calculation.
   double screenWidth = 1;
   double getScreenWidth() {
-    // Get density pixels calculation.
-    double screenWidth = windowWidth;
-    // If screenWidth exceeds maxWidth, set screenWidth to maxWidth.
-    if (widget.maxWidth != null) if (screenWidth > widget.maxWidth)
-      return widget.maxWidth;
+    // Check if screenWidth exceeds maxWidth.
+    if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
+      // Check if there is an active breakpoint with scale set to true.
+      activeBreakpoint = getActiveBreakpoint(windowWidth);
+      if (activeBreakpoint != null && activeBreakpoint.scale) {
+        return widget.maxWidth + (windowWidth - activeBreakpoint.breakpoint);
+      } else {
+        // Max Width reached. Return Max Width because no breakpoint is active.
+        return widget.maxWidth;
+      }
+    }
 
-    return screenWidth;
+    return windowWidth;
   }
 
-  /// Get screen height density pixels calculation.
+  /// Get screen height calculations.
   double screenHeight = 1;
   double getScreenHeight() => windowHeight;
 
@@ -251,6 +257,28 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Default fullscreen enabled.
   get fullscreen => widget.maxWidth == null;
 
+  void setDimensions() {
+    devicePixelRatio = getDevicePixelRatio();
+    windowWidth = getWindowWidth();
+    windowHeight = getWindowHeight();
+    screenWidth = getScreenWidth();
+    screenHeight = getScreenHeight();
+    scaledWidth = getScaledWidth();
+    scaledHeight = getScaledHeight();
+  }
+
+  /// Set [activeBreakpoint].
+  /// Active breakpoint is the first breakpoint smaller
+  /// or equal to the [screenWidth].
+  ResponsiveBreakpoint getActiveBreakpoint(double screenWidth) {
+    return widget.breakpoints
+        .firstWhere((element) => screenWidth >= element.breakpoint, orElse: () {
+      // No breakpoint found.
+      print("No Breakpoint Found");
+      return null;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -271,28 +299,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   void didChangeMetrics() {
     setDimensions();
     setState(() {});
-  }
-
-  void setDimensions() {
-    devicePixelRatio = getDevicePixelRatio();
-    windowWidth = getWindowWidth();
-    windowHeight = getWindowHeight();
-    screenWidth = getScreenWidth();
-    screenHeight = getScreenHeight();
-    activeBreakpoint = setActiveBreakpoint();
-    scaledWidth = getScaledWidth();
-    scaledHeight = getScaledHeight();
-  }
-
-  /// Set [activeBreakpoint].
-  /// Active breakpoint is the first breakpoint smaller
-  /// or equal to the [screenWidth].
-  ResponsiveBreakpoint setActiveBreakpoint() {
-    return widget.breakpoints
-        .firstWhere((element) => screenWidth >= element.breakpoint, orElse: () {
-      // No breakpoint found.
-      return null;
-    });
   }
 
   @override
