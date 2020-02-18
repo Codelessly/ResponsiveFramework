@@ -74,7 +74,6 @@ class ResponsiveWrapper extends StatefulWidget {
   _ResponsiveWrapperState createState() => _ResponsiveWrapperState();
 
   static Widget builder(
-    BuildContext context,
     Widget child, {
     List<ResponsiveBreakpoint> breakpoints = const [],
     double maxWidth,
@@ -89,6 +88,7 @@ class ResponsiveWrapper extends StatefulWidget {
     // to be accepted in any order.
     breakpoints.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
     breakpoints = breakpoints.reversed.toList(growable: false);
+
     return ResponsiveWrapper(
       child: child,
       breakpoints: breakpoints,
@@ -122,18 +122,31 @@ class ResponsiveWrapper extends StatefulWidget {
 
 class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     with WidgetsBindingObserver {
-  get devicePixelRatio =>
-      widget.mediaQueryData?.devicePixelRatio ?? window.devicePixelRatio;
-  get windowWidth =>
-      widget.mediaQueryData?.size?.width ?? window.physicalSize.width;
-  get windowHeight =>
-      widget.mediaQueryData?.size?.height ?? window.physicalSize.height;
+  double devicePixelRatio = 1;
+  double getDevicePixelRatio() {
+    return widget.mediaQueryData?.devicePixelRatio ??
+        MediaQuery.of(context).devicePixelRatio;
+  }
+
+  double windowWidth = 1;
+  double getWindowWidth() {
+    return widget.mediaQueryData?.size?.width ??
+        MediaQuery.of(context).size.width;
+  }
+
+  double windowHeight = 1;
+  double getWindowHeight() {
+    return widget.mediaQueryData?.size?.height ??
+        MediaQuery.of(context).size.height;
+  }
+
   get breakpoints => widget.breakpoints;
 
   /// Get screen width density pixels calculation.
-  get screenWidth {
+  double screenWidth = 1;
+  double getScreenWidth() {
     // Get density pixels calculation.
-    double screenWidth = windowWidth / devicePixelRatio;
+    double screenWidth = windowWidth;
     // If screenWidth exceeds maxWidth, set screenWidth to maxWidth.
     if (widget.maxWidth != null) if (screenWidth > widget.maxWidth)
       return widget.maxWidth;
@@ -142,7 +155,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   }
 
   /// Get screen height density pixels calculation.
-  get screenHeight => windowHeight / devicePixelRatio;
+  double screenHeight = 1;
+  double getScreenHeight() => windowHeight;
 
   ResponsiveBreakpoint activeBreakpoint;
 
@@ -157,7 +171,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// follow [widget.defaultScale] behavior to resize.
   /// 3. There are no breakpoints set. Resize using
   /// [widget.defaultScale] behavior and [widget.minWidth].
-  get scaledWidth {
+  double scaledWidth = 1;
+  double getScaledWidth() {
     // No breakpoint is set. Return default calculated width.
     if (activeBreakpoint == null) {
       // If widget should resize, use default screenWidth.
@@ -194,7 +209,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// is resize, nothing more needs to be done.
   /// 4. Return calculated proportional height with
   /// [widget.minWidth].
-  get scaledHeight {
+  double scaledHeight = 1;
+  double getScaledHeight() {
     if (activeBreakpoint == null) {
       // If widget should resize, use default screenHeight.
       if (widget.defaultScale == false)
@@ -240,7 +256,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setActiveBreakpoint();
+      setDimensions();
       setState(() {});
     });
   }
@@ -253,28 +269,26 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   @override
   void didChangeMetrics() {
-    setActiveBreakpoint();
+    setDimensions();
     setState(() {});
   }
 
-  bool scaleView() {
-    // Current breakpoint does not scale.
-    if (activeBreakpoint.scale == false) return false;
-
-    // Max width constraint reached. Do not continue scaling.
-    if (!fullscreen && screenWidth > widget.maxWidth) return false;
-
-    if (screenHeight != (window.physicalSize.height / devicePixelRatio))
-      return true;
-
-    return true;
+  void setDimensions() {
+    devicePixelRatio = getDevicePixelRatio();
+    windowWidth = getWindowWidth();
+    windowHeight = getWindowHeight();
+    screenWidth = getScreenWidth();
+    screenHeight = getScreenHeight();
+    activeBreakpoint = setActiveBreakpoint();
+    scaledWidth = getScaledWidth();
+    scaledHeight = getScaledHeight();
   }
 
   /// Set [activeBreakpoint].
   /// Active breakpoint is the first breakpoint smaller
   /// or equal to the [screenWidth].
   ResponsiveBreakpoint setActiveBreakpoint() {
-    return activeBreakpoint = widget.breakpoints
+    return widget.breakpoints
         .firstWhere((element) => screenWidth >= element.breakpoint, orElse: () {
       // No breakpoint found.
       return null;
@@ -284,7 +298,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void didUpdateWidget(ResponsiveWrapper oldWidget) {
     super.didUpdateWidget(oldWidget);
-    setActiveBreakpoint();
+    setDimensions();
     setState(() {});
   }
 
@@ -323,8 +337,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Return updated [MediaQueryData] values.
   ///
   /// If [widget.mediaQueryData] exists, update
-  /// existing values. Else, fetch attributes from window
-  /// and return updated values.
+  /// existing values. Else, find [mediaQueryData]
+  /// ancestor in the widget tree and update.
   MediaQueryData calculateMediaQueryData() {
     // Update passed in MediaQueryData.
     if (widget.mediaQueryData != null) {
@@ -333,7 +347,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           devicePixelRatio: devicePixelRatio * activeScaleFactor);
     }
 
-    return MediaQueryData.fromWindow(window).copyWith(
+    return MediaQuery.of(context).copyWith(
         size: Size(scaledWidth, scaledHeight),
         devicePixelRatio: devicePixelRatio * activeScaleFactor);
   }
