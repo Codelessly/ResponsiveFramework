@@ -87,7 +87,6 @@ class ResponsiveWrapper extends StatefulWidget {
     // Perform ordering operation to allow breakpoints
     // to be accepted in any order.
     breakpoints.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
-    breakpoints = breakpoints.reversed.toList(growable: false);
 
     return ResponsiveWrapper(
       child: child,
@@ -145,11 +144,13 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Get screen width calculation.
   double screenWidth = 1;
   double getScreenWidth() {
+    activeBreakpoint = getActiveBreakpoint(windowWidth);
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with scale set to true.
-      activeBreakpoint = getActiveBreakpoint(windowWidth);
-      if (activeBreakpoint != null && activeBreakpoint.scale) {
+      if (activeBreakpoint != null &&
+          activeBreakpoint.breakpoint > widget.maxWidth &&
+          activeBreakpoint.scale) {
         return widget.maxWidth + (windowWidth - activeBreakpoint.breakpoint);
       } else {
         // Max Width reached. Return Max Width because no breakpoint is active.
