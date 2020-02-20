@@ -1,0 +1,27 @@
+name: responsive_demo
+description: Flutter Responsive Framework Demo
+version: 1.0.0
+
+environment:
+  sdk: ">=2.4.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  responsive_framework:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.7.4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_android: "assets/Responsive-Logo-App.png"
+  image_path_ios: "assets/Responsive-Logo-App-iOS.png"
+  adaptive_icon_background: "#FFFFFFFF"
+  adaptive_icon_foreground: "assets/Responsive-Logo-App-Adaptive.png"
+
+flutter:
