@@ -1,5 +1,8 @@
 # Changelog
 
-## 0.0.1
+## 0.0.2
+- MinWidth and MaxWidth scaling.
+- Create Demo app.
 
-- Prerelease #1
+## 0.0.1
+- Initial Prerelease.
