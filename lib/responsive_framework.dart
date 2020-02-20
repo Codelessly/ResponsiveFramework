@@ -63,7 +63,7 @@ class ResponsiveWrapper extends StatefulWidget {
     @required this.child,
     this.breakpoints = const [],
     this.maxWidth,
-    this.minWidth = 600,
+    this.minWidth = 450,
     this.defaultScale = false,
     this.defaultScaleFactor = 1,
     this.background,
@@ -86,7 +86,7 @@ class ResponsiveWrapper extends StatefulWidget {
     // Order breakpoints from largest to smallest.
     // Perform ordering operation to allow breakpoints
     // to be accepted in any order.
-    breakpoints.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
+    breakpoints.sort((a, b) => b.breakpoint.compareTo(a.breakpoint));
 
     return ResponsiveWrapper(
       child: child,
@@ -275,7 +275,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     return widget.breakpoints
         .firstWhere((element) => screenWidth >= element.breakpoint, orElse: () {
       // No breakpoint found.
-      print("No Breakpoint Found");
       return null;
     });
   }
