@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+export 'utils/bouncing_scroll_behavior.dart';
+
 /// A wrapper that helps child widgets resize/scale
 /// to different screen dimensions.
 ///
