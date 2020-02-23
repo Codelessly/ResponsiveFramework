@@ -201,10 +201,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       // If widget should resize, use default screenWidth.
       if (widget.defaultScale == false)
         return screenWidth / widget.defaultScaleFactor;
-      // If widget should scale, scale down from the smallest breakpoint.
-      if ((widget?.breakpoints?.length ?? 0) > 0) {
-        return widget.breakpoints.last.breakpoint / widget.defaultScaleFactor;
-      }
       // Scale using default minWidth.
       return widget.minWidth / widget.defaultScaleFactor;
     }
@@ -242,14 +238,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       // If widget should resize, use default screenHeight.
       if (widget.defaultScale == false)
         return screenHeight / widget.defaultScaleFactor;
-      // If widget should scale, calculate scaled height from
-      // the smallest breakpoint.
-      if ((widget?.breakpoints?.length ?? 0) > 0) {
-        // Scale height with width scale and scale factor applied.
-        return screenHeight /
-            (screenWidth / widget.breakpoints.last.breakpoint) /
-            widget.defaultScaleFactor;
-      }
       // Scale using default minWidth.
       return screenHeight /
           (screenWidth / widget.minWidth) /
