@@ -442,6 +442,31 @@ class ResponsiveWrapperData {
     );
   }
 
+  @override
+  String toString() =>
+      "ResponsiveWrapperData(" +
+      "Screen Width: " +
+      screenWidth?.toString() +
+      ", Screen Height: " +
+      screenHeight?.toString() +
+      ", Scaled Width: " +
+      scaledWidth?.toString() +
+      ", Scaled Height: " +
+      scaledHeight?.toString() +
+      ", Breakpoints: " +
+      breakpoints?.asMap().toString() +
+      ", Active Breakpoint: " +
+      activeBreakpoint.toString() +
+      ", Is Mobile: " +
+      isMobile?.toString() +
+      ", Is Phone: " +
+      isPhone?.toString() +
+      ", Is Tablet: " +
+      isTablet?.toString() +
+      ", Is Desktop: " +
+      isDesktop?.toString() +
+      ")";
+
   /// Is the [scaledWidth] larger than or equal to [breakpointName]?
   /// Defaults to false if the [breakpointName] cannot be found.
   bool isLargerThan(String breakpointName) =>
@@ -509,4 +534,17 @@ class ResponsiveBreakpoint {
       this.scaleFactor = 1,
       this.name})
       : assert(breakpoint != null);
+
+  @override
+  String toString() =>
+      "ResponsiveBreakpoint(" +
+      "Breakpoint: " +
+      breakpoint.toString() +
+      ", Scale: " +
+      scale.toString() +
+      ", Scale Factor: " +
+      scaleFactor.toString() +
+      ", Name: " +
+      name?.toString() +
+      ")";
 }
