@@ -4,7 +4,7 @@
 
 > ### Build Once, Responsive Everywhere!
 
-Responsive Framework adapts your UI to different screen sizes automatically. Create your UI once and have it display correctly on mobile, tablet, and desktop!
+Responsive Framework adapts your UI to different screen sizes automatically. Create your UI once and have it display pixel perfect on mobile, tablet, and desktop!
 
 ### The Problem
 Supporting multiple display sizes often means recreating the same layout multiple times with the traditional _Bootstrap_ approach. This is time consuming, frustrating and repetitive work. Furthermore, getting your designs pixel perfect is near impossible and editing becomes a nightmare.
@@ -37,7 +37,9 @@ Here is what happens with each behavior:
 1. Resizing (default) - the AppBar's width is double.infinity so it stretches to fill the available width. The Toolbar height is fixed and stays 56dp.
 2. Scaling - the AppBar's width stretches to fill the available width. The height scales proportionally using an aspect ratio automatically calculated from the nearest `ResponsiveBreakpoint`. As the width increases, the height increases proportionally.
 
-## Setting Breakpoints
+## Breakpoints
+
+![Screenshots](packages/Device%20Preview.gif)
 
 An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be mixed and matched as below.
  - 1400+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
