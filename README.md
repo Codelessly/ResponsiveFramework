@@ -25,6 +25,8 @@ ResponsiveWrapper(
 
 ## Resize vs Scale
 
+![Screenshots](packages/Scale%20Resize%20Comparison.gif)
+
 To easily adapt to a wide variety of screen sizes, set breakpoints to proportionally scale or resize a layout.
 
 > ResponsiveBreakpoint(breakpoint: 600, **scale: true**)
