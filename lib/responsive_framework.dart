@@ -314,12 +314,24 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    // Required MediaQueryData is only updated
-    // on the next frame.
+    // When physical dimensions change, update state.
+    // The required MediaQueryData is only available
+    // on the next frame for physical dimension changes.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setDimensions();
       setState(() {});
     });
+  }
+
+  @override
+  void didUpdateWidget(ResponsiveWrapper oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // When [ResponsiveWrapper]'s constructor is
+    // used directly in the widget tree and a parent
+    // MediaQueryData changes, update state.
+    // The screen dimensions are passed immediately.
+    setDimensions();
+    setState(() {});
   }
 
   @override
