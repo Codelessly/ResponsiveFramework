@@ -9,48 +9,173 @@
 Responsive Framework adapts your UI to different screen sizes automatically. Create your UI once and have it display pixel perfect on mobile, tablet, and desktop!
 
 ### The Problem
-Supporting multiple display sizes often means recreating the same layout multiple times with the traditional _Bootstrap_ approach. This is time consuming, frustrating and repetitive work. Furthermore, getting your designs pixel perfect is near impossible and editing becomes a nightmare.
-### The Solution
-Use Responsive Framework to automatically resize or scale your UI based on _breakpoints_.
+Supporting multiple display sizes often means recreating the same layout multiple times. Under the traditional _Bootstrap_ approach, building responsive UI is time consuming, frustrating and repetitive. Furthermore, getting everything pixel perfect is near impossible and simple edits take hours.
 
-```dart
-ResponsiveWrapper(
-    child,
-    breakpoints: [
-        ResponsiveBreakpoint(breakpoint: 600, name: MOBILE),
-        ResponsiveBreakpoint(breakpoint: 800, name: TABLET),
-        ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP),
-    ],
-)
+![Screenshots](packages/Bad%20Viewport%20Selector%20Animated.gif)
+
+### The Solution
+Use Responsive Framework to automatically scale your UI.
+
+> ResponsiveBreakpoint(breakpoint: 600, **autoScale: true**);
+
+## Demo
+
+### [Minimal Website](https://gallery.imfast.io/flutterwebsites/minimal/)
+
+A demo website built with the Responsive Framework. [View Code](https://github.com/Codelessly/FlutterMinimalWebsite)
+
+## Quick Start
+
+[![Pub release](https://img.shields.io/pub/v/responsive_framework.svg?style=flat-square)](https://pub.dev/packages/responsive_framework)
+
+Import this library into your project:
+
+```yaml
+responsive_framework: ^latest_version
 ```
 
+Add `ResponsiveWrapper.builder` to your MaterialApp or CupertinoApp.
+```dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      builder: (context, widget) => ResponsiveWrapper.builder(
+          maxWidth: 1200,
+          minWidth: 450,
+          defaultScale: true,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 800, name: TABLET, scale: true),
+            ResponsiveBreakpoint(breakpoint: 1000, name: TABLET, scale: true),
+            ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP),
+            ResponsiveBreakpoint(breakpoint: 2460, name: "4K", scale: true),
+          ],
+          background: Container(color: Color(0xFFF5F5F5))),
+      initialRoute: "/",
+    );
+  }
+}
+```
+That's it!
 
-## Resize vs Scale
+## AutoScale
 
 ![Screenshots](packages/Scale%20Resize%20Comparison.gif)
 
-To easily adapt to a wide variety of screen sizes, set breakpoints to proportionally scale or resize a layout.
-
-> ResponsiveBreakpoint(breakpoint: 600, **scale: true**)
-
+AutoScale shrinks or expands your layout *proportionally*, keeping every element the same.
 This eliminates the need to manually adapt layouts to mobile, tablet, and desktop.
 
-To understand the difference between resizing and scaling, take the following example. 
-An AppBar widget looks correct on a phone. When viewed on a desktop however, the AppBar is too short and the title looks too small. This is because Flutter does not scale widgets by default. 
-Here is what happens with each behavior: 
-1. Resizing (default) - the AppBar's width is double.infinity so it stretches to fill the available width. The Toolbar height is fixed and stays 56dp.
-2. Scaling - the AppBar's width stretches to fill the available width. The height scales proportionally using an aspect ratio automatically calculated from the nearest `ResponsiveBreakpoint`. As the width increases, the height increases proportionally.
+```dart
+ResponsiveBreakpoint(breakpoint: 600, autoScale: true);
+```
+
+Flutter's default behavior is resize so AutoScale is `false` and off by default.
 
 ## Breakpoints
 
 ![Screenshots](packages/Device%20Preview.gif)
 
-An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be mixed and matched as below.
- - 1400+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
- - 1400-800: resize on desktops to use available space. 
- - 800-600: scale on tablets to avoid elements appearing too small.
- - 600-350: resize on phones for native widget sizes.
- - below 350: resize on small screens to avoid cramp and overflow errors.\
+Breakpoints control responsive behavior at different screen sizes.
+
+```dart
+ResponsiveWrapper(
+    child,
+    breakpoints: [
+        ResponsiveBreakpoint(breakpoint: 600, name: MOBILE, autoScale: false),
+        ResponsiveBreakpoint(breakpoint: 800, name: TABLET, autoScale: true),
+        ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP, autoScale: false),
+    ],
+)
+```
+Breakpoints give you fine-grained control over how your UI displays.
+
+## Introductory Concepts
+
+These concepts helps you start using the Responsive Framework and build an responsive app quickly.
+
+### Scale vs Resize
+
+Flutter's default behavior is to resize your layout when the screen dimensions change. Resizing a layout stretches it in the unbounded width or height direction. Any fixed or bounded dimension stays the same which is why a mobile app's UI looks small on a desktop.
+
+To understand the difference between resizing and scaling, take the following example. 
+An AppBar widget looks correct on a phone. When viewed on a desktop however, the AppBar is too short and the title looks too small.
+Here is what happens with each behavior: 
+1. Resizing (default) - the AppBar's width is double.infinity so it stretches to fill the available width. The Toolbar height is fixed and stays 56dp.
+2. Scaling - the AppBar's width stretches to fill the available width. The height scales proportionally using an aspect ratio automatically calculated from the nearest `ResponsiveBreakpoint`. As the width increases, the height increases proportionally.
+
+When scaled, the AppBar looks correct on desktop, up to a certain size. Once the screen becomes too wide, the AppBar starts to appear too large. This is where breakpoints come in.
+
+### Breakpoint Configuration
+
+To adapt to a wide variety of screen sizes, set breakpoints to control responsive behavior.
+
+```dart
+ResponsiveWrapper(
+    child,
+    maxWidth: 1200,
+    minWidth: 450,
+    defaultScale: true,
+    breakpoints: [
+        ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+        ResponsiveBreakpoint(breakpoint: 800, name: TABLET, scale: true),
+        ResponsiveBreakpoint(breakpoint: 1000, name: TABLET, scale: true),
+        ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP),
+        ResponsiveBreakpoint(breakpoint: 2460, name: "4K", scale: true),
+    ],
+)
+```
+
+An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be mixed and matched.
+    - below 450: resize on small screens to avoid cramp and overflow errors.
+    - 800-450: resize on phones for native widget sizes.
+    - 1000-800: scale on tablets to avoid elements appearing too small.
+    - 1200-1000: resize on desktops to use available space. 
+    - 2460+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
+
+## About
+
+Responsive Framework was created to provide a better way for people to build responsive apps and websites. The ability to automatically adapt UI to different sizes opens up a world of new possibilities. Here at Codelessly, we're working on #NoCode and code generation automation tools to make those possibilities happen. If you are thinking about building a website builder, drop us a line below 😎
+
+Responsive Framework is licensed under Zero-Clause BSD and released as Emailware. If you like this project or it helped you, please subscribe to updates. Although it is not required, you might miss some important information!
+
+<a href="https://codelessly.com" target="_blank"><img src="packages/Email%20Newsletter%20Signup.png"></a>
+
+## Contributors ❤️
+
+**Design:** 
+* [Ray Li](https://github.com/searchy2)
+
+**Development:** 
+* [Ray Li](https://github.com/searchy2)
+* *add yourself here by contributing*
+
+**Sponsor:** [Codelessly - No Code Automation Tools](https://codelessly.com)
+
+<a href="mailto:ray@codelessly.com">
+  <img alt="Codelessly Email"
+       src="https://lh3.googleusercontent.com/yN_m90WN_HSCohXdgC2k91uSTk9dnYfoxTYwG_mv_l5_05dV2CzkQ1B6rEqH4uqdgjA=w96" />
+</a>
+<a href="https://codelessly.com">
+  <img alt="Codelessly Website"
+       src="https://lh3.googleusercontent.com/YmMGcgeO7Km9-J9vFRByov5sb7OUKetnKs8pTi0JZMDj3GVJ61GMTcTlHB7u9uHDHag=w96" />
+</a>
+<a href="https://twitter.com/codelessly_">
+  <img alt="Codelessly Twitter"
+       src="https://lh3.ggpht.com/lSLM0xhCA1RZOwaQcjhlwmsvaIQYaP3c5qbDKCgLALhydrgExnaSKZdGa8S3YtRuVA=w96" />
+</a>
+<a href="https://github.com/Codelessly">
+  <img alt="Codelessly GitHub"
+       src="https://lh3.googleusercontent.com/L15QqmKK7Vl-Ag1ZxaBqNQlXVEw58JT2BDb-ef5t2eboDh0pPSLjDgi3-aQ3Opdhhyk=w96" />
+</a>
+<br></br>
+
+Flutter is a game-changing technology that will revolutionize not just development, but software itself. A big thank you to the Flutter team for building such an amazing platform and being giants we can stand on. 
+
+<a href="https://github.com/flutter/flutter">
+  <img alt="Flutter"
+       src="packages/Flutter%20Logo%20Banner.png" />
+</a>
  
 ## License
 
