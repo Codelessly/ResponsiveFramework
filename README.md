@@ -4,7 +4,7 @@
 
 ![Screenshots](packages/Responsive%20Demo.gif)
 
-> ### Build Once, Responsive Everywhere!
+> ### Responsiveness made simple
 
 Responsive Framework adapts your UI to different screen sizes automatically. Create your UI once and have it display pixel perfect on mobile, tablet, and desktop!
 
