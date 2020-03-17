@@ -1,6 +1,6 @@
 ![Screenshots](packages/Responsive%20Cover.png)
 # Responsive Framework
-[![Pub release](https://img.shields.io/badge/flutter-responsive-brightgreen.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![Pub release](https://img.shields.io/pub/v/responsive_framework.svg?style=flat-square)](https://pub.dev/packages/responsive_framework) [![GitHub Release Date](https://img.shields.io/github/release-date/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![GitHub issues](https://img.shields.io/github/issues/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework/issues) [![GitHub top language](https://img.shields.io/github/languages/top/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://libraries.io/github/Codelessly/ResponsiveFramework) [![License](https://img.shields.io/badge/License-BSD%200--Clause-orange.svg?style=flat-square)](https://opensource.org/licenses/0BSD)
+[![Flutter Responsive](https://img.shields.io/badge/flutter-responsive-brightgreen.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![Pub release](https://img.shields.io/pub/v/responsive_framework.svg?style=flat-square)](https://pub.dev/packages/responsive_framework) [![GitHub Release Date](https://img.shields.io/github/release-date/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![GitHub issues](https://img.shields.io/github/issues/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework/issues) [![GitHub top language](https://img.shields.io/github/languages/top/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/Codelessly/ResponsiveFramework.svg?style=flat-square)](https://libraries.io/github/Codelessly/ResponsiveFramework) [![License](https://img.shields.io/badge/License-BSD%200--Clause-orange.svg?style=flat-square)](https://opensource.org/licenses/0BSD)
 
 ![Screenshots](packages/Responsive%20Demo.gif)
 
@@ -63,14 +63,14 @@ That's it!
 
 ![Screenshots](packages/Scale%20Resize%20Comparison.gif)
 
-AutoScale shrinks or expands your layout *proportionally*, keeping every element the same.
+AutoScale shrinks and expands your layout *proportionally*, preserving the exact look of your UI.
 This eliminates the need to manually adapt layouts to mobile, tablet, and desktop.
 
 ```dart
 ResponsiveBreakpoint(breakpoint: 600, autoScale: true);
 ```
 
-Flutter's default behavior is resize so AutoScale is `false` and off by default.
+Flutter's default behavior is resize which Responsive Framework respects. AutoScale is off by default and can be enabled at breakpoints by setting `autoScale` to `true`.
 
 ## Breakpoints
 
@@ -96,11 +96,12 @@ These concepts helps you start using the Responsive Framework and build an respo
 
 ### Scale vs Resize
 
-Flutter's default behavior is to resize your layout when the screen dimensions change. Resizing a layout stretches it in the unbounded width or height direction. Any fixed or bounded dimension stays the same which is why a mobile app's UI looks small on a desktop.
+Flutter's default behavior is to resize your layout when the screen dimensions change. Resizing a layout stretches it in the direction of an unconstrained width or height. Any constrained dimension stays fixed which is why mobile app UIs look tiny on desktop. The following example illustrates the difference between resizing and scaling.
 
-To understand the difference between resizing and scaling, take the following example. 
+![Screenshots](packages/AppBar%20Scale%20vs%20Resize%20Comparison.png)
+
 An AppBar widget looks correct on a phone. When viewed on a desktop however, the AppBar is too short and the title looks too small.
-Here is what happens with each behavior: 
+Here is what happens under each behavior: 
 1. Resizing (default) - the AppBar's width is double.infinity so it stretches to fill the available width. The Toolbar height is fixed and stays 56dp.
 2. Scaling - the AppBar's width stretches to fill the available width. The height scales proportionally using an aspect ratio automatically calculated from the nearest `ResponsiveBreakpoint`. As the width increases, the height increases proportionally.
 
@@ -127,19 +128,47 @@ ResponsiveWrapper(
 ```
 
 An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be mixed and matched.
-    - below 450: resize on small screens to avoid cramp and overflow errors.
-    - 800-450: resize on phones for native widget sizes.
-    - 1000-800: scale on tablets to avoid elements appearing too small.
-    - 1200-1000: resize on desktops to use available space. 
-    - 2460+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
+- below 450: resize on small screens to avoid cramp and overflow errors.
+- 800-450: resize on phones for native widget sizes.
+- 1000-800: scale on tablets to avoid elements appearing too small.
+- 1200-1000: resize on desktops to use available space. 
+- 2460+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
 
 ## About
 
-Responsive Framework was created to provide a better way for people to build responsive apps and websites. The ability to automatically adapt UI to different sizes opens up a world of new possibilities. Here at Codelessly, we're working on #NoCode and code generation automation tools to make those possibilities happen. If you are thinking about building a website builder, drop us a line below 😎
+Responsive Framework was created out of a desire for a better way to manage responsiveness. The ability to automatically adapt UI to different sizes opens up a world of possibilities. Here at Codelessly, we're working on #NoCode and code generation automation tools to increase productivity. If you are interested in building a website builder powered by computer vision, drop us a line below 😎
 
-Responsive Framework is licensed under Zero-Clause BSD and released as Emailware. If you like this project or it helped you, please subscribe to updates. Although it is not required, you might miss some important information!
+Responsive Framework is licensed under Zero-Clause BSD and released as Emailware. If you like this project or it helped you, please subscribe to updates. Although it is not required, you might miss the goodies we share!
 
 <a href="https://codelessly.com" target="_blank"><img src="packages/Email%20Newsletter%20Signup.png"></a>
+
+## Badges 🏆
+
+Now you can proudly display the time and headache saved by using Responsive Framework with a supporter's badge.
+
+[![Pub release](https://img.shields.io/badge/flutter-responsive-brightgreen.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework) 
+
+```
+[![Flutter Responsive](https://img.shields.io/badge/flutter-responsive-brightgreen.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework)
+```
+
+<img alt="Built Responsive" src="packages/Built%20Responsive%20Badge.png"/>
+
+```html
+<a href="https://github.com/Codelessly/ResponsiveFramework">
+  <img alt="Built Responsive"
+       src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png"/>
+</a>
+```
+
+<img alt="Built with Responsive Framework" src="packages/Built%20with%20Responsive%20Badge.png"/>
+
+```html
+<a href="https://github.com/Codelessly/ResponsiveFramework">
+  <img alt="Built with Responsive Framework"
+       src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png"/>
+</a>
+```
 
 ## Contributors ❤️
 
@@ -170,7 +199,7 @@ Responsive Framework is licensed under Zero-Clause BSD and released as Emailware
 </a>
 <br></br>
 
-Flutter is a game-changing technology that will revolutionize not just development, but software itself. A big thank you to the Flutter team for building such an amazing platform and being giants we can stand on. 
+Flutter is a game-changing technology that will revolutionize not just development, but software itself. A big thank you to the Flutter team for building such an amazing platform 💙 
 
 <a href="https://github.com/flutter/flutter">
   <img alt="Flutter"
