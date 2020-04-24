@@ -129,13 +129,13 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         MediaQuery.of(context).devicePixelRatio;
   }
 
-  double windowWidth = 1;
+  double windowWidth = 0;
   double getWindowWidth() {
     return widget.mediaQueryData?.size?.width ??
         MediaQuery.of(context).size.width;
   }
 
-  double windowHeight = 1;
+  double windowHeight = 0;
   double getWindowHeight() {
     return widget.mediaQueryData?.size?.height ??
         MediaQuery.of(context).size.height;
@@ -144,7 +144,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   get breakpoints => widget.breakpoints;
 
   /// Get screen width calculation.
-  double screenWidth = 1;
+  double screenWidth = 0;
   double getScreenWidth() {
     activeBreakpoint = getActiveBreakpoint(windowWidth);
     // Check if screenWidth exceeds maxWidth.
@@ -164,7 +164,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   }
 
   /// Get screen height calculations.
-  double screenHeight = 1;
+  double screenHeight = 0;
   double getScreenHeight() {
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
