@@ -50,6 +50,7 @@ class ResponsiveWrapper extends StatefulWidget {
   final List<ResponsiveBreakpoint> breakpoints;
   final double maxWidth;
   final double minWidth;
+  final String defaultName;
   final bool defaultScale;
   final double defaultScaleFactor;
   final Widget background;
@@ -62,6 +63,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.breakpoints = const [],
     this.maxWidth,
     this.minWidth = 450,
+    this.defaultName,
     this.defaultScale = false,
     this.defaultScaleFactor = 1,
     this.background,
@@ -76,6 +78,7 @@ class ResponsiveWrapper extends StatefulWidget {
     List<ResponsiveBreakpoint> breakpoints = const [],
     double maxWidth,
     double minWidth = 450,
+    String defaultName,
     bool defaultScale = false,
     double defaultScaleFactor = 1,
     Widget background,
@@ -91,6 +94,7 @@ class ResponsiveWrapper extends StatefulWidget {
       breakpoints: breakpoints,
       maxWidth: maxWidth,
       minWidth: minWidth,
+      defaultName: defaultName,
       defaultScale: defaultScale,
       defaultScaleFactor: defaultScaleFactor,
       background: background,
@@ -146,7 +150,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpoint != null &&
+      if (activeBreakpoint.breakpoint != null &&
           activeBreakpoint.breakpoint > widget.maxWidth &&
           activeBreakpoint.autoScale) {
         return widget.maxWidth + (windowWidth - activeBreakpoint.breakpoint);
@@ -165,7 +169,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpoint != null &&
+      if (activeBreakpoint.breakpoint != null &&
           activeBreakpoint.breakpoint > widget.maxWidth &&
           activeBreakpoint.autoScale) {
         // Scale screen height by the amount the width was scaled.
@@ -193,7 +197,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double scaledWidth = 1;
   double getScaledWidth() {
     // No breakpoint is set. Return default calculated width.
-    if (activeBreakpoint == null) {
+    if (activeBreakpoint.breakpoint == null) {
       // If widget should resize, use default screenWidth.
       if (widget.defaultScale == false)
         return screenWidth / widget.defaultScaleFactor;
@@ -230,7 +234,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// [widget.minWidth].
   double scaledHeight = 1;
   double getScaledHeight() {
-    if (activeBreakpoint == null) {
+    if (activeBreakpoint.breakpoint == null) {
       // If widget should resize, use default screenHeight.
       if (widget.defaultScale == false)
         return screenHeight / widget.defaultScaleFactor;
@@ -259,8 +263,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   }
 
   double get activeScaleFactor {
-    if (activeBreakpoint != null && activeBreakpoint.autoScale == true)
-      return activeBreakpoint.scaleFactor;
+    if (activeBreakpoint.breakpoint != null &&
+        activeBreakpoint.autoScale == true) return activeBreakpoint.scaleFactor;
 
     return widget.defaultScaleFactor;
   }
@@ -284,11 +288,11 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Active breakpoint is the first breakpoint smaller
   /// or equal to the [screenWidth].
   ResponsiveBreakpoint getActiveBreakpoint(double screenWidth) {
-    return widget.breakpoints
-        .firstWhere((element) => screenWidth >= element.breakpoint, orElse: () {
-      // No breakpoint found.
-      return null;
-    });
+    return widget.breakpoints.firstWhere(
+        (element) => screenWidth >= element.breakpoint,
+        orElse: // No breakpoint found.
+            () => ResponsiveBreakpoint(
+                breakpoint: null, name: widget.defaultName));
   }
 
   @override
@@ -441,25 +445,25 @@ class ResponsiveWrapperData {
   @override
   String toString() =>
       "ResponsiveWrapperData(" +
-      "Screen Width: " +
+      "screenWidth: " +
       screenWidth?.toString() +
-      ", Screen Height: " +
+      ", screenHeight: " +
       screenHeight?.toString() +
-      ", Scaled Width: " +
+      ", scaledWidth: " +
       scaledWidth?.toString() +
-      ", Scaled Height: " +
+      ", scaledHeight: " +
       scaledHeight?.toString() +
-      ", Breakpoints: " +
+      ", breakpoints: " +
       breakpoints?.asMap().toString() +
-      ", Active Breakpoint: " +
+      ", activeBreakpoint: " +
       activeBreakpoint.toString() +
-      ", Is Mobile: " +
+      ", isMobile: " +
       isMobile?.toString() +
-      ", Is Phone: " +
+      ", isPhone: " +
       isPhone?.toString() +
-      ", Is Tablet: " +
+      ", isTablet: " +
       isTablet?.toString() +
-      ", Is Desktop: " +
+      ", isDesktop: " +
       isDesktop?.toString() +
       ")";
 
@@ -528,19 +532,18 @@ class ResponsiveBreakpoint {
       {@required this.breakpoint,
       this.autoScale = false,
       this.scaleFactor = 1,
-      this.name})
-      : assert(breakpoint != null);
+      this.name});
 
   @override
   String toString() =>
       "ResponsiveBreakpoint(" +
-      "Breakpoint: " +
+      "breakpoint: " +
       breakpoint.toString() +
-      ", AutoScale: " +
+      ", autoScale: " +
       autoScale.toString() +
-      ", Scale Factor: " +
+      ", scaleFactor: " +
       scaleFactor.toString() +
-      ", Name: " +
-      name?.toString() +
+      ", name: " +
+      name.toString() +
       ")";
 }
