@@ -189,7 +189,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// follow [widget.defaultScale] behavior to resize.
   /// 3. There are no breakpoints set. Resize using
   /// [widget.defaultScale] behavior and [widget.minWidth].
-  double scaledWidth = 1;
+  double scaledWidth = 0;
   double getScaledWidth() {
     // No breakpoint is set. Return default calculated width.
     if (activeBreakpoint.breakpoint == null) {
@@ -227,7 +227,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// is resize, nothing more needs to be done.
   /// 4. Return calculated proportional height with
   /// [widget.minWidth].
-  double scaledHeight = 1;
+  double scaledHeight = 0;
   double getScaledHeight() {
     if (activeBreakpoint.breakpoint == null) {
       // If widget should resize, use default screenHeight.

@@ -9,51 +9,8 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'test_utils.dart';
 
 void main() {
-  group('Builder', () {
-    testWidgets('Empty', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
-      Widget widget = MaterialApp(
-        builder: (context, widget) => ResponsiveWrapper.builder(widget),
-        home: Container(),
-      );
-      await tester.pumpWidget(widget);
-      await tester.pump();
-      Container container = tester.widget(find.byType(Container).first);
-    });
-
-    testWidgets('Responsive Widget', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
-      Widget widget = MaterialApp(
-        builder: (context, widget) => ResponsiveWrapper.builder(
-          BouncingScrollWrapper.builder(context, widget),
-          maxWidth: 1200,
-          minWidth: 450,
-          defaultScale: true,
-          breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
-          ],
-        ),
-        home: Container(),
-      );
-      await tester.pumpWidget(widget);
-      await tester.pump();
-      InheritedResponsiveWrapper inheritedResponsiveWrapper =
-          tester.widget(find.byType(InheritedResponsiveWrapper));
-      expect(inheritedResponsiveWrapper.data.activeBreakpoint.name, MOBILE);
-
-      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
-      setScreenSize(tester, Size(800, 1200));
-      await tester.pumpWidget(widget);
-      await tester.pump();
-      inheritedResponsiveWrapper =
-          tester.widget(find.byType(InheritedResponsiveWrapper));
-      expect(inheritedResponsiveWrapper.data.activeBreakpoint.name, DESKTOP);
-    });
-  });
-
   group('ResponsiveWrapper', () {
-    /// Verify empty widget does nothing.
+    // Verify empty widget does nothing.
     testWidgets('Empty', (WidgetTester tester) async {
       setScreenSize(tester, Size(450, 1200));
       Key key = UniqueKey();
@@ -79,6 +36,39 @@ void main() {
       MediaQuery mediaQueryData = tester.widget(find.descendant(
           of: find.byKey(key), matching: find.byType(MediaQuery)));
       expect(mediaQueryData.data.size, Size(450, 1200));
+    });
+
+    // Verify initialization returns [SizedBox.shrink].
+    testWidgets('Initialization', (WidgetTester tester) async {
+      setScreenSize(tester, Size(450, 1200));
+      // No breakpoints.
+      Key key = UniqueKey();
+      String defaultName = 'defaultName';
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          breakpoints: [
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: true),
+          ],
+          child: Container(color: Colors.white),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      // Initialization is empty and returns SizedBox widget.
+      expect(
+          find.descendant(of: find.byKey(key), matching: find.byType(SizedBox)),
+          findsOneWidget);
+      expect(
+          find.descendant(
+              of: find.byKey(key), matching: find.byType(Container)),
+          findsNothing);
+      await tester.pump();
+      // Container is created on first frame.
+      expect(
+          find.descendant(
+              of: find.byKey(key), matching: find.byType(Container).first),
+          findsOneWidget);
     });
 
     // Verify default name settings.
