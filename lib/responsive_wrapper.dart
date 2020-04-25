@@ -395,7 +395,7 @@ const String DESKTOP = "DESKTOP";
 /// Responsive data about the current screen.
 ///
 /// Resized and scaled values can be accessed
-/// like [ResponsiveWrapperData.scaledWidth].
+/// such as [ResponsiveWrapperData.scaledWidth].
 @immutable
 class ResponsiveWrapperData {
   final double screenWidth;
