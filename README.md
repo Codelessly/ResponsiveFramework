@@ -140,7 +140,7 @@ Responsive Framework was created out of a desire for a better way to manage resp
 
 Responsive Framework is licensed under Zero-Clause BSD and released as Emailware. If you like this project or it helped you, please subscribe to updates. Although it is not required, you might miss the goodies we share!
 
-<a href="https://codelessly.com" target="_blank"><img src="packages/Email%20Newsletter%20Signup.png"></a>
+<a href="https://codelessly.com/?utm_medium=banner&utm_campaign=newsletter_subscribe" target="_blank"><img src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Email%20Newsletter%20Signup.png"></a>
 
 ## Badges 🏆
 
@@ -152,7 +152,11 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 [![Flutter Responsive](https://img.shields.io/badge/flutter-responsive-brightgreen.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework)
 ```
 
-<img alt="Built Responsive" src="packages/Built%20Responsive%20Badge.png"/>
+<img alt="Built Responsive" src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png"/>
+
+<a href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png" download>
+  <p>Download</p>
+</a>
 
 ```html
 <a href="https://github.com/Codelessly/ResponsiveFramework">
@@ -161,7 +165,11 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 </a>
 ```
 
-<img alt="Built with Responsive Framework" src="packages/Built%20with%20Responsive%20Badge.png"/>
+<img alt="Built with Responsive Framework" src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png"/>
+
+<a href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png" download>
+  <p>Download</p>
+</a>
 
 ```html
 <a href="https://github.com/Codelessly/ResponsiveFramework">
@@ -179,17 +187,17 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 * [Ray Li](https://github.com/searchy2)
 * *add yourself here by contributing*
 
-**Sponsor:** [Codelessly - No Code Automation Tools](https://codelessly.com)
+**Sponsor:** [Codelessly - No Code Automation Tools](https://codelessly.com/?utm_medium=link&utm_campaign=direct)
 
 <a href="mailto:ray@codelessly.com">
   <img alt="Codelessly Email"
        src="https://lh3.googleusercontent.com/yN_m90WN_HSCohXdgC2k91uSTk9dnYfoxTYwG_mv_l5_05dV2CzkQ1B6rEqH4uqdgjA=w96" />
 </a>
-<a href="https://codelessly.com">
+<a href="https://codelessly.com/?utm_medium=icon&utm_campaign=direct">
   <img alt="Codelessly Website"
        src="https://lh3.googleusercontent.com/YmMGcgeO7Km9-J9vFRByov5sb7OUKetnKs8pTi0JZMDj3GVJ61GMTcTlHB7u9uHDHag=w96" />
 </a>
-<a href="https://twitter.com/codelessly_">
+<a href="https://twitter.com/BuildCodelessly">
   <img alt="Codelessly Twitter"
        src="https://lh3.ggpht.com/lSLM0xhCA1RZOwaQcjhlwmsvaIQYaP3c5qbDKCgLALhydrgExnaSKZdGa8S3YtRuVA=w96" />
 </a>
@@ -203,7 +211,7 @@ Flutter is a game-changing technology that will revolutionize not just developme
 
 <a href="https://github.com/flutter/flutter">
   <img alt="Flutter"
-       src="packages/Flutter%20Logo%20Banner.png" />
+       src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Flutter%20Logo%20Banner.png" />
 </a>
  
 ## License
