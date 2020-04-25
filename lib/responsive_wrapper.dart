@@ -48,8 +48,8 @@ import 'package:flutter/material.dart';
 class ResponsiveWrapper extends StatefulWidget {
   final Widget child;
   final List<ResponsiveBreakpoint> breakpoints;
-  final double maxWidth;
   final double minWidth;
+  final double maxWidth;
   final String defaultName;
   final bool defaultScale;
   final double defaultScaleFactor;
@@ -60,9 +60,9 @@ class ResponsiveWrapper extends StatefulWidget {
   const ResponsiveWrapper({
     Key key,
     @required this.child,
-    this.breakpoints = const [],
-    this.maxWidth,
+    this.breakpoints,
     this.minWidth = 450,
+    this.maxWidth,
     this.defaultName,
     this.defaultScale = false,
     this.defaultScaleFactor = 1,
@@ -75,25 +75,20 @@ class ResponsiveWrapper extends StatefulWidget {
 
   static Widget builder(
     Widget child, {
-    List<ResponsiveBreakpoint> breakpoints = const [],
-    double maxWidth,
+    List<ResponsiveBreakpoint> breakpoints,
     double minWidth = 450,
+    double maxWidth,
     String defaultName,
     bool defaultScale = false,
     double defaultScaleFactor = 1,
     Widget background,
     MediaQueryData mediaQueryData,
   }) {
-    // Order breakpoints from largest to smallest.
-    // Perform ordering operation to allow breakpoints
-    // to be accepted in any order.
-    breakpoints.sort((a, b) => b.breakpoint.compareTo(a.breakpoint));
-
     return ResponsiveWrapper(
       child: child,
       breakpoints: breakpoints,
-      maxWidth: maxWidth,
       minWidth: minWidth,
+      maxWidth: maxWidth,
       defaultName: defaultName,
       defaultScale: defaultScale,
       defaultScaleFactor: defaultScaleFactor,
@@ -141,7 +136,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         MediaQuery.of(context).size.height;
   }
 
-  get breakpoints => widget.breakpoints;
+  List<ResponsiveBreakpoint> breakpoints;
 
   /// Get screen width calculation.
   double screenWidth = 0;
@@ -288,7 +283,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Active breakpoint is the first breakpoint smaller
   /// or equal to the [screenWidth].
   ResponsiveBreakpoint getActiveBreakpoint(double screenWidth) {
-    return widget.breakpoints.firstWhere(
+    return breakpoints.firstWhere(
         (element) => screenWidth >= element.breakpoint,
         orElse: // No breakpoint found.
             () => ResponsiveBreakpoint(
@@ -298,6 +293,12 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void initState() {
     super.initState();
+    // Order breakpoints from largest to smallest.
+    // Perform ordering operation to allow breakpoints
+    // to be accepted in any order.
+    breakpoints = widget.breakpoints ?? [];
+    breakpoints?.sort((a, b) => b.breakpoint.compareTo(a.breakpoint));
+
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setDimensions();
