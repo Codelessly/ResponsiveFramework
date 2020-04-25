@@ -154,7 +154,7 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 
 <img alt="Built Responsive" src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png"/>
 
-<a href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png" download>
+<a id="raw-url" href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png">
   <p>Download</p>
 </a>
 
@@ -167,7 +167,7 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 
 <img alt="Built with Responsive Framework" src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png"/>
 
-<a href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png" download>
+<a id="raw-url" href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png">
   <p>Download</p>
 </a>
 
