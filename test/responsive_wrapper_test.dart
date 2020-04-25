@@ -9,7 +9,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'test_utils.dart';
 
 void main() {
-  group('Wrapper', () {
+  group('ResponsiveWrapper', () {
     /// Verify empty widget does nothing.
     testWidgets('Empty', (WidgetTester tester) async {
       setScreenSize(tester, Size(450, 1200));
@@ -37,5 +37,23 @@ void main() {
           of: find.byKey(key), matching: find.byType(MediaQuery)));
       expect(mediaQueryData.data.size, Size(450, 1200));
     });
+  });
+
+  test('ResponsiveBreakpoint', () {
+    // Test empty breakpoint.
+    ResponsiveBreakpoint responsiveBreakpoint =
+        ResponsiveBreakpoint(breakpoint: null);
+    // Test print empty.
+    print(responsiveBreakpoint);
+    expect(responsiveBreakpoint.breakpoint, null);
+    expect(responsiveBreakpoint.autoScale, false);
+    expect(responsiveBreakpoint.scaleFactor, 1);
+    expect(responsiveBreakpoint.name, null);
+
+    // Test setting parameters types.
+    responsiveBreakpoint = ResponsiveBreakpoint(
+        breakpoint: 600, name: MOBILE, autoScale: true, scaleFactor: 1.2);
+    // Test print parameters.
+    print(responsiveBreakpoint);
   });
 }

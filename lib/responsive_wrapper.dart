@@ -533,7 +533,8 @@ class ResponsiveBreakpoint {
       {@required this.breakpoint,
       this.autoScale = false,
       this.scaleFactor = 1,
-      this.name});
+      this.name})
+      : assert((breakpoint != null) ? breakpoint >= 0 : true);
 
   @override
   String toString() =>
