@@ -514,5 +514,153 @@ void main() {
     testWidgets('Screen Size Infinite', (WidgetTester tester) async {
       // Infinite screen width or height is not allowed.
     }, skip: true);
+
+    // Test convenience comparators.
+    testWidgets('Breakpoint Comparators', (WidgetTester tester) async {
+      // Verify comparator at named breakpoint returns correct values.
+      setScreenSize(tester, Size(600, 1200));
+      Key key = UniqueKey();
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 500, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 550),
+            ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
+            ResponsiveBreakpoint(breakpoint: 650, name: TABLET),
+            ResponsiveBreakpoint(breakpoint: 700),
+            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+          ],
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(MOBILE),
+          false);
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(TABLET),
+          true);
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(DESKTOP),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(MOBILE),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(TABLET),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(DESKTOP),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(MOBILE),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(TABLET),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(DESKTOP),
+          true);
+
+      // Verify comparator at unnamed breakpoint works correctly.
+      key = UniqueKey();
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 500, name: TABLET),
+            ResponsiveBreakpoint(breakpoint: 550, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 600),
+            ResponsiveBreakpoint(breakpoint: 650, name: TABLET),
+            ResponsiveBreakpoint(breakpoint: 700, name: DESKTOP),
+            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+          ],
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(MOBILE),
+          false);
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(TABLET),
+          false);
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(DESKTOP),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(MOBILE),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(TABLET),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(DESKTOP),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(MOBILE),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(TABLET),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(DESKTOP),
+          true);
+
+      // Test largerThan upper bound.
+      key = UniqueKey();
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 500, name: TABLET),
+            ResponsiveBreakpoint(breakpoint: 550, name: DESKTOP),
+            ResponsiveBreakpoint(breakpoint: 600),
+          ],
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(MOBILE),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(TABLET),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(DESKTOP),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(MOBILE),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(TABLET),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(DESKTOP),
+          false);
+    });
   });
 }
