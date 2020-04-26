@@ -356,7 +356,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
                       alignment: Alignment.topCenter,
                       child: Container(
                         width: scaledWidth,
-                        height: scaledHeight,
+                        height: null,
                         alignment: Alignment.center,
                         child: widget.child,
                       ),
