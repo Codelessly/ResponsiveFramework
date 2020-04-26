@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.5
+- Add `defaultName` parameter.
+- Create tests.
+- Improve breakpoint calculations and API.
+
 ## 0.0.4
 - New Documentation.
 - Rename `scale` to `autoScale`.
