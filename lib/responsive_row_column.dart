@@ -58,7 +58,7 @@ class ResponsiveRowColumn extends StatelessWidget {
     } else {
       rowColumn = !isColumn;
     }
-    print("Row Column: $rowColumn");
+    print('Row Column: $rowColumn');
     return rowColumn
         ? Row(
             mainAxisAlignment: rowMainAxisAlignment,

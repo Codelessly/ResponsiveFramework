@@ -7,8 +7,8 @@ typedef StartListening<T> = VoidCallback Function(Value<T> element, T value);
 
 class ResponsiveValue<T> {
   T value;
-  String greaterThan = ">";
-  String smallerThan = "<";
+  String greaterThan = '>';
+  String smallerThan = '<';
 }
 
 class ResponsiveVisibility extends StatefulWidget {
@@ -58,10 +58,10 @@ class _ResponsiveVisibilityState extends State<ResponsiveVisibility>
       } catch (e) {
         throw FlutterError.fromParts(<DiagnosticsNode>[
           ErrorSummary(
-              "A ResponsiveCondition was caught referencing a nonexistant breakpoint."),
+              'A ResponsiveCondition was caught referencing a nonexistant breakpoint.'),
           ErrorDescription(
-              "A ResponsiveCondition requires a parent ResponsiveWrapper "
-              "to reference breakpoints. Add a ResponsiveWrapper or remove breakpoint references.")
+              'A ResponsiveCondition requires a parent ResponsiveWrapper '
+              'to reference breakpoints. Add a ResponsiveWrapper or remove breakpoint references.')
         ]);
       }
     }
@@ -235,16 +235,16 @@ class Condition {
 
   @override
   String toString() =>
-      "Condition(" +
-      "breakpoint: " +
+      'Condition(' +
+      'breakpoint: ' +
       breakpoint.toString() +
-      ", name: " +
+      ', name: ' +
       name.toString() +
-      ", condition: " +
+      ', condition: ' +
       condition.toString() +
-      ", value: " +
+      ', value: ' +
       value?.toString() +
-      ")";
+      ')';
 
   int sort(Condition a, Condition b) {
     if (a.breakpoint == b.breakpoint) return 0;
