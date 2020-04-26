@@ -68,7 +68,8 @@ class ResponsiveWrapper extends StatefulWidget {
     this.defaultScaleFactor = 1,
     this.background,
     this.mediaQueryData,
-  }) : super(key: key);
+  })  : assert(minWidth != null),
+        super(key: key);
 
   @override
   _ResponsiveWrapperState createState() => _ResponsiveWrapperState();

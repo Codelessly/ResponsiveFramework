@@ -170,6 +170,118 @@ void main() {
       }
     });
 
+    // Verify inherited mediaQueryData is used.
+    testWidgets('MediaQueryData Inherited', (WidgetTester tester) async {
+      setScreenSize(tester, Size(450, 1200));
+      Key key = UniqueKey();
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          mediaQueryData:
+              MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3),
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      MediaQuery mediaQuery = tester.widget(find.descendant(
+          of: find.byKey(key), matching: find.byType(MediaQuery)));
+      expect(mediaQuery.data.size, Size(600, 1200));
+
+      // Pass MediaQueryData through builder.
+      key = UniqueKey();
+      widget = MaterialApp(
+        builder: (context, widget) => ResponsiveWrapper.builder(widget,
+            mediaQueryData:
+                MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3)),
+        home: Container(),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      expect(
+          find
+              .byType(MediaQuery)
+              .allCandidates
+              .firstWhere((element) => element.size == Size(600, 1200)),
+          isNotNull);
+    });
+
+    // Test maxWidth and minWidth values.
+    testWidgets('Max and Min Width', (WidgetTester tester) async {
+      // 0 value.
+      setScreenSize(tester, Size(450, 1200));
+      Key key = UniqueKey();
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultScale: true,
+          maxWidth: 0,
+          minWidth: 0,
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      // Fallback to SizedBox.
+      expect(find.byType(SizedBox), findsOneWidget);
+
+      // Infinity value. (BoxConstraints forbid forcing double.infinity)
+      key = UniqueKey();
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultScale: true,
+          maxWidth: 1073741823,
+          minWidth: 1073741823,
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+
+      // maxWidth smaller than minWidth.
+      // When defaultScale is false, minWidth is ignored.
+      // If defaultScale is true, minWidth acts as a
+      // scaleFactor multiplier when greater than maxWidth.
+      key = UniqueKey();
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultScale: true,
+          maxWidth: 200,
+          minWidth: 800,
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Screen width is capped at maxWidth value.
+      // Scale factor is 4.
+      expect(state.screenWidth, 200);
+    });
+  });
+
+  group('ResponsiveBreakpoint', () {
+    // Test ResponsiveBreakpoint class parameters.
+    test('Parameters', () {
+      // Test empty breakpoint.
+      ResponsiveBreakpoint responsiveBreakpoint =
+          ResponsiveBreakpoint(breakpoint: null);
+      // Test print empty.
+      print(responsiveBreakpoint);
+      expect(responsiveBreakpoint.breakpoint, null);
+      expect(responsiveBreakpoint.autoScale, false);
+      expect(responsiveBreakpoint.scaleFactor, 1);
+      expect(responsiveBreakpoint.name, null);
+
+      // Test setting parameters types.
+      responsiveBreakpoint = ResponsiveBreakpoint(
+          breakpoint: 600, name: MOBILE, autoScale: true, scaleFactor: 1.2);
+      // Test print parameters.
+      print(responsiveBreakpoint);
+    });
+
     // Test duplicate breakpoints.
     testWidgets('Breakpoint Duplicate', (WidgetTester tester) async {
       setScreenSize(tester, Size(450, 1200));
@@ -257,55 +369,6 @@ void main() {
       expect(state.activeBreakpoint?.name, "0");
       // Negative breakpoints are not allowed.
     });
-
-    // Test 0 screen width and height.
-    // Verify no errors are thrown.
-    testWidgets('Screen Size 0', (WidgetTester tester) async {
-      // Screen Width 0.
-      setScreenSize(tester, Size(0, 1200));
-      Key key = UniqueKey();
-      String defaultName = 'defaultName';
-      Widget widget = MaterialApp(
-        home: ResponsiveWrapper(
-          key: key,
-          defaultName: defaultName,
-          defaultScale: true,
-          breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
-          ],
-          child: Container(),
-        ),
-      );
-      await tester.pumpWidget(widget);
-      await tester.pump();
-      dynamic state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, defaultName);
-      MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(0, 1200));
-
-      resetScreenSize(tester);
-      setScreenSize(tester, Size(450, 0));
-      await tester.pump();
-      state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, MOBILE);
-      mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(450, 0));
-
-      resetScreenSize(tester);
-      setScreenSize(tester, Size(0, 0));
-      await tester.pump();
-      state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.breakpoint, null);
-      mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(0, 0));
-    });
-
-    // Test infinite screen width and height.
-    testWidgets('Screen Size Infinite', (WidgetTester tester) async {
-      // Infinite screen width or height is not allowed.
-    }, skip: true);
 
     // Test unnamed breakpoints.
     testWidgets('Breakpoints Unnamed', (WidgetTester tester) async {
@@ -402,23 +465,54 @@ void main() {
         expect(state.activeBreakpoint?.name, expectedValues[i]);
       }
     });
-  });
 
-  test('ResponsiveBreakpoint', () {
-    // Test empty breakpoint.
-    ResponsiveBreakpoint responsiveBreakpoint =
-        ResponsiveBreakpoint(breakpoint: null);
-    // Test print empty.
-    print(responsiveBreakpoint);
-    expect(responsiveBreakpoint.breakpoint, null);
-    expect(responsiveBreakpoint.autoScale, false);
-    expect(responsiveBreakpoint.scaleFactor, 1);
-    expect(responsiveBreakpoint.name, null);
+    // Test 0 screen width and height.
+    // Verify no errors are thrown.
+    testWidgets('Screen Size 0', (WidgetTester tester) async {
+      // Screen Width 0.
+      setScreenSize(tester, Size(0, 1200));
+      Key key = UniqueKey();
+      String defaultName = 'defaultName';
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultName: defaultName,
+          defaultScale: true,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+            ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
+            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+          ],
+          child: Container(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      expect(state.activeBreakpoint?.name, defaultName);
+      MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
+      expect(mediaQuery.data.size, Size(0, 1200));
 
-    // Test setting parameters types.
-    responsiveBreakpoint = ResponsiveBreakpoint(
-        breakpoint: 600, name: MOBILE, autoScale: true, scaleFactor: 1.2);
-    // Test print parameters.
-    print(responsiveBreakpoint);
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(450, 0));
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(state.activeBreakpoint?.name, MOBILE);
+      mediaQuery = tester.widget(find.byType(MediaQuery).first);
+      expect(mediaQuery.data.size, Size(450, 0));
+
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(0, 0));
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(state.activeBreakpoint?.breakpoint, null);
+      mediaQuery = tester.widget(find.byType(MediaQuery).first);
+      expect(mediaQuery.data.size, Size(0, 0));
+    });
+
+    // Test infinite screen width and height.
+    testWidgets('Screen Size Infinite', (WidgetTester tester) async {
+      // Infinite screen width or height is not allowed.
+    }, skip: true);
   });
 }

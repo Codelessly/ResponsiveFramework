@@ -20,7 +20,7 @@ Use Responsive Framework to automatically scale your UI.
 
 ## Demo
 
-### [Minimal Website](https://gallery.imfast.io/flutterwebsites/minimal/)
+### [Minimal Website](https://gallery.codelessly.com/flutterwebsites/minimal/?utm_medium=link&utm_campaign=demo)
 
 A demo website built with the Responsive Framework. [View Code](https://github.com/Codelessly/FlutterMinimalWebsite)
 
@@ -136,7 +136,7 @@ An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be 
 
 ## About
 
-Responsive Framework was created out of a desire for a better way to manage responsiveness. The ability to automatically adapt UI to different sizes opens up a world of possibilities. Here at Codelessly, we're working on #NoCode and code generation automation tools to increase productivity. If you are interested in building a website builder powered by computer vision, drop us a line below 😎
+Responsive Framework was created out of a desire for a better way to manage responsiveness. The ability to automatically adapt UI to different sizes opens up a world of possibilities. Here at Codelessly, we're working on #NoCode and code generation automation tools to increase productivity. If that sounds interesting, you'll want to subscribe to updates below 😎
 
 Responsive Framework is licensed under Zero-Clause BSD and released as Emailware. If you like this project or it helped you, please subscribe to updates. Although it is not required, you might miss the goodies we share!
 
@@ -151,12 +151,7 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 ```
 [![Flutter Responsive](https://img.shields.io/badge/flutter-responsive-brightgreen.svg?style=flat-square)](https://github.com/Codelessly/ResponsiveFramework)
 ```
-
 <img alt="Built Responsive" src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png"/>
-
-<a id="raw-url" href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png">
-  <p>Download</p>
-</a>
 
 ```html
 <a href="https://github.com/Codelessly/ResponsiveFramework">
@@ -164,12 +159,7 @@ Now you can proudly display the time and headache saved by using Responsive Fram
        src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20Responsive%20Badge.png"/>
 </a>
 ```
-
 <img alt="Built with Responsive Framework" src="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png"/>
-
-<a id="raw-url" href="https://raw.githubusercontent.com/Codelessly/ResponsiveFramework/master/packages/Built%20with%20Responsive%20Badge.png">
-  <p>Download</p>
-</a>
 
 ```html
 <a href="https://github.com/Codelessly/ResponsiveFramework">
