@@ -107,11 +107,11 @@ class ResponsiveWrapper extends StatefulWidget {
     if (nullOk) return null;
     throw FlutterError.fromParts(<DiagnosticsNode>[
       ErrorSummary(
-          "ResponsiveWrapper.of() called with a context that does not contain a ResponsiveWrapper."),
+          'ResponsiveWrapper.of() called with a context that does not contain a ResponsiveWrapper.'),
       ErrorDescription(
-          "No Responsive ancestor could be found starting from the context that was passed "
-          "to ResponsiveWrapper.of(). Place a ResponsiveWrapper at the root of the app "
-          "or supply a ResponsiveWrapper.builder."),
+          'No Responsive ancestor could be found starting from the context that was passed '
+          'to ResponsiveWrapper.of(). Place a ResponsiveWrapper at the root of the app '
+          'or supply a ResponsiveWrapper.builder.'),
       context.describeElement('The context used was')
     ]);
   }
@@ -343,13 +343,13 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         ? SizedBox.shrink()
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
-            child: MediaQuery(
-              data: calculateMediaQueryData(),
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  widget.background ?? Container(),
-                  SizedBox(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                widget.background ?? Container(),
+                MediaQuery(
+                  data: calculateMediaQueryData(),
+                  child: SizedBox(
                     width: screenWidth,
                     child: FittedBox(
                       fit: BoxFit.fitWidth,
@@ -362,8 +362,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
   }
@@ -388,10 +388,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 }
 
 // Device Type Constants.
-const String MOBILE = "MOBILE";
-const String TABLET = "TABLET";
-const String PHONE = "PHONE";
-const String DESKTOP = "DESKTOP";
+const String MOBILE = 'MOBILE';
+const String TABLET = 'TABLET';
+const String PHONE = 'PHONE';
+const String DESKTOP = 'DESKTOP';
 
 /// Responsive data about the current screen.
 ///
@@ -446,28 +446,28 @@ class ResponsiveWrapperData {
 
   @override
   String toString() =>
-      "ResponsiveWrapperData(" +
-      "screenWidth: " +
+      'ResponsiveWrapperData(' +
+      'screenWidth: ' +
       screenWidth?.toString() +
-      ", screenHeight: " +
+      ', screenHeight: ' +
       screenHeight?.toString() +
-      ", scaledWidth: " +
+      ', scaledWidth: ' +
       scaledWidth?.toString() +
-      ", scaledHeight: " +
+      ', scaledHeight: ' +
       scaledHeight?.toString() +
-      ", breakpoints: " +
+      ', breakpoints: ' +
       breakpoints?.asMap().toString() +
-      ", activeBreakpoint: " +
+      ', activeBreakpoint: ' +
       activeBreakpoint.toString() +
-      ", isMobile: " +
+      ', isMobile: ' +
       isMobile?.toString() +
-      ", isPhone: " +
+      ', isPhone: ' +
       isPhone?.toString() +
-      ", isTablet: " +
+      ', isTablet: ' +
       isTablet?.toString() +
-      ", isDesktop: " +
+      ', isDesktop: ' +
       isDesktop?.toString() +
-      ")";
+      ')';
 
   bool equals(String breakpointName) =>
       activeBreakpoint.name != null && activeBreakpoint.name == breakpointName;
@@ -540,14 +540,14 @@ class ResponsiveBreakpoint {
 
   @override
   String toString() =>
-      "ResponsiveBreakpoint(" +
-      "breakpoint: " +
+      'ResponsiveBreakpoint(' +
+      'breakpoint: ' +
       breakpoint.toString() +
-      ", autoScale: " +
+      ', autoScale: ' +
       autoScale.toString() +
-      ", scaleFactor: " +
+      ', scaleFactor: ' +
       scaleFactor.toString() +
-      ", name: " +
+      ', name: ' +
       name.toString() +
-      ")";
+      ')';
 }
