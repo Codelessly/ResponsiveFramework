@@ -55,6 +55,7 @@ class ResponsiveWrapper extends StatefulWidget {
   final double defaultScaleFactor;
   final Widget background;
   final MediaQueryData mediaQueryData;
+  final bool shrinkWrap;
 
   /// A wrapper widget that makes child widgets responsive.
   const ResponsiveWrapper({
@@ -68,6 +69,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.defaultScaleFactor = 1,
     this.background,
     this.mediaQueryData,
+    this.shrinkWrap = true,
   })  : assert(minWidth != null),
         super(key: key);
 
@@ -95,6 +97,7 @@ class ResponsiveWrapper extends StatefulWidget {
       defaultScaleFactor: defaultScaleFactor,
       background: background,
       mediaQueryData: mediaQueryData,
+      shrinkWrap: false,
     );
   }
 
@@ -230,6 +233,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// [widget.minWidth].
   double scaledHeight = 0;
   double getScaledHeight() {
+    // Shrink wrap height if no MediaQueryData is passed.
+    if (widget.shrinkWrap == true && widget.mediaQueryData == null) {
+      return null;
+    }
     if (activeBreakpoint.breakpoint == null) {
       // If widget should resize, use default screenHeight.
       if (widget.defaultScale == false)
@@ -356,7 +363,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
                       alignment: Alignment.topCenter,
                       child: Container(
                         width: scaledWidth,
-                        height: null,
+                        height: scaledHeight,
                         alignment: Alignment.center,
                         child: widget.child,
                       ),
