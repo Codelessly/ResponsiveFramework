@@ -149,10 +149,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double getScreenWidth() {
     activeBreakpoint = getActiveBreakpoint(windowWidth);
     // Check if screenWidth exceeds maxWidth.
-    if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
+    if (widget.maxWidth != null && windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
       if (activeBreakpoint.breakpoint != null &&
-          activeBreakpoint.breakpoint > widget.maxWidth &&
+          activeBreakpoint.breakpoint >= widget.maxWidth &&
           activeBreakpoint.autoScale) {
         return widget.maxWidth + (windowWidth - activeBreakpoint.breakpoint);
       } else {
