@@ -14,6 +14,7 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -29,9 +30,9 @@ void main() {
       expect(responsiveWrapper.defaultScaleFactor, 1);
       expect(responsiveWrapper.mediaQueryData, null);
       // Verify dimensions unchanged.
-      MediaQuery mediaQueryData = tester.widget(find.descendant(
+      MediaQuery mediaQuery = tester.widget(find.descendant(
           of: find.byKey(key), matching: find.byType(MediaQuery)));
-      expect(mediaQueryData.data.size, Size(450, 1200));
+      expect(mediaQuery.data.size, Size(450, 1200));
     });
 
     // Verify empty wrapper does nothing.
@@ -58,10 +59,10 @@ void main() {
       expect(responsiveWrapper.defaultScaleFactor, 1);
       expect(responsiveWrapper.mediaQueryData, null);
       // Verify dimensions unchanged.
-      MediaQuery mediaQueryData = tester.widget(find.descendant(
+      MediaQuery mediaQuery = tester.widget(find.descendant(
           of: find.byType(ResponsiveWrapper),
           matching: find.byType(MediaQuery)));
-      expect(mediaQueryData.data.size, Size(450, 1200));
+      expect(mediaQuery.data.size, Size(450, 1200));
     });
 
     // Verify initialization returns [SizedBox.shrink].
@@ -78,6 +79,7 @@ void main() {
                 breakpoint: 450, name: MOBILE, autoScale: true),
           ],
           child: Container(color: Colors.white),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -108,6 +110,7 @@ void main() {
           key: key,
           defaultName: defaultName,
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -136,6 +139,7 @@ void main() {
               ResponsiveBreakpoint(breakpoint: 450),
             ],
             child: Container(),
+            shrinkWrap: false,
           ),
         );
         await tester.pumpWidget(widget);
@@ -161,6 +165,7 @@ void main() {
               ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
             ],
             child: Container(),
+            shrinkWrap: false,
           ),
         );
         await tester.pumpWidget(widget);
@@ -180,6 +185,7 @@ void main() {
           mediaQueryData:
               MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3),
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -218,6 +224,7 @@ void main() {
           maxWidth: 0,
           minWidth: 0,
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -234,6 +241,7 @@ void main() {
           maxWidth: 1073741823,
           minWidth: 1073741823,
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -251,6 +259,7 @@ void main() {
           maxWidth: 200,
           minWidth: 800,
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -300,6 +309,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 450),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -332,6 +342,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -361,6 +372,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 1073741823, name: "Infinity"),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -409,6 +421,7 @@ void main() {
               ResponsiveBreakpoint(breakpoint: 800),
             ],
             child: Container(),
+            shrinkWrap: false,
           ),
         );
         await tester.pumpWidget(widget);
@@ -457,6 +470,7 @@ void main() {
               ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
             ],
             child: Container(),
+            shrinkWrap: false,
           ),
         );
         await tester.pumpWidget(widget);
@@ -484,6 +498,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -533,6 +548,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -584,6 +600,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);
@@ -632,6 +649,7 @@ void main() {
             ResponsiveBreakpoint(breakpoint: 600),
           ],
           child: Container(),
+          shrinkWrap: false,
         ),
       );
       await tester.pumpWidget(widget);

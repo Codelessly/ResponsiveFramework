@@ -233,10 +233,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// [widget.minWidth].
   double scaledHeight = 0;
   double getScaledHeight() {
-    // Shrink wrap height if no MediaQueryData is passed.
-    if (widget.shrinkWrap == true && widget.mediaQueryData == null) {
-      return null;
-    }
     if (activeBreakpoint.breakpoint == null) {
       // If widget should resize, use default screenHeight.
       if (widget.defaultScale == false)
@@ -363,7 +359,11 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
                       alignment: Alignment.topCenter,
                       child: Container(
                         width: scaledWidth,
-                        height: scaledHeight,
+                        height: (widget.shrinkWrap == true &&
+                                widget.mediaQueryData == null)
+                            ? null
+                            : scaledHeight,
+                        // Shrink wrap height if no MediaQueryData is passed.
                         alignment: Alignment.center,
                         child: widget.child,
                       ),
