@@ -71,6 +71,8 @@ class ResponsiveWrapper extends StatefulWidget {
     this.mediaQueryData,
     this.shrinkWrap = true,
   })  : assert(minWidth != null),
+        assert(defaultScale != null),
+        assert(defaultScaleFactor != null),
         super(key: key);
 
   @override
@@ -285,13 +287,39 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   /// Set [activeBreakpoint].
   /// Active breakpoint is the first breakpoint smaller
-  /// or equal to the [screenWidth].
+  /// or equal to the [screenWidth] and has a scale behavior set.
   ResponsiveBreakpoint getActiveBreakpoint(double screenWidth) {
-    return breakpoints.firstWhere(
-        (element) => screenWidth >= element.breakpoint,
-        orElse: // No breakpoint found.
-            () => ResponsiveBreakpoint(
-                breakpoint: null, name: widget.defaultName));
+    ResponsiveBreakpoint activeBreakpoint =
+        breakpoints.firstWhere((element) => screenWidth >= element.breakpoint,
+            orElse: // No breakpoint found.
+                () => null);
+    // If no breakpoint is found, return default breakpoint.
+    if (activeBreakpoint == null)
+      activeBreakpoint = ResponsiveBreakpoint(
+          breakpoint: null, name: widget.defaultName, autoScale: false);
+    // If autoScale behavior is null, apply inherited
+    // autoscale behavior or defaultScale behavior;
+    if (activeBreakpoint.autoScale == null) {
+      // If screen width is below minWidth, inherit from minWidth.
+      if (screenWidth < widget.minWidth) {
+        activeBreakpoint = activeBreakpoint.copyWith(
+            breakpoint: widget.minWidth.toInt(),
+            autoScale: widget.defaultScale);
+      } else {
+        // Inherit autoScale behavior from smaller breakpoint.
+        activeBreakpoint = activeBreakpoint.copyWith(
+            autoScale: breakpoints
+                    .firstWhere(
+                        (element) =>
+                            screenWidth >= element.breakpoint &&
+                            element.autoScale != null,
+                        orElse: () => null)
+                    ?.autoScale ??
+                widget.defaultScale);
+      }
+    }
+
+    return activeBreakpoint;
   }
 
   @override
@@ -476,12 +504,25 @@ class ResponsiveWrapperData {
       isDesktop?.toString() +
       ')';
 
-  bool equals(String breakpointName) =>
-      activeBreakpoint.name != null && activeBreakpoint.name == breakpointName;
+  bool equals(String breakpointName) => activeBreakpoint.name == breakpointName;
 
   /// Is the [scaledWidth] larger than or equal to [breakpointName]?
   /// Defaults to false if the [breakpointName] cannot be found.
   bool isLargerThan(String breakpointName) {
+    // No breakpoints to match.
+    if (breakpoints.length == 0) return false;
+
+    // Breakpoint is active breakpoint.
+    if (activeBreakpoint.name == breakpointName) return false;
+
+    // Single breakpoint is active and screen width
+    // is larger than default breakpoint.
+    if (breakpoints.length == 1 && screenWidth >= breakpoints[0].breakpoint) {
+      return true;
+    }
+    // Find first breakpoint end boundary that is larger
+    // than screen width. Breakpoint names could be
+    // chained so perform a full search.
     for (var i = breakpoints.length - 1; i > 0; i--) {
       if (breakpoints[i].name == breakpointName &&
           breakpoints[i - 1].name != breakpointName &&
@@ -534,16 +575,32 @@ class InheritedResponsiveWrapper extends InheritedWidget {
 @immutable
 class ResponsiveBreakpoint {
   final int breakpoint;
+  final String name;
   final bool autoScale;
   final double scaleFactor;
-  final String name;
 
   const ResponsiveBreakpoint(
       {@required this.breakpoint,
-      this.autoScale = false,
-      this.scaleFactor = 1,
-      this.name})
-      : assert((breakpoint != null) ? breakpoint >= 0 : true);
+      this.name,
+      this.autoScale,
+      this.scaleFactor = 1})
+      : assert((breakpoint != null) ? breakpoint >= 0 : true,
+            "Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`."),
+        assert((name == null) ? autoScale != null : true,
+            "This breakpoint is useless. Set either the `name` or `autoScale` behavior.");
+
+  ResponsiveBreakpoint copyWith({
+    int breakpoint,
+    bool autoScale,
+    double scaleFactor,
+    String name,
+  }) =>
+      ResponsiveBreakpoint(
+        breakpoint: breakpoint ?? this.breakpoint,
+        name: name ?? this.name,
+        autoScale: autoScale ?? this.autoScale,
+        scaleFactor: scaleFactor ?? this.scaleFactor,
+      );
 
   @override
   String toString() =>

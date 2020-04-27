@@ -136,7 +136,7 @@ void main() {
             key: key,
             defaultName: defaultName,
             breakpoints: [
-              ResponsiveBreakpoint(breakpoint: 450),
+              ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -149,8 +149,8 @@ void main() {
       }
 
       // Multiple breakpoints.
-      boundaryValues = [449, 450, 451, 600, 601];
-      expectedValues = [defaultName, MOBILE, MOBILE, TABLET, TABLET];
+      boundaryValues = [449, 450, 451, 500, 600, 601];
+      expectedValues = [defaultName, MOBILE, MOBILE, null, TABLET, TABLET];
       for (var i = 0; i < boundaryValues.length; i++) {
         resetScreenSize(tester);
         setScreenSize(tester, Size(boundaryValues[i], 1200));
@@ -161,8 +161,11 @@ void main() {
             key: key,
             defaultName: defaultName,
             breakpoints: [
-              ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-              ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
+              ResponsiveBreakpoint(
+                  breakpoint: 450, name: MOBILE, autoScale: false),
+              ResponsiveBreakpoint(breakpoint: 500, autoScale: false),
+              ResponsiveBreakpoint(
+                  breakpoint: 600, name: TABLET, autoScale: false),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -276,7 +279,7 @@ void main() {
     test('Parameters', () {
       // Test empty breakpoint.
       ResponsiveBreakpoint responsiveBreakpoint =
-          ResponsiveBreakpoint(breakpoint: null);
+          ResponsiveBreakpoint(breakpoint: null, autoScale: false);
       // Test print empty.
       print(responsiveBreakpoint);
       expect(responsiveBreakpoint.breakpoint, null);
@@ -300,13 +303,13 @@ void main() {
           key: key,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 600),
-            ResponsiveBreakpoint(breakpoint: 450),
-            ResponsiveBreakpoint(breakpoint: 450),
-            ResponsiveBreakpoint(breakpoint: 450),
-            ResponsiveBreakpoint(breakpoint: 450),
-            ResponsiveBreakpoint(breakpoint: 450),
-            ResponsiveBreakpoint(breakpoint: 450),
+            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -333,13 +336,20 @@ void main() {
           key: key,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
+            ResponsiveBreakpoint(
+                breakpoint: 600, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -368,8 +378,9 @@ void main() {
           defaultName: defaultName,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 0, name: "0"),
-            ResponsiveBreakpoint(breakpoint: 1073741823, name: "Infinity"),
+            ResponsiveBreakpoint(breakpoint: 0, name: '0', autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 1073741823, name: 'Infinity', autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -378,7 +389,7 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pump();
       dynamic state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, "0");
+      expect(state.activeBreakpoint?.name, '0');
       // Negative breakpoints are not allowed.
     });
 
@@ -416,9 +427,9 @@ void main() {
           home: ResponsiveWrapper(
             key: key,
             breakpoints: [
-              ResponsiveBreakpoint(breakpoint: 450),
-              ResponsiveBreakpoint(breakpoint: 600),
-              ResponsiveBreakpoint(breakpoint: 800),
+              ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+              ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
+              ResponsiveBreakpoint(breakpoint: 800, autoScale: false),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -465,9 +476,12 @@ void main() {
           home: ResponsiveWrapper(
             key: key,
             breakpoints: [
-              ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-              ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
-              ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+              ResponsiveBreakpoint(
+                  breakpoint: 450, name: MOBILE, autoScale: false),
+              ResponsiveBreakpoint(
+                  breakpoint: 600, name: TABLET, autoScale: false),
+              ResponsiveBreakpoint(
+                  breakpoint: 800, name: DESKTOP, autoScale: false),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -493,9 +507,12 @@ void main() {
           defaultName: defaultName,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 600, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 800, name: DESKTOP, autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -539,13 +556,18 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 500, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 550),
-            ResponsiveBreakpoint(breakpoint: 600, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 650, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 700),
-            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 500, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 550, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 600, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 650, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 700, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 800, name: DESKTOP, autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -591,13 +613,19 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 500, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 550, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 600),
-            ResponsiveBreakpoint(breakpoint: 650, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 700, name: DESKTOP),
-            ResponsiveBreakpoint(breakpoint: 800, name: DESKTOP),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 500, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 550, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 650, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 700, name: DESKTOP, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 800, name: DESKTOP, autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -643,10 +671,13 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 500, name: TABLET),
-            ResponsiveBreakpoint(breakpoint: 550, name: DESKTOP),
-            ResponsiveBreakpoint(breakpoint: 600),
+            ResponsiveBreakpoint(
+                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 500, name: TABLET, autoScale: false),
+            ResponsiveBreakpoint(
+                breakpoint: 550, name: DESKTOP, autoScale: false),
+            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -678,6 +709,87 @@ void main() {
       expect(
           ResponsiveWrapperData.fromResponsiveWrapper(state)
               .isSmallerThan(DESKTOP),
+          false);
+
+      // Test default name.
+      key = UniqueKey();
+      String defaultName = 'defaultName';
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultName: defaultName,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
+          ],
+          child: Container(),
+          shrinkWrap: false,
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(null),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(defaultName),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(defaultName),
+          false);
+
+      // Test default name reversed.
+      key = UniqueKey();
+      defaultName = 'defaultName';
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultName: defaultName,
+          breakpoints: [
+            ResponsiveBreakpoint(breakpoint: 800, autoScale: false),
+          ],
+          child: Container(),
+          shrinkWrap: false,
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .equals(defaultName),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isLargerThan(defaultName),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(null),
+          true);
+
+      // Test null.
+      key = UniqueKey();
+      widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          breakpoints: [],
+          child: Container(),
+          shrinkWrap: false,
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(ResponsiveWrapperData.fromResponsiveWrapper(state).equals(null),
+          true);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state).isLargerThan(null),
+          false);
+      expect(
+          ResponsiveWrapperData.fromResponsiveWrapper(state)
+              .isSmallerThan(null),
           false);
     });
   });
