@@ -287,7 +287,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// smaller or equal to the [windowWidth].
   _ResponsiveBreakpointSegment getActiveBreakpointSegment(double windowWidth) {
     _ResponsiveBreakpointSegment activeBreakpoint = breakpointSegments.reversed
-        .firstWhere((element) => windowWidth >= element.breakpoint);
+        .firstWhere(
+            (element) => windowWidth >= element.breakpoint && !element.isTag);
     return activeBreakpoint;
   }
 
@@ -401,7 +402,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       List<ResponsiveBreakpoint> breakpoints,
       ResponsiveBreakpoint defaultBreakpoint) {
     List<_ResponsiveBreakpointSegment> breakpointSegments = [];
-    ResponsiveBreakpoint responsiveBreakpointHolder = defaultBreakpoint;
     // No breakpoints. Create segment from default breakpoint behavior.
     if (breakpoints.length == 0) {
       breakpointSegments.add(_ResponsiveBreakpointSegment(
@@ -414,37 +414,52 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Perform ordering operation to allow breakpoints
     // to be accepted in any order.
     breakpoints.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
-    // Construct breakpoints for initial and minWidth special cases.
-    if (breakpoints[0].breakpoint < widget.minWidth) {
-      // Construct initial segment that starts from 0.
-      breakpointSegments.add(_ResponsiveBreakpointSegment(
-          breakpoint: 0,
-          responsiveBreakpointBehavior: defaultBreakpoint.behavior,
-          responsiveBreakpoint: ResponsiveBreakpoint._(
-              breakpoint: breakpoints[0].breakpoint,
-              name: defaultBreakpoint.name,
-              behavior: defaultBreakpoint.behavior,
-              scaleFactor: defaultBreakpoint.scaleFactor)));
-    } else {
+
+    ResponsiveBreakpoint initialBreakpoint =
+        breakpoints.firstWhere((element) => !element.isTag, orElse: null);
+    ResponsiveBreakpoint breakpointHolder;
+    // Construct breakpoint segments for initial and minWidth special cases.
+    if (initialBreakpoint == null ||
+        initialBreakpoint.breakpoint > widget.minWidth) {
       // Construct two segments. 1. From 0 to the minWidth. 2. From minWidth to the next breakpoint.
-      breakpointSegments.add(_ResponsiveBreakpointSegment(
-          breakpoint: 0,
-          responsiveBreakpointBehavior: defaultBreakpoint.behavior,
-          responsiveBreakpoint: ResponsiveBreakpoint._(
-              breakpoint: widget.minWidth,
-              name: defaultBreakpoint.name,
-              behavior: defaultBreakpoint.behavior,
-              scaleFactor: defaultBreakpoint.scaleFactor)));
-      breakpointSegments.add(_ResponsiveBreakpointSegment(
+      breakpointHolder = ResponsiveBreakpoint._(
           breakpoint: widget.minWidth,
-          responsiveBreakpointBehavior: defaultBreakpoint.behavior,
-          responsiveBreakpoint: ResponsiveBreakpoint._(
+          name: defaultBreakpoint.name,
+          behavior: defaultBreakpoint.behavior,
+          scaleFactor: defaultBreakpoint.scaleFactor);
+      breakpointSegments.insert(
+          0,
+          _ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              responsiveBreakpointBehavior: breakpointHolder.behavior,
+              responsiveBreakpoint: breakpointHolder));
+      breakpointHolder = ResponsiveBreakpoint._(
+          breakpoint: widget.minWidth,
+          name: defaultBreakpoint.name,
+          behavior: defaultBreakpoint.behavior,
+          scaleFactor: defaultBreakpoint.scaleFactor);
+      breakpointSegments.insert(
+          1,
+          _ResponsiveBreakpointSegment(
               breakpoint: widget.minWidth,
-              name: defaultBreakpoint.name,
-              behavior: defaultBreakpoint.behavior,
-              scaleFactor: defaultBreakpoint.scaleFactor)));
+              responsiveBreakpointBehavior: breakpointHolder.behavior,
+              responsiveBreakpoint: breakpointHolder));
+    } else {
+      // Construct initial segment that starts from 0.
+      breakpointHolder = ResponsiveBreakpoint._(
+          breakpoint: initialBreakpoint.breakpoint,
+          name: defaultBreakpoint.name,
+          behavior: defaultBreakpoint.behavior,
+          scaleFactor: defaultBreakpoint.scaleFactor);
+      breakpointSegments.insert(
+          0,
+          _ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              responsiveBreakpointBehavior: breakpointHolder.behavior,
+              responsiveBreakpoint: breakpointHolder));
     }
 
+    // Convert breakpoints into internal breakpoint segments.
     for (int i = 0; i < breakpoints.length; i++) {
       // Convenience variable.
       ResponsiveBreakpoint breakpoint = breakpoints[i];
@@ -458,14 +473,14 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
               responsiveBreakpointBehavior: breakpoint.behavior,
               responsiveBreakpoint: breakpoint);
           // Update holder with active breakpoint
-          responsiveBreakpointHolder = breakpoint;
+          breakpointHolder = breakpoint;
           break;
         case _ResponsiveBreakpointBehavior.TAG:
           breakpointSegmentHolder = _ResponsiveBreakpointSegment(
             breakpoint: breakpoint.breakpoint,
             // Tag inherits behavior from previous breakpoint.
-            responsiveBreakpointBehavior: responsiveBreakpointHolder.behavior,
-            responsiveBreakpoint: breakpoint,
+            responsiveBreakpointBehavior: breakpointHolder.behavior,
+            responsiveBreakpoint: breakpointHolder,
           );
           break;
       }
@@ -685,6 +700,12 @@ class ResponsiveBreakpoint {
         behavior: behavior ?? this.behavior,
         scaleFactor: scaleFactor ?? this.scaleFactor,
       );
+
+  get isResize => behavior == _ResponsiveBreakpointBehavior.RESIZE;
+
+  get isAutoScale => behavior == _ResponsiveBreakpointBehavior.AUTOSCALE;
+
+  get isTag => behavior == _ResponsiveBreakpointBehavior.TAG;
 
   @override
   String toString() =>
