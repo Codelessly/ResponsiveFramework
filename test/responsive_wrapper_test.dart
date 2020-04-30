@@ -36,7 +36,7 @@ void main() {
     });
 
     // Verify empty wrapper does nothing.
-    testWidgets('Empty', (WidgetTester tester) async {
+    testWidgets('Empty Wrapper', (WidgetTester tester) async {
       setScreenSize(tester, Size(450, 1200));
       Key key = UniqueKey();
       Widget widget = MaterialApp(
@@ -75,8 +75,7 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: true),
+            ResponsiveBreakpoint.autoScale(450, name: MOBILE),
           ],
           child: Container(color: Colors.white),
           shrinkWrap: false,
@@ -116,7 +115,8 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pump();
       dynamic state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, defaultName);
+      expect(
+          state.activeBreakpointSegment.responsiveBreakpoint.name, defaultName);
 
       // Single breakpoint.
       List<double> boundaryValues = [
@@ -136,7 +136,7 @@ void main() {
             key: key,
             defaultName: defaultName,
             breakpoints: [
-              ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+              ResponsiveBreakpoint.resize(450),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -145,7 +145,8 @@ void main() {
         await tester.pumpWidget(widget);
         await tester.pump();
         state = tester.state(find.byKey(key));
-        expect(state.activeBreakpoint?.name, expectedValues[i]);
+        expect(state.activeBreakpointSegment.responsiveBreakpoint.name,
+            expectedValues[i]);
       }
 
       // Multiple breakpoints.
@@ -161,11 +162,9 @@ void main() {
             key: key,
             defaultName: defaultName,
             breakpoints: [
-              ResponsiveBreakpoint(
-                  breakpoint: 450, name: MOBILE, autoScale: false),
-              ResponsiveBreakpoint(breakpoint: 500, autoScale: false),
-              ResponsiveBreakpoint(
-                  breakpoint: 600, name: TABLET, autoScale: false),
+              ResponsiveBreakpoint.resize(450, name: MOBILE),
+              ResponsiveBreakpoint.resize(500),
+              ResponsiveBreakpoint.resize(600, name: TABLET),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -174,7 +173,8 @@ void main() {
         await tester.pumpWidget(widget);
         await tester.pump();
         state = tester.state(find.byKey(key));
-        expect(state.activeBreakpoint?.name, expectedValues[i]);
+        expect(state.activeBreakpointSegment.responsiveBreakpoint.name,
+            expectedValues[i]);
       }
     });
 
@@ -279,17 +279,16 @@ void main() {
     test('Parameters', () {
       // Test empty breakpoint.
       ResponsiveBreakpoint responsiveBreakpoint =
-          ResponsiveBreakpoint(breakpoint: null, autoScale: false);
+          ResponsiveBreakpoint.resize(0);
       // Test print empty.
       print(responsiveBreakpoint);
-      expect(responsiveBreakpoint.breakpoint, null);
-      expect(responsiveBreakpoint.autoScale, false);
+      expect(responsiveBreakpoint.breakpoint, 0);
       expect(responsiveBreakpoint.scaleFactor, 1);
       expect(responsiveBreakpoint.name, null);
 
       // Test setting parameters types.
-      responsiveBreakpoint = ResponsiveBreakpoint(
-          breakpoint: 600, name: MOBILE, autoScale: true, scaleFactor: 1.2);
+      responsiveBreakpoint =
+          ResponsiveBreakpoint.autoScale(600, name: MOBILE, scaleFactor: 1.2);
       // Test print parameters.
       print(responsiveBreakpoint);
     });
@@ -303,13 +302,13 @@ void main() {
           key: key,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
+            ResponsiveBreakpoint.resize(600),
+            ResponsiveBreakpoint.resize(450),
+            ResponsiveBreakpoint.resize(450),
+            ResponsiveBreakpoint.resize(450),
+            ResponsiveBreakpoint.resize(450),
+            ResponsiveBreakpoint.resize(450),
+            ResponsiveBreakpoint.resize(450),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -318,13 +317,15 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pump();
       dynamic state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.breakpoint, 450);
+      expect(
+          state.activeBreakpointSegment.responsiveBreakpoint.breakpoint, 450);
 
       resetScreenSize(tester);
       setScreenSize(tester, Size(600, 1200));
       await tester.pump();
       state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.breakpoint, 600);
+      expect(
+          state.activeBreakpointSegment.responsiveBreakpoint.breakpoint, 600);
 
       // Test duplicate named breakpoints.
       resetScreenSize(tester);
@@ -336,20 +337,13 @@ void main() {
           key: key,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(
-                breakpoint: 600, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
+            ResponsiveBreakpoint.resize(600, name: TABLET),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -358,13 +352,13 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pump();
       state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, MOBILE);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.name, MOBILE);
 
       resetScreenSize(tester);
       setScreenSize(tester, Size(600, 1200));
       await tester.pump();
       state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, TABLET);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.name, TABLET);
     });
 
     // Test breakpoint bounds (0, infinity)
@@ -378,9 +372,8 @@ void main() {
           defaultName: defaultName,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 0, name: '0', autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 1073741823, name: 'Infinity', autoScale: false),
+            ResponsiveBreakpoint.resize(0, name: '0'),
+            ResponsiveBreakpoint.resize(1073741823, name: 'Infinity'),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -389,7 +382,7 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pump();
       dynamic state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, '0');
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.name, '0');
       // Negative breakpoints are not allowed.
     });
 
@@ -407,7 +400,7 @@ void main() {
         801,
       ];
       List<dynamic> expectedValues = [
-        null,
+        450,
         450,
         450,
         450,
@@ -427,9 +420,9 @@ void main() {
           home: ResponsiveWrapper(
             key: key,
             breakpoints: [
-              ResponsiveBreakpoint(breakpoint: 450, autoScale: false),
-              ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
-              ResponsiveBreakpoint(breakpoint: 800, autoScale: false),
+              ResponsiveBreakpoint.resize(450),
+              ResponsiveBreakpoint.resize(600),
+              ResponsiveBreakpoint.resize(800),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -438,7 +431,8 @@ void main() {
         await tester.pumpWidget(widget);
         await tester.pump();
         dynamic state = tester.state(find.byKey(key));
-        expect(state.activeBreakpoint?.breakpoint, expectedValues[i]);
+        expect(state.activeBreakpointSegment.responsiveBreakpoint.breakpoint,
+            expectedValues[i]);
       }
     });
 
@@ -476,12 +470,9 @@ void main() {
           home: ResponsiveWrapper(
             key: key,
             breakpoints: [
-              ResponsiveBreakpoint(
-                  breakpoint: 450, name: MOBILE, autoScale: false),
-              ResponsiveBreakpoint(
-                  breakpoint: 600, name: TABLET, autoScale: false),
-              ResponsiveBreakpoint(
-                  breakpoint: 800, name: DESKTOP, autoScale: false),
+              ResponsiveBreakpoint.resize(450, name: MOBILE),
+              ResponsiveBreakpoint.resize(600, name: TABLET),
+              ResponsiveBreakpoint.resize(800, name: DESKTOP),
             ],
             child: Container(),
             shrinkWrap: false,
@@ -490,7 +481,8 @@ void main() {
         await tester.pumpWidget(widget);
         await tester.pump();
         dynamic state = tester.state(find.byKey(key));
-        expect(state.activeBreakpoint?.name, expectedValues[i]);
+        expect(state.activeBreakpointSegment.responsiveBreakpoint.name,
+            expectedValues[i]);
       }
     });
 
@@ -507,12 +499,9 @@ void main() {
           defaultName: defaultName,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 600, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 800, name: DESKTOP, autoScale: false),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(600, name: TABLET),
+            ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -521,7 +510,8 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pump();
       dynamic state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, defaultName);
+      expect(
+          state.activeBreakpointSegment.responsiveBreakpoint.name, defaultName);
       MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
       expect(mediaQuery.data.size, Size(0, 1200));
 
@@ -529,7 +519,7 @@ void main() {
       setScreenSize(tester, Size(450, 0));
       await tester.pump();
       state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.name, MOBILE);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.name, MOBILE);
       mediaQuery = tester.widget(find.byType(MediaQuery).first);
       expect(mediaQuery.data.size, Size(450, 0));
 
@@ -537,7 +527,8 @@ void main() {
       setScreenSize(tester, Size(0, 0));
       await tester.pump();
       state = tester.state(find.byKey(key));
-      expect(state.activeBreakpoint?.breakpoint, null);
+      expect(
+          state.activeBreakpointSegment.responsiveBreakpoint.breakpoint, 450);
       mediaQuery = tester.widget(find.byType(MediaQuery).first);
       expect(mediaQuery.data.size, Size(0, 0));
     });
@@ -556,18 +547,13 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 500, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 550, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 600, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 650, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 700, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 800, name: DESKTOP, autoScale: false),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(500, name: MOBILE),
+            ResponsiveBreakpoint.resize(550),
+            ResponsiveBreakpoint.resize(600, name: TABLET),
+            ResponsiveBreakpoint.resize(650, name: TABLET),
+            ResponsiveBreakpoint.resize(700),
+            ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -613,19 +599,13 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 500, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 550, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 650, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 700, name: DESKTOP, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 800, name: DESKTOP, autoScale: false),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(500, name: TABLET),
+            ResponsiveBreakpoint.resize(550, name: MOBILE),
+            ResponsiveBreakpoint.resize(600),
+            ResponsiveBreakpoint.resize(650, name: TABLET),
+            ResponsiveBreakpoint.resize(700, name: DESKTOP),
+            ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -671,13 +651,10 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: [
-            ResponsiveBreakpoint(
-                breakpoint: 450, name: MOBILE, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 500, name: TABLET, autoScale: false),
-            ResponsiveBreakpoint(
-                breakpoint: 550, name: DESKTOP, autoScale: false),
-            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(500, name: TABLET),
+            ResponsiveBreakpoint.resize(550, name: DESKTOP),
+            ResponsiveBreakpoint.resize(600),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -719,7 +696,7 @@ void main() {
           key: key,
           defaultName: defaultName,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 600, autoScale: false),
+            ResponsiveBreakpoint.resize(600),
           ],
           child: Container(),
           shrinkWrap: false,
@@ -747,7 +724,7 @@ void main() {
           key: key,
           defaultName: defaultName,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 800, autoScale: false),
+            ResponsiveBreakpoint.resize(800),
           ],
           child: Container(),
           shrinkWrap: false,
