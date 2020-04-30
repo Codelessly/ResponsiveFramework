@@ -152,8 +152,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null && windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpointSegment.breakpoint != 0 &&
-          activeBreakpointSegment.breakpoint >= widget.maxWidth &&
+      if (activeBreakpointSegment.breakpoint >= widget.maxWidth &&
           activeBreakpointSegment.isAutoScale) {
         return widget.maxWidth +
             (windowWidth -
@@ -173,8 +172,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpointSegment.breakpoint != 0 &&
-          activeBreakpointSegment.breakpoint > widget.maxWidth &&
+      if (activeBreakpointSegment.breakpoint > widget.maxWidth &&
           activeBreakpointSegment.isAutoScale) {
         // Scale screen height by the amount the width was scaled.
         return windowHeight / (screenWidth / widget.maxWidth);
@@ -200,14 +198,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// [widget.defaultScale] behavior and [widget.minWidth].
   double scaledWidth = 0;
   double getScaledWidth() {
-    // No breakpoint is set. Return default calculated width.
-    if (activeBreakpointSegment.breakpoint == 0) {
-      // If widget should resize, use default screenWidth.
-      if (widget.defaultScale == false)
-        return screenWidth / widget.defaultScaleFactor;
-      // Scale using default minWidth.
-      return widget.minWidth / widget.defaultScaleFactor;
-    }
     // If widget should resize, use screenWidth.
     if (activeBreakpointSegment.isResize)
       return screenWidth /
@@ -220,7 +210,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
     // Return width from breakpoint with scale factor applied.
-    return activeBreakpointSegment.breakpoint /
+    return activeBreakpointSegment.responsiveBreakpoint.breakpoint /
         activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
   }
 
@@ -242,15 +232,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// [widget.minWidth].
   double scaledHeight = 0;
   double getScaledHeight() {
-    if (activeBreakpointSegment.breakpoint == 0) {
-      // If widget should resize, use default screenHeight.
-      if (widget.defaultScale == false)
-        return screenHeight / widget.defaultScaleFactor;
-      // Scale using default minWidth.
-      return screenHeight /
-          (screenWidth / widget.minWidth) /
-          widget.defaultScaleFactor;
-    }
     // If widget should resize, use screenHeight.
     if (activeBreakpointSegment.isResize)
       return screenHeight /
@@ -275,13 +256,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
   }
 
-  double get activeScaleFactor {
-    if (activeBreakpointSegment.breakpoint != 0 &&
-        activeBreakpointSegment.isAutoScale)
-      return activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
-
-    return widget.defaultScaleFactor;
-  }
+  double get activeScaleFactor =>
+      activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
   /// Fullscreen is enabled if maxWidth is not set.
   /// Default fullscreen enabled.
