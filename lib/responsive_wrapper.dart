@@ -152,7 +152,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Get screen width calculation.
   double screenWidth = 0;
   double getScreenWidth() {
+    // Special 0 width condition.
     activeBreakpointSegment = getActiveBreakpointSegment(windowWidth);
+    if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null && windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
@@ -173,6 +175,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Get screen height calculations.
   double screenHeight = 0;
   double getScreenHeight() {
+    // Special 0 height condition.
+    if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
@@ -280,10 +284,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   /// Set [activeBreakpointSegment].
   /// Active breakpoint segment is the first breakpoint segment
-  /// smaller or equal to the [screenWidth].
-  _ResponsiveBreakpointSegment getActiveBreakpointSegment(double screenWidth) {
+  /// smaller or equal to the [windowWidth].
+  _ResponsiveBreakpointSegment getActiveBreakpointSegment(double windowWidth) {
     _ResponsiveBreakpointSegment activeBreakpoint = breakpointSegments.reversed
-        .firstWhere((element) => screenWidth >= element.breakpoint);
+        .firstWhere((element) => windowWidth >= element.breakpoint);
     return activeBreakpoint;
   }
 
