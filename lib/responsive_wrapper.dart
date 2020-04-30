@@ -572,33 +572,54 @@ class InheritedResponsiveWrapper extends InheritedWidget {
       data != oldWidget.data;
 }
 
+enum _ResponsiveBreakpointBehavior {
+  RESIZE,
+  AUTOSCALE,
+  TAG,
+}
+
 @immutable
 class ResponsiveBreakpoint {
   final int breakpoint;
   final String name;
-  final bool autoScale;
+  final _ResponsiveBreakpointBehavior behavior;
   final double scaleFactor;
 
-  const ResponsiveBreakpoint(
+  const ResponsiveBreakpoint._(
       {@required this.breakpoint,
       this.name,
-      this.autoScale,
-      this.scaleFactor = 1})
-      : assert((breakpoint != null) ? breakpoint >= 0 : true,
-            "Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`."),
-        assert((name == null) ? autoScale != null : true,
-            "This breakpoint is useless. Set either the `name` or `autoScale` behavior.");
+      this.behavior,
+      this.scaleFactor = 1});
+
+  const ResponsiveBreakpoint.resize(this.breakpoint,
+      {this.name, this.scaleFactor})
+      : this.behavior = _ResponsiveBreakpointBehavior.RESIZE,
+        assert(breakpoint != null && breakpoint >= 0,
+            'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
+
+  const ResponsiveBreakpoint.autoScale(this.breakpoint,
+      {this.name, this.scaleFactor})
+      : this.behavior = _ResponsiveBreakpointBehavior.AUTOSCALE,
+        assert(breakpoint != null && breakpoint >= 0,
+            'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
+
+  const ResponsiveBreakpoint.tag(this.breakpoint, this.name)
+      : this.behavior = _ResponsiveBreakpointBehavior.TAG,
+        this.scaleFactor = 1,
+        assert(breakpoint != null && breakpoint >= 0,
+            'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.'),
+        assert(name != null, 'Breakpoint tags must be named.');
 
   ResponsiveBreakpoint copyWith({
     int breakpoint,
-    bool autoScale,
-    double scaleFactor,
     String name,
+    _ResponsiveBreakpointBehavior behavior,
+    double scaleFactor,
   }) =>
-      ResponsiveBreakpoint(
+      ResponsiveBreakpoint._(
         breakpoint: breakpoint ?? this.breakpoint,
         name: name ?? this.name,
-        autoScale: autoScale ?? this.autoScale,
+        behavior: behavior ?? this.behavior,
         scaleFactor: scaleFactor ?? this.scaleFactor,
       );
 
@@ -607,11 +628,11 @@ class ResponsiveBreakpoint {
       'ResponsiveBreakpoint(' +
       'breakpoint: ' +
       breakpoint.toString() +
-      ', autoScale: ' +
-      autoScale.toString() +
-      ', scaleFactor: ' +
-      scaleFactor.toString() +
       ', name: ' +
       name.toString() +
+      ', behavior: ' +
+      behavior.toString() +
+      ', scaleFactor: ' +
+      scaleFactor.toString() +
       ')';
 }
