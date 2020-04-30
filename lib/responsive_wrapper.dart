@@ -56,6 +56,7 @@ class ResponsiveWrapper extends StatefulWidget {
   final Widget background;
   final MediaQueryData mediaQueryData;
   final bool shrinkWrap;
+  final bool debugLog;
 
   /// A wrapper widget that makes child widgets responsive.
   const ResponsiveWrapper({
@@ -70,6 +71,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.background,
     this.mediaQueryData,
     this.shrinkWrap = true,
+    this.debugLog = false,
   })  : assert(minWidth != null),
         assert(defaultScale != null),
         assert(defaultScaleFactor != null),
@@ -88,6 +90,7 @@ class ResponsiveWrapper extends StatefulWidget {
     double defaultScaleFactor = 1,
     Widget background,
     MediaQueryData mediaQueryData,
+    bool debugLog = false,
   }) {
     return ResponsiveWrapper(
       child: child,
@@ -100,6 +103,7 @@ class ResponsiveWrapper extends StatefulWidget {
       background: background,
       mediaQueryData: mediaQueryData,
       shrinkWrap: false,
+      debugLog: debugLog,
     );
   }
 
@@ -296,6 +300,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         scaleFactor: widget.defaultScaleFactor);
     breakpointSegments = getBreakpointSegments(breakpoints, defaultBreakpoint);
 
+    // Log breakpoints to console.
+    if (widget.debugLog) printDebugLogBreakpoints(breakpointSegments);
+
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setDimensions();
@@ -462,6 +469,12 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     }
 
     return breakpointSegments;
+  }
+
+  String printDebugLogBreakpoints(
+      List<_ResponsiveBreakpointSegment> breakpointSegments) {
+    print("Breakpoints: $breakpointSegments");
+    return breakpointSegments.toString();
   }
 }
 
@@ -701,4 +714,15 @@ class _ResponsiveBreakpointSegment {
 
   get isTag =>
       responsiveBreakpointBehavior == _ResponsiveBreakpointBehavior.TAG;
+
+  @override
+  String toString() =>
+      'ResponsiveBreakpointSegment(' +
+      'breakpoint: ' +
+      breakpoint.toString() +
+      ', responsiveBreakpointBehavior: ' +
+      responsiveBreakpointBehavior.toString() +
+      ', responsiveBreakpoint: ' +
+      responsiveBreakpoint.toString() +
+      ')';
 }
