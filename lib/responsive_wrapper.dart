@@ -666,7 +666,7 @@ class ResponsiveBreakpoint {
         assert(breakpoint != null && breakpoint >= 0,
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
 
-  const ResponsiveBreakpoint.tag(this.breakpoint, this.name)
+  const ResponsiveBreakpoint.tag(this.breakpoint, {@required this.name})
       : this.behavior = _ResponsiveBreakpointBehavior.TAG,
         this.scaleFactor = 1,
         assert(breakpoint != null && breakpoint >= 0,
