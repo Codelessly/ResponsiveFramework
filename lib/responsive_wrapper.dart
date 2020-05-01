@@ -413,14 +413,27 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Order breakpoints from smallest to largest.
     // Perform ordering operation to allow breakpoints
     // to be accepted in any order.
-    breakpoints.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
+    breakpoints.sort((a, b) {
+      // If breakpoints are equal, return autoScaleDown
+      // breakpoints first.
+      if (a.breakpoint == b.breakpoint && a.isAutoScaleDown) {
+        if (a.isAutoScaleDown) {
+          return -1;
+        }
+
+        return 0;
+      }
+
+      return a.breakpoint.compareTo(b.breakpoint);
+    });
 
     ResponsiveBreakpoint initialBreakpoint =
         breakpoints.firstWhere((element) => !element.isTag, orElse: null);
     ResponsiveBreakpoint breakpointHolder;
     // Construct breakpoint segments for initial and minWidth special cases.
     if (initialBreakpoint == null ||
-        initialBreakpoint.breakpoint > widget.minWidth) {
+        (initialBreakpoint.breakpoint > widget.minWidth &&
+            !initialBreakpoint.isAutoScaleDown)) {
       // Construct two segments. 1. From 0 to the minWidth. 2. From minWidth to the next breakpoint.
       breakpointHolder = ResponsiveBreakpoint._(
           breakpoint: widget.minWidth,
@@ -449,7 +462,11 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       breakpointHolder = ResponsiveBreakpoint._(
           breakpoint: initialBreakpoint.breakpoint,
           name: defaultBreakpoint.name,
-          behavior: defaultBreakpoint.behavior,
+          // Special condition: return autoScale if initial
+          // breakpoint is autoScaleDown.
+          behavior: (initialBreakpoint.isAutoScaleDown)
+              ? _ResponsiveBreakpointBehavior.AUTOSCALE
+              : defaultBreakpoint.behavior,
           scaleFactor: defaultBreakpoint.scaleFactor);
       breakpointSegments.insert(
           0,
@@ -472,6 +489,44 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
               breakpoint: breakpoint.breakpoint,
               responsiveBreakpointBehavior: breakpoint.behavior,
               responsiveBreakpoint: breakpoint);
+          // Update holder with active breakpoint
+          breakpointHolder = breakpoint;
+          break;
+        case _ResponsiveBreakpointBehavior.AUTOSCALEDOWN:
+          if (breakpointHolder.isAutoScaleDown) {
+            breakpointSegmentHolder = _ResponsiveBreakpointSegment(
+                breakpoint: breakpointHolder.breakpoint,
+                responsiveBreakpointBehavior: breakpoint.behavior,
+                responsiveBreakpoint: ResponsiveBreakpoint._(
+                    breakpoint: breakpoint.breakpoint,
+                    name: breakpoint.name,
+                    behavior: _ResponsiveBreakpointBehavior.AUTOSCALE,
+                    scaleFactor: breakpoint.scaleFactor));
+          } else {
+            // Construct midway breakpoint segment.
+            _ResponsiveBreakpointSegment midwayBreakpointSegment =
+                _ResponsiveBreakpointSegment(
+                    breakpoint:
+                        (breakpoint.breakpoint - breakpointHolder.breakpoint) /
+                                2 +
+                            breakpointHolder.breakpoint,
+                    responsiveBreakpointBehavior:
+                        _ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+                    responsiveBreakpoint: ResponsiveBreakpoint._(
+                        breakpoint: breakpoint.breakpoint,
+                        name: breakpointHolder.name,
+                        behavior: _ResponsiveBreakpointBehavior.AUTOSCALE,
+                        scaleFactor: breakpoint.scaleFactor));
+            breakpointSegments.add(midwayBreakpointSegment);
+            breakpointSegmentHolder = _ResponsiveBreakpointSegment(
+                breakpoint: breakpoint.breakpoint,
+                responsiveBreakpointBehavior: breakpoint.behavior,
+                responsiveBreakpoint: ResponsiveBreakpoint._(
+                    breakpoint: breakpoint.breakpoint,
+                    name: breakpoint.name,
+                    behavior: _ResponsiveBreakpointBehavior.AUTOSCALE,
+                    scaleFactor: breakpoint.scaleFactor));
+          }
           // Update holder with active breakpoint
           breakpointHolder = breakpoint;
           break;
@@ -653,6 +708,7 @@ class InheritedResponsiveWrapper extends InheritedWidget {
 enum _ResponsiveBreakpointBehavior {
   RESIZE,
   AUTOSCALE,
+  AUTOSCALEDOWN,
   TAG,
 }
 
@@ -681,6 +737,12 @@ class ResponsiveBreakpoint {
         assert(breakpoint != null && breakpoint >= 0,
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
 
+  const ResponsiveBreakpoint.autoScaleDown(this.breakpoint,
+      {this.name, this.scaleFactor = 1})
+      : this.behavior = _ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+        assert(breakpoint != null && breakpoint >= 0,
+            'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
+
   const ResponsiveBreakpoint.tag(this.breakpoint, {@required this.name})
       : this.behavior = _ResponsiveBreakpointBehavior.TAG,
         this.scaleFactor = 1,
@@ -704,6 +766,9 @@ class ResponsiveBreakpoint {
   get isResize => behavior == _ResponsiveBreakpointBehavior.RESIZE;
 
   get isAutoScale => behavior == _ResponsiveBreakpointBehavior.AUTOSCALE;
+
+  get isAutoScaleDown =>
+      behavior == _ResponsiveBreakpointBehavior.AUTOSCALEDOWN;
 
   get isTag => behavior == _ResponsiveBreakpointBehavior.TAG;
 
@@ -736,6 +801,10 @@ class _ResponsiveBreakpointSegment {
 
   get isAutoScale =>
       responsiveBreakpointBehavior == _ResponsiveBreakpointBehavior.AUTOSCALE;
+
+  get isAutoScaleDown =>
+      responsiveBreakpointBehavior ==
+      _ResponsiveBreakpointBehavior.AUTOSCALEDOWN;
 
   get isTag =>
       responsiveBreakpointBehavior == _ResponsiveBreakpointBehavior.TAG;
