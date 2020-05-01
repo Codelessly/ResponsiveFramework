@@ -159,7 +159,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     if (widget.maxWidth != null && windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
       if (activeBreakpointSegment.breakpoint >= widget.maxWidth &&
-          activeBreakpointSegment.isAutoScale) {
+          activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
         return widget.maxWidth +
             (windowWidth -
                 activeBreakpointSegment.responsiveBreakpoint.breakpoint);
@@ -181,7 +181,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     if (widget.maxWidth != null) if (windowWidth > widget.maxWidth) {
       // Check if there is an active breakpoint with autoScale set to true.
       if (activeBreakpointSegment.breakpoint > widget.maxWidth &&
-          activeBreakpointSegment.isAutoScale) {
+          activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
         // Scale screen height by the amount the width was scaled.
         return windowHeight / (screenWidth / widget.maxWidth);
       }
@@ -207,7 +207,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double scaledWidth = 0;
   double getScaledWidth() {
     // If widget should resize, use screenWidth.
-    if (activeBreakpointSegment.isResize)
+    if (activeBreakpointSegment.responsiveBreakpoint.isResize)
       return screenWidth /
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
@@ -241,7 +241,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double scaledHeight = 0;
   double getScaledHeight() {
     // If widget should resize, use screenHeight.
-    if (activeBreakpointSegment.isResize)
+    if (activeBreakpointSegment.responsiveBreakpoint.isResize)
       return screenHeight /
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
@@ -503,21 +503,57 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
                     behavior: _ResponsiveBreakpointBehavior.AUTOSCALE,
                     scaleFactor: breakpoint.scaleFactor));
           } else {
-            // Construct midway breakpoint segment.
-            _ResponsiveBreakpointSegment midwayBreakpointSegment =
-                _ResponsiveBreakpointSegment(
-                    breakpoint:
-                        (breakpoint.breakpoint - breakpointHolder.breakpoint) /
-                                2 +
-                            breakpointHolder.breakpoint,
-                    responsiveBreakpointBehavior:
-                        _ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
-                    responsiveBreakpoint: ResponsiveBreakpoint._(
-                        breakpoint: breakpoint.breakpoint,
-                        name: breakpointHolder.name,
-                        behavior: _ResponsiveBreakpointBehavior.AUTOSCALE,
-                        scaleFactor: breakpoint.scaleFactor));
-            breakpointSegments.add(midwayBreakpointSegment);
+            // Split AutoScale behavior between autoScale and autoScaleDown.
+            if (breakpointHolder.isAutoScale) {
+              // Construct midway breakpoint segment.
+              _ResponsiveBreakpointSegment midwayBreakpointSegment =
+                  _ResponsiveBreakpointSegment(
+                      breakpoint: (breakpoint.breakpoint -
+                                  breakpointHolder.breakpoint) /
+                              2 +
+                          breakpointHolder.breakpoint,
+                      responsiveBreakpointBehavior:
+                          _ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+                      responsiveBreakpoint: ResponsiveBreakpoint._(
+                          breakpoint: breakpoint.breakpoint,
+                          name: breakpointHolder.name,
+                          behavior: _ResponsiveBreakpointBehavior.AUTOSCALE,
+                          scaleFactor: breakpoint.scaleFactor));
+              breakpointSegments.add(midwayBreakpointSegment);
+            }
+            // AutoScaleDown overrides resize behavior.
+            if (breakpointHolder.isResize) {
+              // Construct override breakpoint segment.
+              int overrideBreakpointIndex = breakpointSegments.lastIndexWhere(
+                  (element) =>
+                      element.breakpoint == breakpointHolder.breakpoint &&
+                      element.isResize);
+              _ResponsiveBreakpointSegment overrideBreakpointSegment =
+                  breakpointSegments[overrideBreakpointIndex];
+              overrideBreakpointSegment = overrideBreakpointSegment.copyWith(
+                  responsiveBreakpoint:
+                      overrideBreakpointSegment.responsiveBreakpoint.copyWith(
+                          breakpoint: breakpoint.breakpoint,
+                          behavior: _ResponsiveBreakpointBehavior.AUTOSCALE));
+              breakpointSegments[overrideBreakpointIndex] =
+                  overrideBreakpointSegment;
+              // Remap all tags with override behavior.
+              breakpointSegments = breakpointSegments.map((element) {
+                if (element.breakpoint >= breakpointHolder.breakpoint &&
+                    element.isTag) {
+                  return element.copyWith(
+                      responsiveBreakpointBehavior:
+                          _ResponsiveBreakpointBehavior.AUTOSCALE,
+                      responsiveBreakpoint: element.responsiveBreakpoint
+                          .copyWith(
+                              breakpoint: breakpoint.breakpoint,
+                              behavior:
+                                  _ResponsiveBreakpointBehavior.AUTOSCALE));
+                }
+                return element;
+              }).toList();
+            }
+            // Construct autoScaleDown breakpoint.
             breakpointSegmentHolder = _ResponsiveBreakpointSegment(
                 breakpoint: breakpoint.breakpoint,
                 responsiveBreakpointBehavior: breakpoint.behavior,
@@ -535,7 +571,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           breakpointSegmentHolder = _ResponsiveBreakpointSegment(
             breakpoint: breakpoint.breakpoint,
             // Tag inherits behavior from previous breakpoint.
-            responsiveBreakpointBehavior: breakpointHolder.behavior,
+            responsiveBreakpointBehavior: breakpoint.behavior,
             responsiveBreakpoint: breakpointHolder,
           );
           break;
@@ -762,6 +798,15 @@ class ResponsiveBreakpoint {
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.'),
         assert(name != null, 'Breakpoint tags must be named.');
 
+  get isResize => behavior == _ResponsiveBreakpointBehavior.RESIZE;
+
+  get isAutoScale => behavior == _ResponsiveBreakpointBehavior.AUTOSCALE;
+
+  get isAutoScaleDown =>
+      behavior == _ResponsiveBreakpointBehavior.AUTOSCALEDOWN;
+
+  get isTag => behavior == _ResponsiveBreakpointBehavior.TAG;
+
   ResponsiveBreakpoint copyWith({
     double breakpoint,
     String name,
@@ -774,15 +819,6 @@ class ResponsiveBreakpoint {
         behavior: behavior ?? this.behavior,
         scaleFactor: scaleFactor ?? this.scaleFactor,
       );
-
-  get isResize => behavior == _ResponsiveBreakpointBehavior.RESIZE;
-
-  get isAutoScale => behavior == _ResponsiveBreakpointBehavior.AUTOSCALE;
-
-  get isAutoScaleDown =>
-      behavior == _ResponsiveBreakpointBehavior.AUTOSCALEDOWN;
-
-  get isTag => behavior == _ResponsiveBreakpointBehavior.TAG;
 
   @override
   String toString() =>
@@ -820,6 +856,18 @@ class _ResponsiveBreakpointSegment {
 
   get isTag =>
       responsiveBreakpointBehavior == _ResponsiveBreakpointBehavior.TAG;
+
+  _ResponsiveBreakpointSegment copyWith({
+    double breakpoint,
+    _ResponsiveBreakpointBehavior responsiveBreakpointBehavior,
+    ResponsiveBreakpoint responsiveBreakpoint,
+  }) =>
+      _ResponsiveBreakpointSegment(
+        breakpoint: breakpoint ?? this.breakpoint,
+        responsiveBreakpointBehavior:
+            responsiveBreakpointBehavior ?? this.responsiveBreakpointBehavior,
+        responsiveBreakpoint: responsiveBreakpoint ?? this.responsiveBreakpoint,
+      );
 
   @override
   String toString() =>
