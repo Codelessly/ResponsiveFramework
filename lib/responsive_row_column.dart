@@ -17,8 +17,10 @@ class ResponsiveRowColumn extends StatelessWidget {
   final TextDirection columnTextDirection;
   final VerticalDirection columnVerticalDirection;
   final TextBaseline columnTextBaseline;
-  final EdgeInsets rowSpacing;
-  final EdgeInsets columnSpacing;
+  final double rowSpacing;
+  final double columnSpacing;
+  final EdgeInsets rowPadding;
+  final EdgeInsets columnPadding;
   final bool fillRow;
 
   const ResponsiveRowColumn(
@@ -40,47 +42,52 @@ class ResponsiveRowColumn extends StatelessWidget {
       this.columnTextBaseline,
       this.rowSpacing,
       this.columnSpacing,
-      this.fillRow = false})
+      this.fillRow = false,
+      this.rowPadding = EdgeInsets.zero,
+      this.columnPadding = EdgeInsets.zero})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     assert(isRow != null || isColumn != null);
-    assert(!(isRow == true && isColumn == true));
-    bool rowColumn = false;
-    if (isRow == null) {
-      rowColumn = false;
-    } else {
+    assert(!(isRow != null && isColumn != null),
+        "isRow and isColumn are mutually exclusive and cannot be used simultaneously.");
+    bool rowColumn;
+    if (isRow != null) {
       rowColumn = isRow;
     }
-    if (isColumn == null) {
-      rowColumn = true;
-    } else {
+    if (isColumn != null) {
       rowColumn = !isColumn;
     }
     print('Row Column: $rowColumn');
     return rowColumn
-        ? Row(
-            mainAxisAlignment: rowMainAxisAlignment,
-            mainAxisSize: rowMainAxisSize,
-            crossAxisAlignment: rowCrossAxisAlignment,
-            textDirection: rowTextDirection,
-            verticalDirection: rowVerticalDirection,
-            textBaseline: rowTextBaseline,
-            children: [
-              ...buildRowChildren(children),
-            ],
+        ? Padding(
+            padding: rowPadding,
+            child: Row(
+              mainAxisAlignment: rowMainAxisAlignment,
+              mainAxisSize: rowMainAxisSize,
+              crossAxisAlignment: rowCrossAxisAlignment,
+              textDirection: rowTextDirection,
+              verticalDirection: rowVerticalDirection,
+              textBaseline: rowTextBaseline,
+              children: [
+                ...buildRowChildren(children),
+              ],
+            ),
           )
-        : Column(
-            mainAxisAlignment: columnMainAxisAlignment,
-            mainAxisSize: columnMainAxisSize,
-            crossAxisAlignment: columnCrossAxisAlignment,
-            textDirection: columnTextDirection,
-            verticalDirection: columnVerticalDirection,
-            textBaseline: columnTextBaseline,
-            children: [
-              ...buildColumnChildren(children),
-            ],
+        : Padding(
+            padding: columnPadding,
+            child: Column(
+              mainAxisAlignment: columnMainAxisAlignment,
+              mainAxisSize: columnMainAxisSize,
+              crossAxisAlignment: columnCrossAxisAlignment,
+              textDirection: columnTextDirection,
+              verticalDirection: columnVerticalDirection,
+              textBaseline: columnTextBaseline,
+              children: [
+                ...buildColumnChildren(children),
+              ],
+            ),
           );
   }
 
@@ -94,7 +101,7 @@ class ResponsiveRowColumn extends StatelessWidget {
             child: children[i]),
       );
       if (rowSpacing != null && i != children.length - 1)
-        childrenList.add(Padding(padding: rowSpacing));
+        childrenList.add(Padding(padding: EdgeInsets.only(right: rowSpacing)));
     }
     return childrenList;
   }
@@ -104,7 +111,8 @@ class ResponsiveRowColumn extends StatelessWidget {
     for (int i = 0; i < children.length; i++) {
       childrenList.add(children[i]);
       if (columnSpacing != null && i != children.length - 1)
-        childrenList.add(Padding(padding: columnSpacing));
+        childrenList
+            .add(Padding(padding: EdgeInsets.only(bottom: columnSpacing)));
     }
     return childrenList;
   }
