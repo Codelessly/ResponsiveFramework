@@ -71,7 +71,7 @@ class ResponsiveRowColumn extends StatelessWidget {
               verticalDirection: rowVerticalDirection,
               textBaseline: rowTextBaseline,
               children: [
-                ...buildRowChildren(children),
+                ...buildChildren(children, rowSpacing),
               ],
             ),
           )
@@ -85,35 +85,37 @@ class ResponsiveRowColumn extends StatelessWidget {
               verticalDirection: columnVerticalDirection,
               textBaseline: columnTextBaseline,
               children: [
-                ...buildColumnChildren(children),
+                ...buildChildren(children, columnSpacing),
               ],
             ),
           );
   }
 
-  List<Widget> buildRowChildren(List<Widget> children) {
-    List<Widget> childrenList = [];
-    for (int i = 0; i < children.length; i++) {
-      childrenList.add(
-        Flexible(
-            flex: 1,
-            fit: fillRow ? FlexFit.tight : FlexFit.loose,
-            child: children[i]),
-      );
-      if (rowSpacing != null && i != children.length - 1)
-        childrenList.add(Padding(padding: EdgeInsets.only(right: rowSpacing)));
-    }
-    return childrenList;
-  }
-
-  List<Widget> buildColumnChildren(List<Widget> children) {
+  List<Widget> buildChildren(List<Widget> children, double spacing) {
     List<Widget> childrenList = [];
     for (int i = 0; i < children.length; i++) {
       childrenList.add(children[i]);
-      if (columnSpacing != null && i != children.length - 1)
-        childrenList
-            .add(Padding(padding: EdgeInsets.only(bottom: columnSpacing)));
+      if (spacing != null && i != children.length - 1)
+        childrenList.add(Padding(padding: EdgeInsets.only(bottom: spacing)));
     }
     return childrenList;
+  }
+}
+
+class ResponsiveFlexible extends StatelessWidget {
+  final bool isFlexible;
+  final int flex;
+  final FlexFit flexFit;
+  final Widget child;
+
+  const ResponsiveFlexible(
+      {Key key, this.isFlexible = false, this.flex, this.flexFit, this.child})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return isFlexible
+        ? Flexible(flex: flex, fit: flexFit, child: child)
+        : child;
   }
 }
