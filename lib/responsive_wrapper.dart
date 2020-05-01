@@ -286,10 +286,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Active breakpoint segment is the first breakpoint segment
   /// smaller or equal to the [windowWidth].
   _ResponsiveBreakpointSegment getActiveBreakpointSegment(double windowWidth) {
-    _ResponsiveBreakpointSegment activeBreakpoint = breakpointSegments.reversed
-        .firstWhere(
+    _ResponsiveBreakpointSegment activeBreakpointSegment =
+        breakpointSegments.reversed.firstWhere(
             (element) => windowWidth >= element.breakpoint && !element.isTag);
-    return activeBreakpoint;
+    return activeBreakpointSegment;
   }
 
   @override
@@ -531,6 +531,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           breakpointHolder = breakpoint;
           break;
         case _ResponsiveBreakpointBehavior.TAG:
+          breakpointHolder = breakpointHolder.copyWith(name: breakpoint.name);
           breakpointSegmentHolder = _ResponsiveBreakpointSegment(
             breakpoint: breakpoint.breakpoint,
             // Tag inherits behavior from previous breakpoint.
@@ -569,6 +570,7 @@ class ResponsiveWrapperData {
   final double scaledWidth;
   final double scaledHeight;
   final List<ResponsiveBreakpoint> breakpoints;
+  final List<_ResponsiveBreakpointSegment> breakpointSegments;
   final ResponsiveBreakpoint activeBreakpoint;
   final bool isMobile;
   final bool isPhone;
@@ -585,6 +587,7 @@ class ResponsiveWrapperData {
     this.scaledWidth,
     this.scaledHeight,
     this.breakpoints,
+    this.breakpointSegments,
     this.activeBreakpoint,
     this.isMobile,
     this.isPhone,
@@ -601,6 +604,7 @@ class ResponsiveWrapperData {
       scaledWidth: state.scaledWidth,
       scaledHeight: state.scaledHeight,
       breakpoints: state.breakpoints,
+      breakpointSegments: state.breakpointSegments,
       activeBreakpoint: state.activeBreakpointSegment.responsiveBreakpoint,
       isMobile:
           state.activeBreakpointSegment.responsiveBreakpoint.name == MOBILE,
@@ -625,6 +629,8 @@ class ResponsiveWrapperData {
       scaledHeight?.toString() +
       ', breakpoints: ' +
       breakpoints?.asMap().toString() +
+      ', breakpointSegments: ' +
+      breakpointSegments.toString() +
       ', activeBreakpoint: ' +
       activeBreakpoint.toString() +
       ', isMobile: ' +
@@ -637,16 +643,16 @@ class ResponsiveWrapperData {
       isDesktop?.toString() +
       ')';
 
-  bool equals(String breakpointName) => activeBreakpoint.name == breakpointName;
+  bool equals(String name) => activeBreakpoint.name == name;
 
-  /// Is the [scaledWidth] larger than or equal to [breakpointName]?
-  /// Defaults to false if the [breakpointName] cannot be found.
-  bool isLargerThan(String breakpointName) {
+  /// Is the [scaledWidth] larger than or equal to [name]?
+  /// Defaults to false if the [name] cannot be found.
+  bool isLargerThan(String name) {
     // No breakpoints to match.
     if (breakpoints.length == 0) return false;
 
     // Breakpoint is active breakpoint.
-    if (activeBreakpoint.name == breakpointName) return false;
+    if (activeBreakpoint.name == name) return false;
 
     // Single breakpoint is active and screen width
     // is larger than default breakpoint.
@@ -657,18 +663,24 @@ class ResponsiveWrapperData {
     // than screen width. Breakpoint names could be
     // chained so perform a full search from largest to smallest.
     for (var i = breakpoints.length - 2; i >= 0; i--) {
-      if (breakpoints[i].name == breakpointName &&
-          breakpoints[i + 1].name != breakpointName &&
+      if (breakpoints[i].name == name &&
+          breakpoints[i + 1].name != name &&
           screenWidth >= breakpoints[i + 1].breakpoint) return true;
     }
 
     return false;
   }
 
-  /// Is the [scaledWidth] smaller than the [breakpointName]?
-  /// Defaults to false if the [breakpointName] cannot be found.
-  bool isSmallerThan(String breakpointName) => breakpoints.any((element) =>
-      element.name == breakpointName && scaledWidth < element.breakpoint);
+  /// Is the [screenWidth] smaller than the [name]?
+  /// Defaults to false if the [name] cannot be found.
+  bool isSmallerThan(String name) =>
+      screenWidth <
+          breakpointSegments
+              .firstWhere(
+                  (element) => element.responsiveBreakpoint.name == name,
+                  orElse: null)
+              ?.breakpoint ??
+      0;
 }
 
 /// Creates an immutable widget that exposes [ResponsiveWrapperData]

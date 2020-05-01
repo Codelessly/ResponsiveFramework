@@ -534,9 +534,7 @@ void main() {
     });
 
     // Test infinite screen width and height.
-    testWidgets('Screen Size Infinite', (WidgetTester tester) async {
-      // Infinite screen width or height is not allowed.
-    }, skip: true);
+    // Infinite screen width or height is not allowed.
 
     // Test convenience comparators.
     testWidgets('Breakpoint Comparators', (WidgetTester tester) async {
@@ -587,7 +585,7 @@ void main() {
       expect(
           ResponsiveWrapperData.fromResponsiveWrapper(state)
               .isSmallerThan(TABLET),
-          true);
+          false);
       expect(
           ResponsiveWrapperData.fromResponsiveWrapper(state)
               .isSmallerThan(DESKTOP),
@@ -600,7 +598,7 @@ void main() {
           key: key,
           breakpoints: [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
-            ResponsiveBreakpoint.resize(500, name: TABLET),
+            ResponsiveBreakpoint.resize(500, name: MOBILE),
             ResponsiveBreakpoint.resize(550, name: MOBILE),
             ResponsiveBreakpoint.resize(600),
             ResponsiveBreakpoint.resize(650, name: TABLET),
@@ -627,7 +625,7 @@ void main() {
       expect(
           ResponsiveWrapperData.fromResponsiveWrapper(state)
               .isLargerThan(TABLET),
-          true);
+          false);
       expect(
           ResponsiveWrapperData.fromResponsiveWrapper(state)
               .isLargerThan(DESKTOP),

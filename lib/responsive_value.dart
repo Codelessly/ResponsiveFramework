@@ -11,7 +11,7 @@ class ResponsiveValue<T> {
   String smallerThan = '<';
 }
 
-class ResponsiveVisibility extends StatefulWidget {
+class ResponsiveVisibility extends StatelessWidget {
   final Widget child;
   final bool visible;
   final List<Condition> visibleWhen;
@@ -27,8 +27,8 @@ class ResponsiveVisibility extends StatefulWidget {
     Key key,
     @required this.child,
     this.visible = true,
-    this.visibleWhen,
-    this.hiddenWhen,
+    this.visibleWhen = const [],
+    this.hiddenWhen = const [],
     this.replacement = const SizedBox.shrink(),
     this.maintainState = false,
     this.maintainAnimation = false,
@@ -36,41 +36,6 @@ class ResponsiveVisibility extends StatefulWidget {
     this.maintainSemantics = false,
     this.maintainInteractivity = false,
   }) : super(key: key);
-
-  @override
-  _ResponsiveVisibilityState createState() => _ResponsiveVisibilityState();
-}
-
-class _ResponsiveVisibilityState extends State<ResponsiveVisibility>
-    with WidgetsBindingObserver {
-  List<Condition> conditions = [];
-  Condition activeCondition;
-  bool visibleValue;
-
-  void setDimensions() {
-    // Breakpoint reference check. Verify a parent
-    // [ResponsiveWrapper] exists if a reference is found.
-    if (conditions.firstWhere((element) => element.name != null,
-            orElse: () => null) !=
-        null) {
-      try {
-        ResponsiveWrapper.of(context);
-      } catch (e) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary(
-              'A ResponsiveCondition was caught referencing a nonexistant breakpoint.'),
-          ErrorDescription(
-              'A ResponsiveCondition requires a parent ResponsiveWrapper '
-              'to reference breakpoints. Add a ResponsiveWrapper or remove breakpoint references.')
-        ]);
-      }
-    }
-
-    // Find the active condition.
-    activeCondition = getActiveCondition();
-    // Set value to active condition value or default value if null.
-    visibleValue = activeCondition?.value ?? widget.visible;
-  }
 
   /// Set [activeCondition].
   /// The active condition is found by matching the
@@ -84,7 +49,8 @@ class _ResponsiveVisibilityState extends State<ResponsiveVisibility>
   ///   a. Named breakpoints.
   ///   b. Unnamed breakpoints.
   /// Returns null if no Active Condition is found.
-  Condition getActiveCondition() {
+  Condition getActiveCondition(
+      BuildContext context, List<Condition> conditions) {
     Condition equalsCondition = conditions.firstWhere((element) {
       if (element.condition == Conditional.EQUALS) {
         return ResponsiveWrapper.of(context).activeBreakpoint?.name ==
@@ -128,59 +94,55 @@ class _ResponsiveVisibilityState extends State<ResponsiveVisibility>
     return null;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // Initialize value.
-    visibleValue = widget.visible;
-    // Combine [ResponsiveCondition]s.
-    conditions
-        .addAll(widget.visibleWhen?.map((e) => e.copyWith(value: true)) ?? []);
-    conditions
-        .addAll(widget.hiddenWhen?.map((e) => e.copyWith(value: false)) ?? []);
-    // Sort by breakpoint value.
-    conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
+  bool getVisibleValue(BuildContext context, List<Condition> conditions) {
+    // Breakpoint reference check. Verify a parent
+    // [ResponsiveWrapper] exists if a reference is found.
+    if (conditions.firstWhere((element) => element.name != null,
+            orElse: () => null) !=
+        null) {
+      try {
+        ResponsiveWrapper.of(context);
+      } catch (e) {
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary(
+              'A ResponsiveCondition was caught referencing a nonexistant breakpoint.'),
+          ErrorDescription(
+              'A ResponsiveCondition requires a parent ResponsiveWrapper '
+              'to reference breakpoints. Add a ResponsiveWrapper or remove breakpoint references.')
+        ]);
+      }
+    }
 
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setDimensions();
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setDimensions();
-      setState(() {});
-    });
-  }
-
-  @override
-  void didUpdateWidget(ResponsiveVisibility oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    setDimensions();
-    setState(() {});
+    // Find the active condition.
+    Condition activeCondition = getActiveCondition(context, conditions);
+    // Return active condition value or default value if null.
+    return activeCondition?.value ?? visible;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Initialize mutable value holders.
+    List<Condition> conditions = [];
+    Condition activeCondition;
+    bool visibleValue = visible;
+
+    // Combine Conditions.
+    conditions.addAll(visibleWhen?.map((e) => e.copyWith(value: true)) ?? []);
+    conditions.addAll(hiddenWhen?.map((e) => e.copyWith(value: false)) ?? []);
+    // Sort by breakpoint value.
+    conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
+    // Get visible value from active condition.
+    visibleValue = getVisibleValue(context, conditions);
+
     return Visibility(
-      child: widget.child,
-      replacement: widget.replacement,
+      child: child,
+      replacement: replacement,
       visible: visibleValue,
-      maintainState: widget.maintainState,
-      maintainAnimation: widget.maintainAnimation,
-      maintainSize: widget.maintainSize,
-      maintainSemantics: widget.maintainSemantics,
-      maintainInteractivity: widget.maintainInteractivity,
+      maintainState: maintainState,
+      maintainAnimation: maintainAnimation,
+      maintainSize: maintainSize,
+      maintainSemantics: maintainSemantics,
+      maintainInteractivity: maintainInteractivity,
     );
   }
 }
@@ -209,13 +171,13 @@ class Condition {
         this.value = value;
 
   Condition.largerThan({int breakpoint, String name, bool value})
-      : this.breakpoint = breakpoint ?? double.infinity,
+      : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.LARGER_THAN,
         this.value = value;
 
   Condition.smallerThan({int breakpoint, String name, bool value})
-      : this.breakpoint = breakpoint ?? double.negativeInfinity,
+      : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.SMALLER_THAN,
         this.value = value;
