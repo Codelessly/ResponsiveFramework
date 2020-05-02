@@ -3,8 +3,7 @@ import 'package:flutter/widgets.dart';
 
 class ResponsiveRowColumn extends StatelessWidget {
   final List<ResponsiveRowColumnItem> children;
-  final bool isRow;
-  final bool isColumn;
+  final bool rowColumn;
   final MainAxisAlignment rowMainAxisAlignment;
   final MainAxisSize rowMainAxisSize;
   final CrossAxisAlignment rowCrossAxisAlignment;
@@ -22,12 +21,13 @@ class ResponsiveRowColumn extends StatelessWidget {
   final EdgeInsets rowPadding;
   final EdgeInsets columnPadding;
   final bool fillRow;
+  get isRow => rowColumn;
+  get isColumn => !rowColumn;
 
   const ResponsiveRowColumn(
       {Key key,
       this.children = const [],
-      this.isRow,
-      this.isColumn,
+      @required this.rowColumn,
       this.rowMainAxisAlignment = MainAxisAlignment.start,
       this.rowMainAxisSize = MainAxisSize.max,
       this.rowCrossAxisAlignment = CrossAxisAlignment.center,
@@ -49,17 +49,6 @@ class ResponsiveRowColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(isRow != null || isColumn != null,
-        "Missing default isRow or isColumn value.");
-    assert(!(isRow != null && isColumn != null),
-        "isRow and isColumn are mutually exclusive and cannot be used simultaneously.");
-    bool rowColumn;
-    if (isRow != null) {
-      rowColumn = isRow;
-    }
-    if (isColumn != null) {
-      rowColumn = !isColumn;
-    }
     return rowColumn
         ? Padding(
             padding: rowPadding,
