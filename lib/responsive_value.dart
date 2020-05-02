@@ -142,8 +142,8 @@ class ResponsiveVisibility extends StatelessWidget {
     conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
     // Get visible value from active condition.
     visibleValue = ResponsiveValue(context,
-        defaultValue: visibleValue,
-        valueWhen: [Condition.smallerThan(name: DESKTOP, value: false)]).value;
+            defaultValue: visibleValue, valueWhen: conditions)
+        .value;
 
     return Visibility(
       child: child,
@@ -175,19 +175,19 @@ class Condition<T> {
         assert(breakpoint == null || name == null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  Condition.equals({@required String name, @required T value})
+  Condition.equals({@required String name, T value})
       : this.breakpoint = null,
         this.name = name,
         this.condition = Conditional.EQUALS,
         this.value = value;
 
-  Condition.largerThan({int breakpoint, String name, @required T value})
+  Condition.largerThan({int breakpoint, String name, T value})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.LARGER_THAN,
         this.value = value;
 
-  Condition.smallerThan({int breakpoint, String name, @required T value})
+  Condition.smallerThan({int breakpoint, String name, T value})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.SMALLER_THAN,

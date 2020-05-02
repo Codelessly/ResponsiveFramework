@@ -91,8 +91,9 @@ class ResponsiveRowColumn extends StatelessWidget {
           );
   }
 
-  List<ResponsiveRowColumnItem> buildChildren(
+  List<Widget> buildChildren(
       List<ResponsiveRowColumnItem> children, bool rowColumn, double spacing) {
+    // Sort ResponsiveRowColumnItems by their order.
     List<ResponsiveRowColumnItem> childrenHolder = children;
     childrenHolder.sort((a, b) {
       if (rowColumn) {
@@ -101,10 +102,11 @@ class ResponsiveRowColumn extends StatelessWidget {
         return a.columnOrder.compareTo(b.columnOrder);
       }
     });
-    List<Widget> widgetList = childrenHolder;
-    for (int i = 0; i < children.length; i++) {
-      widgetList.add(children[i]);
-      if (spacing != null && i != children.length - 1)
+    // Add padding between items.
+    List<Widget> widgetList = [];
+    for (int i = 0; i < childrenHolder.length; i++) {
+      widgetList.add(childrenHolder[i]);
+      if (spacing != null && i != childrenHolder.length - 1)
         widgetList.add(Padding(padding: EdgeInsets.only(bottom: spacing)));
     }
     return widgetList;
@@ -122,8 +124,8 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   const ResponsiveRowColumnItem(
       {Key key,
       @required this.child,
-      this.rowOrder,
-      this.columnOrder,
+      this.rowOrder = 1073741823,
+      this.columnOrder = 1073741823,
       this.isFlexible = false,
       this.flex,
       this.flexFit})
