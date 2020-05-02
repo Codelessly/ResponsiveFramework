@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
 class ResponsiveRowColumn extends StatelessWidget {
-  final List<Widget> children;
+  final List<ResponsiveRowColumnItem> children;
   final isRow;
   final isColumn;
   final MainAxisAlignment rowMainAxisAlignment;
@@ -71,7 +71,7 @@ class ResponsiveRowColumn extends StatelessWidget {
               verticalDirection: rowVerticalDirection,
               textBaseline: rowTextBaseline,
               children: [
-                ...buildChildren(children, rowSpacing),
+                ...buildChildren(children, rowColumn, rowSpacing),
               ],
             ),
           )
@@ -85,31 +85,48 @@ class ResponsiveRowColumn extends StatelessWidget {
               verticalDirection: columnVerticalDirection,
               textBaseline: columnTextBaseline,
               children: [
-                ...buildChildren(children, columnSpacing),
+                ...buildChildren(children, rowColumn, columnSpacing),
               ],
             ),
           );
   }
 
-  List<Widget> buildChildren(List<Widget> children, double spacing) {
-    List<Widget> childrenList = [];
+  List<ResponsiveRowColumnItem> buildChildren(
+      List<ResponsiveRowColumnItem> children, bool rowColumn, double spacing) {
+    List<ResponsiveRowColumnItem> childrenHolder = children;
+    childrenHolder.sort((a, b) {
+      if (rowColumn) {
+        return a.rowOrder.compareTo(b.rowOrder);
+      } else {
+        return a.columnOrder.compareTo(b.columnOrder);
+      }
+    });
+    List<Widget> widgetList = childrenHolder;
     for (int i = 0; i < children.length; i++) {
-      childrenList.add(children[i]);
+      widgetList.add(children[i]);
       if (spacing != null && i != children.length - 1)
-        childrenList.add(Padding(padding: EdgeInsets.only(bottom: spacing)));
+        widgetList.add(Padding(padding: EdgeInsets.only(bottom: spacing)));
     }
-    return childrenList;
+    return widgetList;
   }
 }
 
-class ResponsiveFlexible extends StatelessWidget {
+class ResponsiveRowColumnItem extends StatelessWidget {
+  final Widget child;
+  final int rowOrder;
+  final int columnOrder;
   final bool isFlexible;
   final int flex;
   final FlexFit flexFit;
-  final Widget child;
 
-  const ResponsiveFlexible(
-      {Key key, this.isFlexible = false, this.flex, this.flexFit, this.child})
+  const ResponsiveRowColumnItem(
+      {Key key,
+      @required this.child,
+      this.rowOrder,
+      this.columnOrder,
+      this.isFlexible = false,
+      this.flex,
+      this.flexFit})
       : super(key: key);
 
   @override
