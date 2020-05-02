@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 class ResponsiveRowColumn extends StatelessWidget {
   final List<ResponsiveRowColumnItem> children;
-  final isRow;
-  final isColumn;
+  final bool isRow;
+  final bool isColumn;
   final MainAxisAlignment rowMainAxisAlignment;
   final MainAxisSize rowMainAxisSize;
   final CrossAxisAlignment rowCrossAxisAlignment;
@@ -49,7 +49,8 @@ class ResponsiveRowColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(isRow != null || isColumn != null);
+    assert(isRow != null || isColumn != null,
+        "Missing default isRow or isColumn value.");
     assert(!(isRow != null && isColumn != null),
         "isRow and isColumn are mutually exclusive and cannot be used simultaneously.");
     bool rowColumn;
@@ -105,7 +106,7 @@ class ResponsiveRowColumn extends StatelessWidget {
     // Add padding between items.
     List<Widget> widgetList = [];
     for (int i = 0; i < childrenHolder.length; i++) {
-      widgetList.add(childrenHolder[i]);
+      widgetList.add(childrenHolder[i].copyWith(rowColumn: rowColumn));
       if (spacing != null && i != childrenHolder.length - 1)
         widgetList.add(Padding(padding: EdgeInsets.only(bottom: spacing)));
     }
@@ -117,24 +118,53 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   final Widget child;
   final int rowOrder;
   final int columnOrder;
-  final bool isFlexible;
-  final int flex;
-  final FlexFit flexFit;
+  final bool rowColumn;
+  final int rowFlex;
+  final int columnFlex;
+  final FlexFit rowFlexFit;
+  final FlexFit columnFlexFit;
 
   const ResponsiveRowColumnItem(
       {Key key,
       @required this.child,
       this.rowOrder = 1073741823,
       this.columnOrder = 1073741823,
-      this.isFlexible = false,
-      this.flex,
-      this.flexFit})
+      this.rowColumn = true,
+      this.rowFlex,
+      this.columnFlex,
+      this.rowFlexFit,
+      this.columnFlexFit})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return isFlexible
-        ? Flexible(flex: flex, fit: flexFit, child: child)
-        : child;
+    if (rowColumn && rowFlex != null) {
+      return Flexible(flex: rowFlex, fit: rowFlexFit, child: child);
+    } else if (!rowColumn && columnFlex != null) {
+      return Flexible(flex: columnFlex, fit: columnFlexFit, child: child);
+    }
+
+    return child;
   }
+
+  ResponsiveRowColumnItem copyWith({
+    Widget child,
+    int rowOrder,
+    int columnOrder,
+    bool rowColumn,
+    int rowFlex,
+    int columnFlex,
+    FlexFit rowFlexFit,
+    FlexFit columnFlexFit,
+  }) =>
+      ResponsiveRowColumnItem(
+        child: child ?? this.child,
+        rowOrder: rowOrder ?? this.rowOrder,
+        columnOrder: columnOrder ?? this.columnOrder,
+        rowColumn: rowColumn ?? this.rowColumn,
+        rowFlex: rowFlex ?? this.rowFlex,
+        columnFlex: columnFlex ?? this.columnFlex,
+        rowFlexFit: rowFlexFit ?? this.rowFlexFit,
+        columnFlexFit: columnFlexFit ?? this.columnFlexFit,
+      );
 }
