@@ -60,7 +60,6 @@ class ResponsiveRowColumn extends StatelessWidget {
     if (isColumn != null) {
       rowColumn = !isColumn;
     }
-    print('Row Column: $rowColumn');
     return rowColumn
         ? Padding(
             padding: rowPadding,
@@ -108,7 +107,10 @@ class ResponsiveRowColumn extends StatelessWidget {
     for (int i = 0; i < childrenHolder.length; i++) {
       widgetList.add(childrenHolder[i].copyWith(rowColumn: rowColumn));
       if (spacing != null && i != childrenHolder.length - 1)
-        widgetList.add(Padding(padding: EdgeInsets.only(bottom: spacing)));
+        widgetList.add(Padding(
+            padding: rowColumn
+                ? EdgeInsets.only(right: spacing)
+                : EdgeInsets.only(bottom: spacing)));
     }
     return widgetList;
   }
@@ -121,8 +123,8 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   final bool rowColumn;
   final int rowFlex;
   final int columnFlex;
-  final FlexFit rowFlexFit;
-  final FlexFit columnFlexFit;
+  final FlexFit rowFit;
+  final FlexFit columnFit;
 
   const ResponsiveRowColumnItem(
       {Key key,
@@ -132,16 +134,16 @@ class ResponsiveRowColumnItem extends StatelessWidget {
       this.rowColumn = true,
       this.rowFlex,
       this.columnFlex,
-      this.rowFlexFit,
-      this.columnFlexFit})
+      this.rowFit,
+      this.columnFit})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (rowColumn && rowFlex != null) {
-      return Flexible(flex: rowFlex, fit: rowFlexFit, child: child);
+      return Flexible(flex: rowFlex, fit: rowFit, child: child);
     } else if (!rowColumn && columnFlex != null) {
-      return Flexible(flex: columnFlex, fit: columnFlexFit, child: child);
+      return Flexible(flex: columnFlex, fit: columnFit, child: child);
     }
 
     return child;
@@ -164,7 +166,7 @@ class ResponsiveRowColumnItem extends StatelessWidget {
         rowColumn: rowColumn ?? this.rowColumn,
         rowFlex: rowFlex ?? this.rowFlex,
         columnFlex: columnFlex ?? this.columnFlex,
-        rowFlexFit: rowFlexFit ?? this.rowFlexFit,
-        columnFlexFit: columnFlexFit ?? this.columnFlexFit,
+        rowFit: rowFlexFit ?? this.rowFit,
+        columnFit: columnFlexFit ?? this.columnFit,
       );
 }
