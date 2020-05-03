@@ -14,16 +14,9 @@ class ResponsiveValue<T> {
 
   ResponsiveValue(this.context,
       {@required this.defaultValue, @required this.valueWhen}) {
-    List<Condition> conditions = valueWhen;
-    conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
-    // Get visible value from active condition.
-    value = getValue(context, conditions) ?? defaultValue;
-  }
-
-  T getValue(BuildContext context, List<Condition> conditions) {
     // Breakpoint reference check. Verify a parent
     // [ResponsiveWrapper] exists if a reference is found.
-    if (conditions.firstWhere((element) => element.name != null,
+    if (valueWhen.firstWhere((element) => element.name != null,
             orElse: () => null) !=
         null) {
       try {
@@ -39,6 +32,29 @@ class ResponsiveValue<T> {
       }
     }
 
+    List<Condition> conditions = valueWhen;
+    List<ResponsiveBreakpointSegment> segments =
+        ResponsiveWrapper.of(context).breakpointSegments;
+    conditions = conditions.map((e) {
+      if (e.breakpoint == null) {
+        return e.copyWith(
+            breakpoint: segments
+                .firstWhere(
+                    (element) => element.responsiveBreakpoint.name == e.name,
+                    orElse: () =>
+                        throw ('No breakpoint named `${e.name}` found.'))
+                .responsiveBreakpoint
+                .breakpoint
+                .toInt());
+      }
+      return e;
+    }).toList();
+    conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
+    // Get visible value from active condition.
+    value = getValue(context, conditions) ?? defaultValue;
+  }
+
+  T getValue(BuildContext context, List<Condition> conditions) {
     // Find the active condition.
     Condition activeCondition = getActiveCondition(context, conditions);
     // Return active condition value or default value if null.
@@ -103,61 +119,6 @@ class ResponsiveValue<T> {
   }
 }
 
-class ResponsiveVisibility extends StatelessWidget {
-  final Widget child;
-  final bool visible;
-  final List<Condition> visibleWhen;
-  final List<Condition> hiddenWhen;
-  final Widget replacement;
-  final bool maintainState;
-  final bool maintainAnimation;
-  final bool maintainSize;
-  final bool maintainSemantics;
-  final bool maintainInteractivity;
-
-  const ResponsiveVisibility({
-    Key key,
-    @required this.child,
-    this.visible = true,
-    this.visibleWhen = const [],
-    this.hiddenWhen = const [],
-    this.replacement = const SizedBox.shrink(),
-    this.maintainState = false,
-    this.maintainAnimation = false,
-    this.maintainSize = false,
-    this.maintainSemantics = false,
-    this.maintainInteractivity = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Initialize mutable value holders.
-    List<Condition> conditions = [];
-    bool visibleValue = visible;
-
-    // Combine Conditions.
-    conditions.addAll(visibleWhen?.map((e) => e.copyWith(value: true)) ?? []);
-    conditions.addAll(hiddenWhen?.map((e) => e.copyWith(value: false)) ?? []);
-    // Sort by breakpoint value.
-    conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
-    // Get visible value from active condition.
-    visibleValue = ResponsiveValue(context,
-            defaultValue: visibleValue, valueWhen: conditions)
-        .value;
-
-    return Visibility(
-      child: child,
-      replacement: replacement,
-      visible: visibleValue,
-      maintainState: maintainState,
-      maintainAnimation: maintainAnimation,
-      maintainSize: maintainSize,
-      maintainSemantics: maintainSemantics,
-      maintainInteractivity: maintainInteractivity,
-    );
-  }
-}
-
 enum Conditional {
   LARGER_THAN,
   EQUALS,
@@ -170,24 +131,23 @@ class Condition<T> {
   final Conditional condition;
   final T value;
 
-  Condition._({this.breakpoint, this.name, this.condition, this.value})
+  const Condition._({this.breakpoint, this.name, this.condition, this.value})
       : assert(breakpoint != null || name != null),
-        assert(breakpoint == null || name == null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  Condition.equals({@required String name, T value})
+  const Condition.equals({@required String name, T value})
       : this.breakpoint = null,
         this.name = name,
         this.condition = Conditional.EQUALS,
         this.value = value;
 
-  Condition.largerThan({int breakpoint, String name, T value})
+  const Condition.largerThan({int breakpoint, String name, T value})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.LARGER_THAN,
         this.value = value;
 
-  Condition.smallerThan({int breakpoint, String name, T value})
+  const Condition.smallerThan({int breakpoint, String name, T value})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.SMALLER_THAN,
@@ -223,5 +183,86 @@ class Condition<T> {
     if (a.breakpoint == b.breakpoint) return 0;
 
     return (a.breakpoint < b.breakpoint) ? -1 : 1;
+  }
+}
+
+class ResponsiveVisibility extends StatelessWidget {
+  final Widget child;
+  final bool visible;
+  final List<Condition> visibleWhen;
+  final List<Condition> hiddenWhen;
+  final Widget replacement;
+  final bool maintainState;
+  final bool maintainAnimation;
+  final bool maintainSize;
+  final bool maintainSemantics;
+  final bool maintainInteractivity;
+
+  const ResponsiveVisibility({
+    Key key,
+    @required this.child,
+    this.visible = true,
+    this.visibleWhen = const [],
+    this.hiddenWhen = const [],
+    this.replacement = const SizedBox.shrink(),
+    this.maintainState = false,
+    this.maintainAnimation = false,
+    this.maintainSize = false,
+    this.maintainSemantics = false,
+    this.maintainInteractivity = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Initialize mutable value holders.
+    List<Condition> conditions = [];
+    bool visibleValue = visible;
+
+    // Combine Conditions.
+    conditions.addAll(visibleWhen?.map((e) => e.copyWith(value: true)) ?? []);
+    conditions.addAll(hiddenWhen?.map((e) => e.copyWith(value: false)) ?? []);
+    // Get visible value from active condition.
+    visibleValue = ResponsiveValue(context,
+            defaultValue: visibleValue, valueWhen: conditions)
+        .value;
+
+    return Visibility(
+      child: child,
+      replacement: replacement,
+      visible: visibleValue,
+      maintainState: maintainState,
+      maintainAnimation: maintainAnimation,
+      maintainSize: maintainSize,
+      maintainSemantics: maintainSemantics,
+      maintainInteractivity: maintainInteractivity,
+    );
+  }
+}
+
+class ResponsiveConstraints extends StatelessWidget {
+  final Widget child;
+  final BoxConstraints constraint;
+  final List<Condition> constraintsWhen;
+
+  const ResponsiveConstraints(
+      {Key key,
+      @required this.child,
+      this.constraint,
+      this.constraintsWhen = const []})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Initialize mutable value holders.
+    BoxConstraints constraintValue = constraint;
+    // Get value from active condition.
+    constraintValue = ResponsiveValue(context,
+            defaultValue: constraintValue, valueWhen: constraintsWhen)
+        .value;
+
+    return Container(
+      constraints: constraintValue,
+      child: child,
+    );
   }
 }
