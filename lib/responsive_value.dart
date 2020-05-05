@@ -2,9 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import 'responsive_framework.dart';
 
-typedef T Value<T>();
-typedef StartListening<T> = VoidCallback Function(Value<T> element, T value);
-
+/// Conditional values based on the active breakpoint.
+///
+/// Get a [value] that corresponds to active breakpoint
+/// determined by [Condition]s set in [valueWhen].
+/// Set a [defaultValue] for when no condition is
+/// active. Requires a parent [context] that contains
+/// a [ResponsiveWrapper].
+///
+/// No validation is performed on [Condition]s so
+/// valid conditions must be passed.
 class ResponsiveValue<T> {
   T value;
   final T defaultValue;
@@ -119,12 +126,18 @@ class ResponsiveValue<T> {
   }
 }
 
+/// Internal equality comparators.
 enum Conditional {
   LARGER_THAN,
   EQUALS,
   SMALLER_THAN,
 }
 
+/// A conditional value provider.
+///
+/// Provides the [value] when the [condition] is active.
+/// Compare conditions by setting either [breakpoint] or
+/// [name] values.
 class Condition<T> {
   final int breakpoint;
   final String name;
@@ -186,6 +199,11 @@ class Condition<T> {
   }
 }
 
+/// A convenience wrapper for responsive [Visibility].
+///
+/// ResponsiveVisibility accepts [Condition]s in
+/// [visibleWhen] and [hiddenWhen] convenience
+/// fields. The [child] widget is [visible] by default.
 class ResponsiveVisibility extends StatelessWidget {
   final Widget child;
   final bool visible;

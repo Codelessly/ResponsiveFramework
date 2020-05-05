@@ -1,6 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
+/// A convenience wrapper for responsive [Row] and
+/// [Column] switching with padding and spacing.
+///
+/// ResponsiveRowColumn combines responsiveness
+/// behaviors for managing rows and columns into one
+/// convenience widget. This widget requires all [children]
+/// to be [ResponsiveRowColumnItem] widgets.
+/// Row vs column layout is controlled by [rowColumn].
+/// RowColumn is Row layout when true and Column
+/// layout when false.
+/// Add spacing between widgets with [rowSpacing] and
+/// [columnSpacing]. Add padding around widgets with
+/// [rowPadding] and [columnPadding].
+///
+/// See [ResponsiveRowColumnItem] for [Flex] and
+/// [FlexFit] options.
 class ResponsiveRowColumn extends StatelessWidget {
   final List<ResponsiveRowColumnItem> children;
   final bool rowColumn;
@@ -20,7 +36,6 @@ class ResponsiveRowColumn extends StatelessWidget {
   final double columnSpacing;
   final EdgeInsets rowPadding;
   final EdgeInsets columnPadding;
-  final bool fillRow;
   get isRow => rowColumn;
   get isColumn => !rowColumn;
 
@@ -42,7 +57,6 @@ class ResponsiveRowColumn extends StatelessWidget {
       this.columnTextBaseline,
       this.rowSpacing,
       this.columnSpacing,
-      this.fillRow = false,
       this.rowPadding = EdgeInsets.zero,
       this.columnPadding = EdgeInsets.zero})
       : super(key: key);
@@ -80,6 +94,7 @@ class ResponsiveRowColumn extends StatelessWidget {
           );
   }
 
+  /// Logic to construct widget [children].
   List<Widget> buildChildren(
       List<ResponsiveRowColumnItem> children, bool rowColumn, double spacing) {
     // Sort ResponsiveRowColumnItems by their order.
@@ -91,7 +106,7 @@ class ResponsiveRowColumn extends StatelessWidget {
         return a.columnOrder.compareTo(b.columnOrder);
       }
     });
-    // Add padding between items.
+    // Add padding between widgets..
     List<Widget> widgetList = [];
     for (int i = 0; i < childrenHolder.length; i++) {
       widgetList.add(childrenHolder[i].copyWith(rowColumn: rowColumn));
@@ -105,6 +120,16 @@ class ResponsiveRowColumn extends StatelessWidget {
   }
 }
 
+/// A wrapper for [ResponsiveRowColumn] children with
+/// responsiveness.
+///
+/// Control the order of widgets within [ResponsiveRowColumn]
+/// by assigning a [rowOrder] or [columnOrder] value.
+/// Widgets without an order value are ranked behind
+/// those with order values.
+/// Set a widget's [Flex] value through [rowFlex] and
+/// [columnFlex]. Set a widget's [FlexFit] through
+/// [rowFit] and [columnFit].
 class ResponsiveRowColumnItem extends StatelessWidget {
   final Widget child;
   final int rowOrder;
@@ -129,9 +154,9 @@ class ResponsiveRowColumnItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (rowColumn && rowFlex != null) {
+    if (rowColumn && (rowFlex != null || rowFit != null)) {
       return Flexible(flex: rowFlex, fit: rowFit, child: child);
-    } else if (!rowColumn && columnFlex != null) {
+    } else if (!rowColumn && (columnFlex != null || columnFit != null)) {
       return Flexible(flex: columnFlex, fit: columnFit, child: child);
     }
 

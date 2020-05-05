@@ -398,6 +398,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         devicePixelRatio: devicePixelRatio * activeScaleFactor);
   }
 
+  /// Calculate breakpoint segments algorithm. Performs
+  /// a single pass
   List<ResponsiveBreakpointSegment> getBreakpointSegments(
       List<ResponsiveBreakpoint> breakpoints,
       ResponsiveBreakpoint defaultBreakpoint) {
@@ -414,10 +416,14 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Perform ordering operation to allow breakpoints
     // to be accepted in any order.
     breakpoints.sort((a, b) {
-      // If breakpoints are equal, return autoScaleDown
-      // breakpoints first.
+      // If breakpoints are equal, return in the following order:
+      // AutoScaleDown, Resize, AutoScale.
       if (a.breakpoint == b.breakpoint && a.isAutoScaleDown) {
-        if (a.isAutoScaleDown) {
+        if (a.isAutoScaleDown && !b.isAutoScaleDown) {
+          return -1;
+        }
+
+        if (a.isResize && !b.isAutoScaleDown) {
           return -1;
         }
 
@@ -765,6 +771,20 @@ enum _ResponsiveBreakpointBehavior {
   TAG,
 }
 
+/// Control the responsiveness of the app at a breakpoint.
+///
+/// Specify a responsive [behavior] at a [breakpoint]
+/// value. The following behaviors are supported:
+/// Resize - default behavior.
+/// AutoScale - scales UI from breakpoint up.
+/// AutoScaleDown - scales UI from breakpoint down and
+/// from breakpoint up. Has the same behavior as AutoScale
+/// but scales down as well.
+/// Tag - named breakpoint value. Inherits behavior.
+/// Add a [name] to a breakpoint for ease of reference.
+/// The [scaleFactor] enlarges or shrinks the UI by a
+/// multiple of x. This values can be applied to all
+/// breakpoints.
 @immutable
 class ResponsiveBreakpoint {
   final double breakpoint;
@@ -839,6 +859,16 @@ class ResponsiveBreakpoint {
       ')';
 }
 
+/// Computed breakpoint segments.
+///
+/// Breakpoint segments are computed from
+/// 0 to infinity. The [breakpoint] specifies the
+/// start position for the [responsiveBreakpointBehavior].
+/// The [responsiveBreakpointBehavior] specifies
+/// how the segment behavior is computed.
+/// The [responsiveBreakpoint] holds the active
+/// breakpoint and controls the segment behavior.
+@immutable
 class ResponsiveBreakpointSegment {
   final double breakpoint;
   final _ResponsiveBreakpointBehavior responsiveBreakpointBehavior;
