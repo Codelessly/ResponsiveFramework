@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.6
+- Create `autoScaleDown` and `tag` behaviors.
+- Create ResponsiveBreakpointSegment and algorithm to calculate breakpoint segments.
+- Create experimental ResponsiveValue, ResponsiveVisibility, and ResponsiveRowColumn widgets.
+- Breaking - removed `autoScale` to migrate ResponsiveBreakpoint behavior to constructors.
+
 ## 0.0.5
 - Add `defaultName` parameter.
 - Create tests.

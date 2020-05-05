@@ -16,7 +16,7 @@ Supporting multiple display sizes often means recreating the same layout multipl
 ### The Solution
 Use Responsive Framework to automatically scale your UI.
 
-> ResponsiveBreakpoint(breakpoint: 600, **autoScale: true**);
+> **ResponsiveBreakpoint.autoScale(breakpoint: 600);**
 
 ## Demo
 
@@ -42,14 +42,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       builder: (context, widget) => ResponsiveWrapper.builder(
           maxWidth: 1200,
-          minWidth: 450,
+          minWidth: 480,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-            ResponsiveBreakpoint(breakpoint: 800, name: TABLET, scale: true),
-            ResponsiveBreakpoint(breakpoint: 1000, name: TABLET, scale: true),
-            ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP),
-            ResponsiveBreakpoint(breakpoint: 2460, name: "4K", scale: true),
+            ResponsiveBreakpoint.resize(breakpoint: 480, name: MOBILE),
+            ResponsiveBreakpoint.autoScale(breakpoint: 800, name: TABLET),
+            ResponsiveBreakpoint.resize(breakpoint: 1000, name: DESKTOP),
           ],
           background: Container(color: Color(0xFFF5F5F5))),
       initialRoute: "/",
@@ -67,7 +65,7 @@ AutoScale shrinks and expands your layout *proportionally*, preserving the exact
 This eliminates the need to manually adapt layouts to mobile, tablet, and desktop.
 
 ```dart
-ResponsiveBreakpoint(breakpoint: 600, autoScale: true);
+ResponsiveBreakpoint.autoScale(breakpoint: 600);
 ```
 
 Flutter's default behavior is resize which Responsive Framework respects. AutoScale is off by default and can be enabled at breakpoints by setting `autoScale` to `true`.
@@ -82,9 +80,9 @@ Breakpoints control responsive behavior at different screen sizes.
 ResponsiveWrapper(
     child,
     breakpoints: [
-        ResponsiveBreakpoint(breakpoint: 600, name: MOBILE, autoScale: false),
-        ResponsiveBreakpoint(breakpoint: 800, name: TABLET, autoScale: true),
-        ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP, autoScale: false),
+        ResponsiveBreakpoint.resize(breakpoint: 600, name: MOBILE),
+        ResponsiveBreakpoint.autoScale(breakpoint: 800, name: TABLET),
+        ResponsiveBreakpoint.autoScale(breakpoint: 1200, name: DESKTOP),
     ],
 )
 ```
@@ -115,23 +113,22 @@ To adapt to a wide variety of screen sizes, set breakpoints to control responsiv
 ResponsiveWrapper(
     child,
     maxWidth: 1200,
-    minWidth: 450,
+    minWidth: 480,
     defaultScale: true,
     breakpoints: [
-        ResponsiveBreakpoint(breakpoint: 450, name: MOBILE),
-        ResponsiveBreakpoint(breakpoint: 800, name: TABLET, scale: true),
-        ResponsiveBreakpoint(breakpoint: 1000, name: TABLET, scale: true),
-        ResponsiveBreakpoint(breakpoint: 1200, name: DESKTOP),
-        ResponsiveBreakpoint(breakpoint: 2460, name: "4K", scale: true),
+        ResponsiveBreakpoint.resize(breakpoint: 480, name: MOBILE),
+        ResponsiveBreakpoint.autoScale(breakpoint: 800, name: TABLET),
+        ResponsiveBreakpoint.resize(breakpoint: 1000, name: DESKTOP),
+        ResponsiveBreakpoint.autoScale(breakpoint: 2460, name: '4K'),
     ],
 )
 ```
 
 An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be mixed and matched.
-- below 450: resize on small screens to avoid cramp and overflow errors.
-- 800-450: resize on phones for native widget sizes.
-- 1000-800: scale on tablets to avoid elements appearing too small.
-- 1200-1000: resize on desktops to use available space. 
+- below 480: resize on small screens to avoid cramp and overflow errors.
+- 480-800: resize on phones for native widget sizes.
+- 800-1000: scale on tablets to avoid elements appearing too small.
+- 1000+: resize on desktops to use available space. 
 - 2460+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
 
 ## About
