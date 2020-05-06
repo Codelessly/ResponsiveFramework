@@ -16,13 +16,17 @@ Supporting multiple display sizes often means recreating the same layout multipl
 ### The Solution
 Use Responsive Framework to automatically scale your UI.
 
-> **ResponsiveBreakpoint.autoScale(breakpoint: 600);**
+> **ResponsiveBreakpoint.autoScale(600);**
 
 ## Demo
 
 ### [Minimal Website](https://gallery.codelessly.com/flutterwebsites/minimal/?utm_medium=link&utm_campaign=demo)
 
 A demo website built with the Responsive Framework. [View Code](https://github.com/Codelessly/FlutterMinimalWebsite)
+
+### [Flutter Website](https://gallery.codelessly.com/flutterwebsites/flutterwebsite/?utm_medium=link&utm_campaign=demo)
+
+The flutter.dev website recreated in Flutter. [View Code](https://github.com/Codelessly/FlutterWebsite)
 
 ## Quick Start
 
@@ -45,9 +49,9 @@ class MyApp extends StatelessWidget {
           minWidth: 480,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint.resize(breakpoint: 480, name: MOBILE),
-            ResponsiveBreakpoint.autoScale(breakpoint: 800, name: TABLET),
-            ResponsiveBreakpoint.resize(breakpoint: 1000, name: DESKTOP),
+            ResponsiveBreakpoint.resize(480, name: MOBILE),
+            ResponsiveBreakpoint.autoScale(800, name: TABLET),
+            ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
           background: Container(color: Color(0xFFF5F5F5))),
       initialRoute: "/",
@@ -65,7 +69,7 @@ AutoScale shrinks and expands your layout *proportionally*, preserving the exact
 This eliminates the need to manually adapt layouts to mobile, tablet, and desktop.
 
 ```dart
-ResponsiveBreakpoint.autoScale(breakpoint: 600);
+ResponsiveBreakpoint.autoScale(600);
 ```
 
 Flutter's default behavior is resize which Responsive Framework respects. AutoScale is off by default and can be enabled at breakpoints by setting `autoScale` to `true`.
@@ -80,9 +84,9 @@ Breakpoints control responsive behavior at different screen sizes.
 ResponsiveWrapper(
     child,
     breakpoints: [
-        ResponsiveBreakpoint.resize(breakpoint: 600, name: MOBILE),
-        ResponsiveBreakpoint.autoScale(breakpoint: 800, name: TABLET),
-        ResponsiveBreakpoint.autoScale(breakpoint: 1200, name: DESKTOP),
+        ResponsiveBreakpoint.resize(600, name: MOBILE),
+        ResponsiveBreakpoint.autoScale(800, name: TABLET),
+        ResponsiveBreakpoint.autoScale(1200, name: DESKTOP),
     ],
 )
 ```
@@ -116,10 +120,10 @@ ResponsiveWrapper(
     minWidth: 480,
     defaultScale: true,
     breakpoints: [
-        ResponsiveBreakpoint.resize(breakpoint: 480, name: MOBILE),
-        ResponsiveBreakpoint.autoScale(breakpoint: 800, name: TABLET),
-        ResponsiveBreakpoint.resize(breakpoint: 1000, name: DESKTOP),
-        ResponsiveBreakpoint.autoScale(breakpoint: 2460, name: '4K'),
+        ResponsiveBreakpoint.resize(480, name: MOBILE),
+        ResponsiveBreakpoint.autoScale(800, name: TABLET),
+        ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+        ResponsiveBreakpoint.autoScale(2460, name: '4K'),
     ],
 )
 ```

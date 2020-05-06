@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.7
+- Add links to [Flutter Website](https://github.com/Codelessly/FlutterWebsite) example.
+
 ## 0.0.6
 - Create `autoScaleDown` and `tag` behaviors.
 - Create ResponsiveBreakpointSegment and algorithm to calculate breakpoint segments.
