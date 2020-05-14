@@ -348,7 +348,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   Widget build(BuildContext context) {
     return (screenWidth ==
             0) // Initialization check. Window measurements not available until postFrameCallback.
-        ? SizedBox.shrink()
+        ? Container(color: Colors.transparent)
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
             child: Stack(
