@@ -354,7 +354,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
-                widget.background ?? Container(),
+                widget.background ?? SizedBox.shrink(),
                 MediaQuery(
                   data: calculateMediaQueryData(),
                   child: SizedBox(
