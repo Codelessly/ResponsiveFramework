@@ -137,7 +137,7 @@ An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be 
 
 ## About
 
-Responsive Framework was created out of a desire for a better way to manage responsiveness. The ability to automatically adapt UI to different sizes opens up a world of possibilities. Here at Codelessly, we're working on #NoCode and code generation automation tools to increase productivity. If that sounds interesting, you'll want to subscribe to updates below 😎
+Responsive Framework was created out of a desire for a better way to manage responsiveness. The ability to automatically adapt UI to different sizes opens up a world of possibilities. Here at Codelessly, we're building a Flutter app UI and website builder, development tools, and UI templates to increase productivity. If that sounds interesting, you'll want to subscribe to updates below 😎
 
 Responsive Framework is licensed under Zero-Clause BSD and released as Emailware. If you like this project or it helped you, please subscribe to updates. Although it is not required, you might miss the goodies we share!
 
@@ -178,7 +178,7 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 * [Ray Li](https://github.com/searchy2)
 * *add yourself here by contributing*
 
-**Sponsor:** [Codelessly - No Code Automation Tools](https://codelessly.com/?utm_medium=link&utm_campaign=direct)
+**Sponsor:** [Codelessly - Flutter App UI and Website Builder](https://codelessly.com/?utm_medium=link&utm_campaign=direct)
 
 <a href="mailto:ray@codelessly.com">
   <img alt="Codelessly Email"
