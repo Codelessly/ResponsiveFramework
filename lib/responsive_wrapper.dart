@@ -596,6 +596,7 @@ class ResponsiveBreakpoint {
   final ResponsiveBreakpointBehavior behavior;
   final double scaleFactor;
 
+  @visibleForTesting
   const ResponsiveBreakpoint(
       {@required this.breakpoint,
       this.name,
@@ -751,8 +752,10 @@ class ResponsiveBreakpointSegment {
       responsiveBreakpoint.hashCode;
 }
 
-/// Calculate breakpoint segments algorithm. Performs
-/// a single pass
+/// Calculate breakpoint segments algorithm.
+///
+/// Complex logic to compute the  breakpoint segments
+/// efficiently in a single pass.
 List<ResponsiveBreakpointSegment> getBreakpointSegments(
     List<ResponsiveBreakpoint> breakpoints,
     ResponsiveBreakpoint defaultBreakpoint) {
@@ -802,23 +805,19 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         name: defaultBreakpoint.name,
         behavior: defaultBreakpoint.behavior,
         scaleFactor: defaultBreakpoint.scaleFactor);
-    breakpointSegments.insert(
-        0,
-        ResponsiveBreakpointSegment(
-            breakpoint: 0,
-            responsiveBreakpointBehavior: breakpointHolder.behavior,
-            responsiveBreakpoint: breakpointHolder));
+    breakpointSegments.add(ResponsiveBreakpointSegment(
+        breakpoint: 0,
+        responsiveBreakpointBehavior: breakpointHolder.behavior,
+        responsiveBreakpoint: breakpointHolder));
     breakpointHolder = ResponsiveBreakpoint(
         breakpoint: minWidth,
         name: defaultBreakpoint.name,
         behavior: defaultBreakpoint.behavior,
         scaleFactor: defaultBreakpoint.scaleFactor);
-    breakpointSegments.insert(
-        1,
-        ResponsiveBreakpointSegment(
-            breakpoint: minWidth,
-            responsiveBreakpointBehavior: breakpointHolder.behavior,
-            responsiveBreakpoint: breakpointHolder));
+    breakpointSegments.add(ResponsiveBreakpointSegment(
+        breakpoint: minWidth,
+        responsiveBreakpointBehavior: breakpointHolder.behavior,
+        responsiveBreakpoint: breakpointHolder));
   } else {
     // Construct initial segment that starts from 0.
     breakpointHolder = ResponsiveBreakpoint(
