@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'utils/responsive_utils.dart';
+
 /// A wrapper that helps child widgets resize/scale
 /// to different screen dimensions.
 ///
@@ -771,31 +773,22 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
   // Order breakpoints from smallest to largest.
   // Perform ordering operation to allow breakpoints
   // to be accepted in any order.
-  breakpoints.sort((a, b) {
-    // If breakpoints are equal, return in the following order:
-    // AutoScaleDown, Resize, AutoScale.
-    if (a.breakpoint == b.breakpoint && a.isAutoScaleDown) {
-      if (a.isAutoScaleDown && !b.isAutoScaleDown) {
-        return -1;
-      }
-
-      if (a.isResize && !b.isAutoScaleDown) {
-        return -1;
-      }
-
-      return 0;
-    }
-
-    return a.breakpoint.compareTo(b.breakpoint);
-  });
+  breakpoints.sort(ResponsiveUtils.breakpointComparator);
 
   // Min Width is passed through the default breakpoint.
   double minWidth = defaultBreakpoint.breakpoint;
 
+  // Find the first breakpoint behavior. Tags inherit
+  // behavior so skip tags.
   ResponsiveBreakpoint initialBreakpoint =
-      breakpoints.firstWhere((element) => !element.isTag, orElse: null);
+      breakpoints.firstWhere((element) => !element.isTag, orElse: () => null);
+  // Breakpoint variable that holds the active behavior.
+  // Used to calculate and remember the breakpoint behavior.
   ResponsiveBreakpoint breakpointHolder;
   // Construct breakpoint segments for initial and minWidth special cases.
+  // If there are no active breakpoints, construct
+  // breakpoint segments from default behavior and
+  // minWidth.
   if (initialBreakpoint == null ||
       (initialBreakpoint.breakpoint > minWidth &&
           !initialBreakpoint.isAutoScaleDown)) {
