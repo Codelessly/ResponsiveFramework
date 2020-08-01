@@ -653,6 +653,16 @@ class ResponsiveBreakpoint {
         scaleFactor: scaleFactor ?? this.scaleFactor,
       );
 
+  /// Merge overwrite operation.
+  ///
+  /// Overwrite existing values with new values from
+  /// [responsiveBreakpoint].
+  ResponsiveBreakpoint merge(ResponsiveBreakpoint responsiveBreakpoint) {
+    return responsiveBreakpoint.copyWith(
+        name: responsiveBreakpoint.name ?? this.name,
+        scaleFactor: responsiveBreakpoint.scaleFactor ?? this.scaleFactor);
+  }
+
   @override
   String toString() =>
       'ResponsiveBreakpoint(' +
@@ -835,7 +845,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         // Special condition: return autoScale if initial
         // breakpoint is autoScaleDown.
         behavior: (initialBreakpoint.isAutoScaleDown)
-            ? segmentType.AUTOSCALE
+            ? ResponsiveBreakpointBehavior.AUTOSCALE
             : defaultBreakpoint.behavior,
         scaleFactor: defaultBreakpoint.scaleFactor);
     breakpointSegments.insert(
