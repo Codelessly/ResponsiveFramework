@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:responsive_framework/utils/responsive_utils.dart';
 
 void main() {
   group('Breakpoint Equality', () {
@@ -267,14 +268,14 @@ void main() {
       ];
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
-      // AutoScale breakpoint segment from 0 - 450.
+      // AutoScale breakpoint segment from 450 - 0.
       expect(
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
               breakpoint: 0,
               segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
-      // AutoScale breakpoint from 0 - 600.
+      // AutoScale breakpoint from default 450 - 600.
       expect(
           responsiveBreakpointSegments[1],
           ResponsiveBreakpointSegment(
@@ -288,6 +289,99 @@ void main() {
               breakpoint: 600,
               segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint: ResponsiveBreakpoint.resize(600)));
+    });
+    test('AutoScaleDown Smaller Than Default', () {
+      ResponsiveBreakpoint defaultBreakpoint =
+          ResponsiveBreakpoint.autoScale(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScaleDown(320)
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      // AutoScaleDown is the first breakpoint so the
+      // behavior becomes AutoScale.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(320)));
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 320,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(320)));
+      expect(
+          responsiveBreakpointSegments[2],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+    });
+    test('AutoScaleDown Equal To Default', () {
+      ResponsiveBreakpoint defaultBreakpoint =
+          ResponsiveBreakpoint.autoScale(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScaleDown(450)
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      ResponsiveUtils.debugLogBreakpoints(responsiveBreakpointSegments);
+      // AutoScaleDown is the first breakpoint so the
+      // behavior becomes AutoScale.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+      // Default behavior AutoScale overrides AutoScaleDown
+      // segment type.
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+    });
+    test('AutoScaleDown Larger Than Default', () {
+      ResponsiveBreakpoint defaultBreakpoint =
+          ResponsiveBreakpoint.autoScale(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScaleDown(600)
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      // First segment is the default AutoScale.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+      // Split the width between AutoScale and AutoScaleDown
+      // into two segments.
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+      // Constructed midway breakpoint.
+      expect(
+          responsiveBreakpointSegments[2],
+          ResponsiveBreakpointSegment(
+              breakpoint: 525,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+      // AutoScale behavior from 600 -  ∞.
+      expect(
+          responsiveBreakpointSegments[3],
+          ResponsiveBreakpointSegment(
+              breakpoint: 600,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
     });
   });
 }
