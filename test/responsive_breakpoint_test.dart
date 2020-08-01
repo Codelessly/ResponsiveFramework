@@ -87,27 +87,23 @@ void main() {
       expect(
           ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)) ==
               ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)),
           true);
       // Breakpoint segment 2.
       expect(
           ResponsiveBreakpointSegment(
                   breakpoint: 0,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.TAG,
+                  segmentType: ResponsiveBreakpointBehavior.TAG,
                   responsiveBreakpoint:
                       ResponsiveBreakpoint.tag(450, name: 'DEFAULT')) ==
               ResponsiveBreakpointSegment(
                   breakpoint: 0,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.TAG,
+                  segmentType: ResponsiveBreakpointBehavior.TAG,
                   responsiveBreakpoint:
                       ResponsiveBreakpoint.tag(450, name: 'DEFAULT')),
           true);
@@ -115,39 +111,33 @@ void main() {
       expect(
           ResponsiveBreakpointSegment(
                   breakpoint: 0,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)) ==
               ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)),
           false);
       // Unequal behavior.
       expect(
           ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)) ==
               ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.AUTOSCALE,
+                  segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)),
           false);
       // Unequal ResponsiveBreakpoint.
       expect(
           ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(0)) ==
               ResponsiveBreakpointSegment(
                   breakpoint: 450,
-                  responsiveBreakpointBehavior:
-                      ResponsiveBreakpointBehavior.RESIZE,
+                  segmentType: ResponsiveBreakpointBehavior.RESIZE,
                   responsiveBreakpoint: ResponsiveBreakpoint.resize(450)),
           false);
     });
@@ -164,7 +154,7 @@ void main() {
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
               breakpoint: 0.0,
-              responsiveBreakpointBehavior: ResponsiveBreakpointBehavior.RESIZE,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint: ResponsiveBreakpoint(
                   breakpoint: 450.0,
                   name: null,
@@ -182,15 +172,14 @@ void main() {
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
               breakpoint: 0,
-              responsiveBreakpointBehavior: ResponsiveBreakpointBehavior.RESIZE,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint: ResponsiveBreakpoint.resize(450)));
       // Second segment returns breakpoint behavior.
       expect(
           responsiveBreakpointSegments[1],
           ResponsiveBreakpointSegment(
               breakpoint: 450,
-              responsiveBreakpointBehavior:
-                  ResponsiveBreakpointBehavior.AUTOSCALE,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
     });
     test('Default Breakpoint AutoScale', () {
@@ -206,23 +195,21 @@ void main() {
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
               breakpoint: 0,
-              responsiveBreakpointBehavior:
-                  ResponsiveBreakpointBehavior.AUTOSCALE,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
       // AutoScale breakpoint from 0 - 600.
       expect(
           responsiveBreakpointSegments[1],
           ResponsiveBreakpointSegment(
               breakpoint: 450,
-              responsiveBreakpointBehavior:
-                  ResponsiveBreakpointBehavior.AUTOSCALE,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
       // Resize breakpoint from 600 - ∞.
       expect(
           responsiveBreakpointSegments[2],
           ResponsiveBreakpointSegment(
               breakpoint: 600,
-              responsiveBreakpointBehavior: ResponsiveBreakpointBehavior.RESIZE,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint: ResponsiveBreakpoint.resize(600)));
     });
   });

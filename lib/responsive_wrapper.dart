@@ -162,6 +162,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       // Check if there is an active breakpoint with autoScale set to true.
       if (activeBreakpointSegment.breakpoint >= widget.maxWidth &&
           activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
+        // Proportionally scaled width that exceeds maxWidth.
         return widget.maxWidth +
             (windowWidth -
                 activeBreakpointSegment.responsiveBreakpoint.breakpoint);
@@ -308,7 +309,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     breakpointSegments = getBreakpointSegments(breakpoints, defaultBreakpoint);
 
     // Log breakpoints to console.
-    if (widget.debugLog) printDebugLogBreakpoints(breakpointSegments);
+    if (widget.debugLog)
+      ResponsiveUtils.debugLogBreakpoints(breakpointSegments);
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -686,54 +688,61 @@ class ResponsiveBreakpoint {
 ///
 /// Breakpoint segments are computed from
 /// 0 to infinity. The [breakpoint] specifies the
-/// start position for the [responsiveBreakpointBehavior].
-/// The [responsiveBreakpointBehavior] specifies
+/// start position for the [segmentType].
+/// The [segmentType] specifies
 /// the computed segment behavior.
 /// The [responsiveBreakpoint] holds the active
 /// breakpoint and controls the segment behavior.
 @immutable
 class ResponsiveBreakpointSegment {
   final double breakpoint;
-  final ResponsiveBreakpointBehavior responsiveBreakpointBehavior;
+  final ResponsiveBreakpointBehavior segmentType;
   final ResponsiveBreakpoint responsiveBreakpoint;
 
   @visibleForTesting
   const ResponsiveBreakpointSegment(
       {@required this.breakpoint,
-      @required this.responsiveBreakpointBehavior,
+      @required this.segmentType,
       @required this.responsiveBreakpoint});
 
-  get isResize =>
-      responsiveBreakpointBehavior == ResponsiveBreakpointBehavior.RESIZE;
+  get isResize => segmentType == ResponsiveBreakpointBehavior.RESIZE;
 
-  get isAutoScale =>
-      responsiveBreakpointBehavior == ResponsiveBreakpointBehavior.AUTOSCALE;
+  get isAutoScale => segmentType == ResponsiveBreakpointBehavior.AUTOSCALE;
 
   get isAutoScaleDown =>
-      responsiveBreakpointBehavior ==
-      ResponsiveBreakpointBehavior.AUTOSCALEDOWN;
+      segmentType == ResponsiveBreakpointBehavior.AUTOSCALEDOWN;
 
-  get isTag => responsiveBreakpointBehavior == ResponsiveBreakpointBehavior.TAG;
+  get isTag => segmentType == ResponsiveBreakpointBehavior.TAG;
 
   ResponsiveBreakpointSegment copyWith({
     double breakpoint,
-    ResponsiveBreakpointBehavior responsiveBreakpointBehavior,
+    ResponsiveBreakpointBehavior segmentType,
     ResponsiveBreakpoint responsiveBreakpoint,
   }) =>
       ResponsiveBreakpointSegment(
         breakpoint: breakpoint ?? this.breakpoint,
-        responsiveBreakpointBehavior:
-            responsiveBreakpointBehavior ?? this.responsiveBreakpointBehavior,
+        segmentType: segmentType ?? this.segmentType,
         responsiveBreakpoint: responsiveBreakpoint ?? this.responsiveBreakpoint,
       );
+
+  /// Merge overwrite operation.
+  ///
+  /// Overwrite existing values with new values from
+  /// [responsiveBreakpointSegment].
+  ResponsiveBreakpointSegment merge(
+      ResponsiveBreakpointSegment responsiveBreakpointSegment) {
+    return responsiveBreakpointSegment.copyWith(
+        responsiveBreakpoint: responsiveBreakpointSegment.responsiveBreakpoint
+            .merge(this.responsiveBreakpoint));
+  }
 
   @override
   String toString() =>
       'ResponsiveBreakpointSegment(' +
       'breakpoint: ' +
       breakpoint.toString() +
-      ', responsiveBreakpointBehavior: ' +
-      responsiveBreakpointBehavior.toString() +
+      ', segmentType: ' +
+      segmentType.toString() +
       ', responsiveBreakpoint: ' +
       responsiveBreakpoint.toString() +
       ')';
@@ -744,13 +753,13 @@ class ResponsiveBreakpointSegment {
       other is ResponsiveBreakpointSegment &&
           runtimeType == other.runtimeType &&
           breakpoint == other.breakpoint &&
-          responsiveBreakpointBehavior == other.responsiveBreakpointBehavior &&
+          segmentType == other.segmentType &&
           responsiveBreakpoint == other.responsiveBreakpoint;
 
   @override
   int get hashCode =>
       breakpoint.hashCode *
-      responsiveBreakpointBehavior.hashCode *
+      segmentType.hashCode *
       responsiveBreakpoint.hashCode;
 }
 
@@ -761,12 +770,13 @@ class ResponsiveBreakpointSegment {
 List<ResponsiveBreakpointSegment> getBreakpointSegments(
     List<ResponsiveBreakpoint> breakpoints,
     ResponsiveBreakpoint defaultBreakpoint) {
+  // Breakpoint segments holder.
   List<ResponsiveBreakpointSegment> breakpointSegments = [];
   // No breakpoints. Create segment from default breakpoint behavior.
   if (breakpoints.length == 0) {
     breakpointSegments.add(ResponsiveBreakpointSegment(
         breakpoint: 0,
-        responsiveBreakpointBehavior: defaultBreakpoint.behavior,
+        segmentType: defaultBreakpoint.behavior,
         responsiveBreakpoint: defaultBreakpoint));
     return breakpointSegments;
   }
@@ -778,13 +788,19 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
   // Min Width is passed through the default breakpoint.
   double minWidth = defaultBreakpoint.breakpoint;
 
+  // Breakpoint variable that holds the active behavior.
+  // Used to calculate and remember the breakpoint behavior.
+  ResponsiveBreakpoint breakpointHolder = ResponsiveBreakpoint(
+      breakpoint: minWidth,
+      name: defaultBreakpoint.name,
+      behavior: defaultBreakpoint.behavior,
+      scaleFactor: defaultBreakpoint.scaleFactor);
+
   // Find the first breakpoint behavior. Tags inherit
   // behavior so skip tags.
   ResponsiveBreakpoint initialBreakpoint =
       breakpoints.firstWhere((element) => !element.isTag, orElse: () => null);
-  // Breakpoint variable that holds the active behavior.
-  // Used to calculate and remember the breakpoint behavior.
-  ResponsiveBreakpoint breakpointHolder;
+
   // Construct breakpoint segments for initial and minWidth special cases.
   // If there are no active breakpoints, construct
   // breakpoint segments from default behavior and
@@ -800,7 +816,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         scaleFactor: defaultBreakpoint.scaleFactor);
     breakpointSegments.add(ResponsiveBreakpointSegment(
         breakpoint: 0,
-        responsiveBreakpointBehavior: breakpointHolder.behavior,
+        segmentType: breakpointHolder.behavior,
         responsiveBreakpoint: breakpointHolder));
     breakpointHolder = ResponsiveBreakpoint(
         breakpoint: minWidth,
@@ -809,7 +825,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         scaleFactor: defaultBreakpoint.scaleFactor);
     breakpointSegments.add(ResponsiveBreakpointSegment(
         breakpoint: minWidth,
-        responsiveBreakpointBehavior: breakpointHolder.behavior,
+        segmentType: breakpointHolder.behavior,
         responsiveBreakpoint: breakpointHolder));
   } else {
     // Construct initial segment that starts from 0.
@@ -819,14 +835,14 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         // Special condition: return autoScale if initial
         // breakpoint is autoScaleDown.
         behavior: (initialBreakpoint.isAutoScaleDown)
-            ? ResponsiveBreakpointBehavior.AUTOSCALE
+            ? segmentType.AUTOSCALE
             : defaultBreakpoint.behavior,
         scaleFactor: defaultBreakpoint.scaleFactor);
     breakpointSegments.insert(
         0,
         ResponsiveBreakpointSegment(
             breakpoint: 0,
-            responsiveBreakpointBehavior: breakpointHolder.behavior,
+            segmentType: breakpointHolder.behavior,
             responsiveBreakpoint: breakpointHolder));
   }
 
@@ -841,7 +857,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
       case ResponsiveBreakpointBehavior.AUTOSCALE:
         breakpointSegmentHolder = ResponsiveBreakpointSegment(
             breakpoint: breakpoint.breakpoint,
-            responsiveBreakpointBehavior: breakpoint.behavior,
+            segmentType: breakpoint.behavior,
             responsiveBreakpoint: breakpoint);
         // Update holder with active breakpoint
         breakpointHolder = breakpoint;
@@ -850,7 +866,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         if (breakpointHolder.isAutoScaleDown) {
           breakpointSegmentHolder = ResponsiveBreakpointSegment(
               breakpoint: breakpointHolder.breakpoint,
-              responsiveBreakpointBehavior: breakpoint.behavior,
+              segmentType: breakpoint.behavior,
               responsiveBreakpoint: ResponsiveBreakpoint(
                   breakpoint: breakpoint.breakpoint,
                   name: breakpoint.name,
@@ -866,8 +882,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
                         (breakpoint.breakpoint - breakpointHolder.breakpoint) /
                                 2 +
                             breakpointHolder.breakpoint,
-                    responsiveBreakpointBehavior:
-                        ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+                    segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
                     responsiveBreakpoint: ResponsiveBreakpoint(
                         breakpoint: breakpoint.breakpoint,
                         name: breakpointHolder.name,
@@ -896,8 +911,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
               if (element.breakpoint >= breakpointHolder.breakpoint &&
                   element.isTag) {
                 return element.copyWith(
-                    responsiveBreakpointBehavior:
-                        ResponsiveBreakpointBehavior.AUTOSCALE,
+                    segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
                     responsiveBreakpoint: element.responsiveBreakpoint.copyWith(
                         breakpoint: breakpoint.breakpoint,
                         behavior: ResponsiveBreakpointBehavior.AUTOSCALE));
@@ -908,7 +922,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
           // Construct autoScaleDown breakpoint.
           breakpointSegmentHolder = ResponsiveBreakpointSegment(
               breakpoint: breakpoint.breakpoint,
-              responsiveBreakpointBehavior: breakpoint.behavior,
+              segmentType: breakpoint.behavior,
               responsiveBreakpoint: ResponsiveBreakpoint(
                   breakpoint: breakpoint.breakpoint,
                   name: breakpoint.name,
@@ -923,19 +937,19 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         breakpointSegmentHolder = ResponsiveBreakpointSegment(
           breakpoint: breakpoint.breakpoint,
           // Tag inherits behavior from previous breakpoint.
-          responsiveBreakpointBehavior: breakpoint.behavior,
+          segmentType: breakpoint.behavior,
           responsiveBreakpoint: breakpointHolder,
         );
         break;
+    }
+    // Compare current segment to previous segment.
+    if (i != 0) {
+      // Merge duplicate segments.
+      if (breakpointSegments.last.breakpoint ==
+          breakpointSegmentHolder.breakpoint) {}
     }
     breakpointSegments.add(breakpointSegmentHolder);
   }
 
   return breakpointSegments;
-}
-
-String printDebugLogBreakpoints(
-    List<ResponsiveBreakpointSegment> breakpointSegments) {
-  print("Breakpoints: $breakpointSegments");
-  return breakpointSegments.toString();
 }
