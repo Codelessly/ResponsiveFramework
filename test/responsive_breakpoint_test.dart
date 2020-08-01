@@ -163,12 +163,23 @@ void main() {
           ResponsiveBreakpoint.resize(320, name: 'PHONE', scaleFactor: 1.5);
       expect(responsiveBreakpoint1.merge(responsiveBreakpoint2),
           responsiveBreakpoint2);
-      // Merge preserves name but overwrites scaleFactor.
+      // Merge empty name preserves existing name.
+      // Merge overwrites scaleFactor.
       responsiveBreakpoint1 = ResponsiveBreakpoint.resize(320);
       responsiveBreakpoint2 =
           ResponsiveBreakpoint.resize(320, name: 'PHONE', scaleFactor: 1.5);
       expect(responsiveBreakpoint2.merge(responsiveBreakpoint1),
           ResponsiveBreakpoint.resize(320, name: 'PHONE', scaleFactor: 1.0));
+      // Merge non-empty name overwrites name
+      responsiveBreakpoint1 = ResponsiveBreakpoint.resize(320, name: 'DEFAULT');
+      responsiveBreakpoint2 = ResponsiveBreakpoint.resize(320, name: 'PHONE');
+      expect(responsiveBreakpoint1.merge(responsiveBreakpoint2),
+          ResponsiveBreakpoint.resize(320, name: 'PHONE'));
+      // Merge tag appends tag name.
+      responsiveBreakpoint1 = ResponsiveBreakpoint.resize(320, name: 'DEFAULT');
+      responsiveBreakpoint2 = ResponsiveBreakpoint.tag(320, name: 'PHONE');
+      expect(responsiveBreakpoint1.merge(responsiveBreakpoint2),
+          ResponsiveBreakpoint.resize(320, name: 'PHONE'));
     });
     test('ResponsiveBreakpointSegment Merge', () {
       // Merge different segments. Merged segment
@@ -206,6 +217,24 @@ void main() {
               segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint:
                   ResponsiveBreakpoint.resize(320, name: 'PHONE')));
+      // Merge non-tag segment with name and tag.
+      // Tag overwrites only existing name.
+      responsiveBreakpointSegment1 = ResponsiveBreakpointSegment(
+          breakpoint: 320,
+          segmentType: ResponsiveBreakpointBehavior.RESIZE,
+          responsiveBreakpoint: ResponsiveBreakpoint.resize(320,
+              name: 'DEFAULT', scaleFactor: 1.5));
+      responsiveBreakpointSegment2 = ResponsiveBreakpointSegment(
+          breakpoint: 320,
+          segmentType: ResponsiveBreakpointBehavior.TAG,
+          responsiveBreakpoint: ResponsiveBreakpoint.tag(320, name: 'PHONE'));
+      expect(
+          responsiveBreakpointSegment1.merge(responsiveBreakpointSegment2),
+          ResponsiveBreakpointSegment(
+              breakpoint: 320,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint: ResponsiveBreakpoint.resize(320,
+                  name: 'PHONE', scaleFactor: 1.5)));
       // Merge two tags. Overwrite existing tag.
       responsiveBreakpointSegment1 = ResponsiveBreakpointSegment(
           breakpoint: 320,
@@ -382,6 +411,42 @@ void main() {
               breakpoint: 600,
               segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+    });
+    test('Tags Simple', () {
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.tag(0, name: 'ZERO'),
+        ResponsiveBreakpoint.tag(450, name: 'DEFAULT'),
+        ResponsiveBreakpoint.tag(450, name: 'PHONE'),
+        ResponsiveBreakpoint.tag(800, name: 'TABLET'),
+        ResponsiveBreakpoint.tag(1200, name: 'DESKTOP'),
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      ResponsiveUtils.debugLogBreakpoints(responsiveBreakpointSegments);
+      // Tag is appended to initial breakpoint.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.resize(450, name: 'ZERO')));
+      // Last tag is appended to default breakpoint.
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.resize(450, name: 'PHONE')));
+      // Tag segment with inherited Resize behavior.
+      expect(
+          responsiveBreakpointSegments[2],
+          ResponsiveBreakpointSegment(
+              breakpoint: 800,
+              segmentType: ResponsiveBreakpointBehavior.TAG,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.resize(450, name: 'TABLET')));
     });
   });
 }
