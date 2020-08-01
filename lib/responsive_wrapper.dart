@@ -965,7 +965,11 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
     if (i != 0) {
       // Merge duplicate segments.
       if (breakpointSegments.last.breakpoint ==
-          breakpointSegmentHolder.breakpoint) {}
+          breakpointSegmentHolder.breakpoint) {
+        breakpointSegments[breakpointSegments.length - 1] =
+            breakpointSegments.last.merge(breakpointSegmentHolder);
+        continue;
+      }
     }
     breakpointSegments.add(breakpointSegmentHolder);
   }
