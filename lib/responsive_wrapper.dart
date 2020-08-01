@@ -799,71 +799,48 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         responsiveBreakpoint: defaultBreakpoint));
     return breakpointSegments;
   }
+
+  // Min Width is passed through the default breakpoint.
+  double minWidth = defaultBreakpoint.breakpoint;
+
+  // Add minWidth breakpoint. MinWidth generates
+  // a breakpoint segment and needs to be added.
+  breakpoints.insert(
+      0,
+      ResponsiveBreakpoint(
+          breakpoint: minWidth,
+          name: defaultBreakpoint.name,
+          behavior: defaultBreakpoint.behavior,
+          scaleFactor: defaultBreakpoint.scaleFactor));
+
   // Order breakpoints from smallest to largest.
   // Perform ordering operation to allow breakpoints
   // to be accepted in any order.
   breakpoints.sort(ResponsiveUtils.breakpointComparator);
 
-  // Min Width is passed through the default breakpoint.
-  double minWidth = defaultBreakpoint.breakpoint;
-
   // Breakpoint variable that holds the active behavior.
   // Used to calculate and remember the breakpoint behavior.
-  ResponsiveBreakpoint breakpointHolder = ResponsiveBreakpoint(
-      breakpoint: minWidth,
-      name: defaultBreakpoint.name,
-      behavior: defaultBreakpoint.behavior,
-      scaleFactor: defaultBreakpoint.scaleFactor);
+  ResponsiveBreakpoint breakpointHolder;
 
   // Find the first breakpoint behavior. Tags inherit
   // behavior so skip tags.
   ResponsiveBreakpoint initialBreakpoint =
       breakpoints.firstWhere((element) => !element.isTag, orElse: () => null);
 
-  // Construct breakpoint segments for initial and minWidth special cases.
-  // If there are no active breakpoints, construct
-  // breakpoint segments from default behavior and
-  // minWidth.
-  if (initialBreakpoint == null ||
-      (initialBreakpoint.breakpoint > minWidth &&
-          !initialBreakpoint.isAutoScaleDown)) {
-    // Construct two segments. 1. From 0 to the minWidth. 2. From minWidth to the next breakpoint.
-    breakpointHolder = ResponsiveBreakpoint(
-        breakpoint: minWidth,
-        name: defaultBreakpoint.name,
-        behavior: defaultBreakpoint.behavior,
-        scaleFactor: defaultBreakpoint.scaleFactor);
-    breakpointSegments.add(ResponsiveBreakpointSegment(
-        breakpoint: 0,
-        segmentType: breakpointHolder.behavior,
-        responsiveBreakpoint: breakpointHolder));
-    breakpointHolder = ResponsiveBreakpoint(
-        breakpoint: minWidth,
-        name: defaultBreakpoint.name,
-        behavior: defaultBreakpoint.behavior,
-        scaleFactor: defaultBreakpoint.scaleFactor);
-    breakpointSegments.add(ResponsiveBreakpointSegment(
-        breakpoint: minWidth,
-        segmentType: breakpointHolder.behavior,
-        responsiveBreakpoint: breakpointHolder));
-  } else {
-    // Construct initial segment that starts from 0.
-    breakpointHolder = ResponsiveBreakpoint(
-        breakpoint: initialBreakpoint.breakpoint,
-        name: defaultBreakpoint.name,
-        // Special condition: return autoScale if initial
-        // breakpoint is autoScaleDown.
-        behavior: (initialBreakpoint.isAutoScaleDown)
-            ? ResponsiveBreakpointBehavior.AUTOSCALE
-            : defaultBreakpoint.behavior,
-        scaleFactor: defaultBreakpoint.scaleFactor);
-    breakpointSegments.insert(
-        0,
-        ResponsiveBreakpointSegment(
-            breakpoint: 0,
-            segmentType: breakpointHolder.behavior,
-            responsiveBreakpoint: breakpointHolder));
-  }
+  // Construct initial segment that starts from 0.
+  breakpointHolder = ResponsiveBreakpoint(
+      breakpoint: initialBreakpoint.breakpoint,
+      name: initialBreakpoint.name,
+      behavior: (initialBreakpoint.isAutoScaleDown)
+          ? ResponsiveBreakpointBehavior.AUTOSCALE
+          : initialBreakpoint.behavior,
+      scaleFactor: initialBreakpoint.scaleFactor);
+  breakpointSegments.insert(
+      0,
+      ResponsiveBreakpointSegment(
+          breakpoint: 0,
+          segmentType: initialBreakpoint.behavior,
+          responsiveBreakpoint: breakpointHolder));
 
   // Convert breakpoints into internal breakpoint segments.
   for (int i = 0; i < breakpoints.length; i++) {
@@ -961,15 +938,15 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         );
         break;
     }
+//    print('Segments: $breakpointSegments');
+//    print('Breakpoint Segment Holder: $breakpointSegmentHolder');
+    // Merge duplicate segments.
     // Compare current segment to previous segment.
-    if (i != 0) {
-      // Merge duplicate segments.
-      if (breakpointSegments.last.breakpoint ==
-          breakpointSegmentHolder.breakpoint) {
-        breakpointSegments[breakpointSegments.length - 1] =
-            breakpointSegments.last.merge(breakpointSegmentHolder);
-        continue;
-      }
+    if (breakpointSegments.last.breakpoint ==
+        breakpointSegmentHolder.breakpoint) {
+      breakpointSegments[breakpointSegments.length - 1] =
+          breakpointSegments.last.merge(breakpointSegmentHolder);
+      continue;
     }
     breakpointSegments.add(breakpointSegmentHolder);
   }

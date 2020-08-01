@@ -40,10 +40,10 @@ class ResponsiveUtils {
   /// Print a visual view of [breakpointSegments]
   /// for debugging purposes.
   static String debugLogBreakpoints(
-      List<ResponsiveBreakpointSegment> breakpointSegments) {
-    breakpointSegments.forEach((element) {
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments) {
+    responsiveBreakpointSegments.forEach((element) {
       print(element);
     });
-    return breakpointSegments.toString();
+    return responsiveBreakpointSegments.toString();
   }
 }
