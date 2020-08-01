@@ -142,6 +142,83 @@ void main() {
           false);
     });
   });
+  group('Breakpoint Merge', () {
+    test('ResponsiveBreakpoint Merge', () {
+      // Merge different breakpoints. Merged breakpoint
+      // overwrites original breakpoint.
+      ResponsiveBreakpoint responsiveBreakpoint1 =
+          ResponsiveBreakpoint.resize(320);
+      ResponsiveBreakpoint responsiveBreakpoint2 =
+          ResponsiveBreakpoint.resize(400);
+      expect(responsiveBreakpoint1.merge(responsiveBreakpoint2),
+          responsiveBreakpoint2);
+      // Merge different breakpoint behaviors.
+      // Merged breakpoint overwrites original behavior.
+      responsiveBreakpoint2 = ResponsiveBreakpoint.autoScale(320);
+      expect(responsiveBreakpoint1.merge(responsiveBreakpoint2),
+          responsiveBreakpoint2);
+      // Merge optional parameters.
+      responsiveBreakpoint2 =
+          ResponsiveBreakpoint.resize(320, name: 'PHONE', scaleFactor: 1.5);
+      expect(responsiveBreakpoint1.merge(responsiveBreakpoint2),
+          responsiveBreakpoint2);
+      // Merge preserves name but overwrites scaleFactor.
+      responsiveBreakpoint1 = ResponsiveBreakpoint.resize(320);
+      responsiveBreakpoint2 =
+          ResponsiveBreakpoint.resize(320, name: 'PHONE', scaleFactor: 1.5);
+      expect(responsiveBreakpoint2.merge(responsiveBreakpoint1),
+          ResponsiveBreakpoint.resize(320, name: 'PHONE', scaleFactor: 1.0));
+    });
+    test('ResponsiveBreakpointSegment Merge', () {
+      // Merge different segments. Merged segment
+      // overwrites original segment.
+      ResponsiveBreakpointSegment responsiveBreakpointSegment1 =
+          ResponsiveBreakpointSegment(
+              breakpoint: 320,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint: ResponsiveBreakpoint.resize(320));
+      ResponsiveBreakpointSegment responsiveBreakpointSegment2 =
+          ResponsiveBreakpointSegment(
+              breakpoint: 400,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint: ResponsiveBreakpoint.resize(400));
+      expect(responsiveBreakpointSegment1.merge(responsiveBreakpointSegment2),
+          responsiveBreakpointSegment2);
+      // Merge different segment types. Merged segment
+      // overwrites existing type.
+      responsiveBreakpointSegment2 = ResponsiveBreakpointSegment(
+          breakpoint: 320,
+          segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+          responsiveBreakpoint: ResponsiveBreakpoint.autoScale(400));
+      expect(responsiveBreakpointSegment1.merge(responsiveBreakpointSegment2),
+          responsiveBreakpointSegment2);
+      // Merge non-tag segment and tag. Tag does not overwrite
+      // existing segment except for the name.
+      responsiveBreakpointSegment2 = ResponsiveBreakpointSegment(
+          breakpoint: 320,
+          segmentType: ResponsiveBreakpointBehavior.TAG,
+          responsiveBreakpoint: ResponsiveBreakpoint.tag(320, name: 'PHONE'));
+      expect(
+          responsiveBreakpointSegment1.merge(responsiveBreakpointSegment2),
+          ResponsiveBreakpointSegment(
+              breakpoint: 320,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.resize(320, name: 'PHONE')));
+      // Merge two tags. Overwrite existing tag.
+      responsiveBreakpointSegment1 = ResponsiveBreakpointSegment(
+          breakpoint: 320,
+          segmentType: ResponsiveBreakpointBehavior.TAG,
+          responsiveBreakpoint: ResponsiveBreakpoint.tag(320, name: 'DEFAULT'));
+      responsiveBreakpointSegment2 = ResponsiveBreakpointSegment(
+          breakpoint: 320,
+          segmentType: ResponsiveBreakpointBehavior.TAG,
+          responsiveBreakpoint:
+              ResponsiveBreakpoint.resize(320, name: 'PHONE'));
+      expect(responsiveBreakpointSegment1.merge(responsiveBreakpointSegment2),
+          responsiveBreakpointSegment2);
+    });
+  });
   group('GetBreakpoints', () {
     ResponsiveBreakpoint defaultBreakpoint =
         ResponsiveBreakpoint(breakpoint: 450);

@@ -659,8 +659,7 @@ class ResponsiveBreakpoint {
   /// [responsiveBreakpoint].
   ResponsiveBreakpoint merge(ResponsiveBreakpoint responsiveBreakpoint) {
     return responsiveBreakpoint.copyWith(
-        name: responsiveBreakpoint.name ?? this.name,
-        scaleFactor: responsiveBreakpoint.scaleFactor ?? this.scaleFactor);
+        name: responsiveBreakpoint.name ?? this.name);
   }
 
   @override
@@ -739,11 +738,21 @@ class ResponsiveBreakpointSegment {
   ///
   /// Overwrite existing values with new values from
   /// [responsiveBreakpointSegment].
+  /// If the new segment [isTag], do not overwrite
+  /// existing segment values.
   ResponsiveBreakpointSegment merge(
       ResponsiveBreakpointSegment responsiveBreakpointSegment) {
+    // Tag does not overwrite existing behavior.
+    // Preserve existing values when merging.
+    if (responsiveBreakpointSegment.isTag && !this.isTag)
+      return this.copyWith(
+          responsiveBreakpoint: responsiveBreakpointSegment.responsiveBreakpoint
+              .merge(this.responsiveBreakpoint));
+    // Overwrite existing values.
     return responsiveBreakpointSegment.copyWith(
-        responsiveBreakpoint: responsiveBreakpointSegment.responsiveBreakpoint
-            .merge(this.responsiveBreakpoint));
+        responsiveBreakpoint: this
+            .responsiveBreakpoint
+            .merge(responsiveBreakpointSegment.responsiveBreakpoint));
   }
 
   @override
