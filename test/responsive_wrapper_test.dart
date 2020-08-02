@@ -82,14 +82,11 @@ void main() {
         ),
       );
       await tester.pumpWidget(widget);
-      // Initialization is empty and returns SizedBox widget.
-      expect(
-          find.descendant(of: find.byKey(key), matching: find.byType(SizedBox)),
-          findsOneWidget);
+      // Initialization is empty and returns Container widget.
       expect(
           find.descendant(
               of: find.byKey(key), matching: find.byType(Container)),
-          findsNothing);
+          findsOneWidget);
       await tester.pump();
       // Container is created on first frame.
       expect(
@@ -232,8 +229,8 @@ void main() {
       );
       await tester.pumpWidget(widget);
       await tester.pump();
-      // Fallback to SizedBox.
-      expect(find.byType(SizedBox), findsOneWidget);
+      // Fallback to Container.
+      expect(find.byType(Container), findsOneWidget);
 
       // Infinity value. (BoxConstraints forbid forcing double.infinity)
       key = UniqueKey();
