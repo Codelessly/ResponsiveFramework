@@ -41,7 +41,7 @@ class ClampingScrollBehavior extends ScrollBehavior {
     return child;
   }
 
-  // Set physics to bouncing.
+  // Set physics to clamping.
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
     return ClampingScrollPhysics();

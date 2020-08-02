@@ -938,9 +938,13 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         breakpointHolder = breakpointHolder.copyWith(name: breakpoint.name);
         breakpointSegmentHolder = ResponsiveBreakpointSegment(
           breakpoint: breakpoint.breakpoint,
-          // Tag inherits behavior from previous breakpoint.
           segmentType: breakpoint.behavior,
-          responsiveBreakpoint: breakpointHolder,
+          // Tag inherits behavior from previous breakpoint.
+          // Convert AutoScaleDown to AutoScale.
+          responsiveBreakpoint: (breakpointHolder.isAutoScaleDown)
+              ? breakpointHolder.copyWith(
+                  behavior: ResponsiveBreakpointBehavior.AUTOSCALE)
+              : breakpointHolder,
         );
         break;
     }

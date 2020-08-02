@@ -356,7 +356,7 @@ void main() {
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // AutoScaleDown is the first breakpoint so the
-      // behavior becomes AutoScale.
+      // behavior is converted to AutoScale.
       expect(
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
@@ -380,7 +380,7 @@ void main() {
       ];
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
-      // First segment is the default AutoScale.
+      // Initial segment with AutoScale behavior.
       expect(
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
@@ -410,7 +410,36 @@ void main() {
               segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
     });
-    test('AutoScaleDown Resize', () {});
+    test('AutoScaleDown Resize', () {
+      ResponsiveBreakpoint defaultBreakpoint = ResponsiveBreakpoint.resize(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScaleDown(600)
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      // Initial segment with default Resize behavior.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint: ResponsiveBreakpoint.resize(450)));
+      // AutoScaleDown overwrites Resize behavior.
+      // AutoScale down from 600.
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+      // AutoScale from 600 - ∞.
+      expect(
+          responsiveBreakpointSegments[2],
+          ResponsiveBreakpointSegment(
+              breakpoint: 600,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+    });
   });
   group('MinWidth', () {
     ResponsiveBreakpoint defaultBreakpoint =
@@ -648,11 +677,12 @@ void main() {
                   ResponsiveBreakpoint.autoScale(450, name: 'TABLET')));
     });
     test('Tags AutoScaleDown', () {
-      defaultBreakpoint = ResponsiveBreakpoint.autoScaleDown(450);
+      defaultBreakpoint = ResponsiveBreakpoint.resize(320);
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.tag(0, name: 'ZERO'),
         ResponsiveBreakpoint.tag(320, name: 'PHONE'),
         ResponsiveBreakpoint.tag(450, name: 'DEFAULT'),
+        ResponsiveBreakpoint.autoScaleDown(450),
         ResponsiveBreakpoint.tag(600, name: 'TABLET'),
       ];
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
@@ -663,15 +693,15 @@ void main() {
           responsiveBreakpointSegments[0],
           ResponsiveBreakpointSegment(
               breakpoint: 0,
-              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint:
-                  ResponsiveBreakpoint.autoScale(450, name: 'ZERO')));
+                  ResponsiveBreakpoint.resize(320, name: 'ZERO')));
       // Inbetween tag segment.
       expect(
           responsiveBreakpointSegments[1],
           ResponsiveBreakpointSegment(
               breakpoint: 320,
-              segmentType: ResponsiveBreakpointBehavior.TAG,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
               responsiveBreakpoint:
                   ResponsiveBreakpoint.autoScale(450, name: 'PHONE')));
       // MinWidth breakpoint with tag appended
@@ -681,7 +711,7 @@ void main() {
               breakpoint: 450,
               segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
               responsiveBreakpoint:
-                  ResponsiveBreakpoint.autoScaleDown(450, name: 'DEFAULT')));
+                  ResponsiveBreakpoint.autoScale(450, name: 'DEFAULT')));
       // Tag segment from 600 - ∞.
       // Inherits behavior from MinWidth.
       expect(
@@ -690,7 +720,7 @@ void main() {
               breakpoint: 600,
               segmentType: ResponsiveBreakpointBehavior.TAG,
               responsiveBreakpoint:
-                  ResponsiveBreakpoint.autoScaleDown(450, name: 'TABLET')));
+                  ResponsiveBreakpoint.autoScale(450, name: 'TABLET')));
     });
   });
 }
