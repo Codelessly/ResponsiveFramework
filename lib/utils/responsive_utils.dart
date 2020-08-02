@@ -6,14 +6,14 @@ class ResponsiveUtils {
   ///
   /// For breakpoints with the same value, ordering
   /// controls proper breakpoint behavior resolution.
-  /// For example, AutoScale overrides Resize.
+  /// Preserve input order for breakpoints..
   /// Tags are always ranked last because they are
   /// inert.
   static Map<ResponsiveBreakpointBehavior, int> breakpointCompartorList = {
     ResponsiveBreakpointBehavior.AUTOSCALEDOWN: 0,
-    ResponsiveBreakpointBehavior.RESIZE: 1,
-    ResponsiveBreakpointBehavior.AUTOSCALE: 2,
-    ResponsiveBreakpointBehavior.TAG: 3
+    ResponsiveBreakpointBehavior.RESIZE: 0,
+    ResponsiveBreakpointBehavior.AUTOSCALE: 0,
+    ResponsiveBreakpointBehavior.TAG: 1,
   };
 
   /// Comparator function to order [ResponsiveBreakpoint]s.
@@ -26,8 +26,7 @@ class ResponsiveUtils {
   /// and compare.
   static int breakpointComparator(
       ResponsiveBreakpoint a, ResponsiveBreakpoint b) {
-    // If breakpoints are equal, return in the following order:
-    // AutoScaleDown, Resize, AutoScale, Tag.
+    // If breakpoints are equal, return in comparator order.
     if (a.breakpoint == b.breakpoint) {
       return breakpointCompartorList[a.behavior]
           .compareTo(breakpointCompartorList[b.behavior]);

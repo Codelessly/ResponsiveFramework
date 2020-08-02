@@ -363,13 +363,12 @@ void main() {
               breakpoint: 0,
               segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
-      // Default behavior AutoScale overrides AutoScaleDown
-      // segment type.
+      // Initial AutoScaleDown segment.
       expect(
           responsiveBreakpointSegments[1],
           ResponsiveBreakpointSegment(
               breakpoint: 450,
-              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
     });
     test('AutoScaleDown Larger Than Default', () {
@@ -439,6 +438,144 @@ void main() {
               breakpoint: 600,
               segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
               responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+    });
+    test('AutoScaleDown AutoScale', () {
+      ResponsiveBreakpoint defaultBreakpoint =
+          ResponsiveBreakpoint.autoScale(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScaleDown(320),
+        ResponsiveBreakpoint.autoScaleDown(600),
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      // Initial segment with converted AutoScale behavior.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(320)));
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 320,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(320)));
+      expect(
+          responsiveBreakpointSegments[2],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+      // Constructed midway segment between 450 and 600.
+      // AutoScaleDown from 600.
+      expect(
+          responsiveBreakpointSegments[3],
+          ResponsiveBreakpointSegment(
+              breakpoint: 525,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+      expect(
+          responsiveBreakpointSegments[4],
+          ResponsiveBreakpointSegment(
+              breakpoint: 600,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(600)));
+    });
+    test('AutoScaleDown AutoScale Override', () {
+      ResponsiveBreakpoint defaultBreakpoint =
+          ResponsiveBreakpoint.autoScale(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScale(450),
+        ResponsiveBreakpoint.autoScaleDown(450),
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      // Initial segment with converted AutoScale behavior.
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+      // AutoScaleDown segment.
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+    });
+    test('AutoScaleDown Complex', () {
+      ResponsiveBreakpoint defaultBreakpoint = ResponsiveBreakpoint.resize(450);
+      List<ResponsiveBreakpoint> responsiveBreakpoints = [
+        ResponsiveBreakpoint.autoScaleDown(360),
+        ResponsiveBreakpoint.tag(380, name: 'MOBILE'),
+        ResponsiveBreakpoint.autoScaleDown(400),
+        ResponsiveBreakpoint.autoScale(420),
+        ResponsiveBreakpoint.tag(430, name: 'DEFAULT'),
+        ResponsiveBreakpoint.tag(440, name: 'PHONE'),
+        ResponsiveBreakpoint.autoScaleDown(450),
+      ];
+      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+          getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
+      expect(
+          responsiveBreakpointSegments[0],
+          ResponsiveBreakpointSegment(
+              breakpoint: 0,
+              segmentType: ResponsiveBreakpointBehavior.RESIZE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(360)));
+      expect(
+          responsiveBreakpointSegments[1],
+          ResponsiveBreakpointSegment(
+              breakpoint: 360,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(360)));
+      expect(
+          responsiveBreakpointSegments[2],
+          ResponsiveBreakpointSegment(
+              breakpoint: 380,
+              segmentType: ResponsiveBreakpointBehavior.TAG,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.autoScale(360, name: 'MOBILE')));
+      expect(
+          responsiveBreakpointSegments[3],
+          ResponsiveBreakpointSegment(
+              breakpoint: 400,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(400)));
+      expect(
+          responsiveBreakpointSegments[4],
+          ResponsiveBreakpointSegment(
+              breakpoint: 420,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALE,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(420)));
+      expect(
+          responsiveBreakpointSegments[5],
+          ResponsiveBreakpointSegment(
+              breakpoint: 430.0,
+              segmentType: ResponsiveBreakpointBehavior.TAG,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.autoScale(420.0, name: 'DEFAULT')));
+      expect(
+          responsiveBreakpointSegments[6],
+          ResponsiveBreakpointSegment(
+              breakpoint: 435,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
+      expect(
+          responsiveBreakpointSegments[7],
+          ResponsiveBreakpointSegment(
+              breakpoint: 440.0,
+              segmentType: ResponsiveBreakpointBehavior.TAG,
+              responsiveBreakpoint:
+                  ResponsiveBreakpoint.autoScale(450.0, name: 'PHONE')));
+      expect(
+          responsiveBreakpointSegments[8],
+          ResponsiveBreakpointSegment(
+              breakpoint: 450,
+              segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+              responsiveBreakpoint: ResponsiveBreakpoint.autoScale(450)));
     });
   });
   group('MinWidth', () {
@@ -547,7 +684,7 @@ void main() {
               breakpoint: 360,
               segmentType: ResponsiveBreakpointBehavior.TAG,
               responsiveBreakpoint:
-                  ResponsiveBreakpoint.autoScale(360, name: 'PHONE')));
+                  ResponsiveBreakpoint.resize(320, name: 'PHONE')));
     });
   });
   group('Tag', () {

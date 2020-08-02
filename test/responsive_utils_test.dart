@@ -11,12 +11,10 @@ void main() {
         ResponsiveBreakpoint.resize(450),
         ResponsiveBreakpoint.autoScaleDown(450),
       ];
-      // Randomize order.
-      breakpoints.shuffle();
       breakpoints.sort(ResponsiveUtils.breakpointComparator);
-      expect(breakpoints[0], ResponsiveBreakpoint.autoScaleDown(450));
+      expect(breakpoints[0], ResponsiveBreakpoint.autoScale(450));
       expect(breakpoints[1], ResponsiveBreakpoint.resize(450));
-      expect(breakpoints[2], ResponsiveBreakpoint.autoScale(450));
+      expect(breakpoints[2], ResponsiveBreakpoint.autoScaleDown(450));
       expect(breakpoints[3], ResponsiveBreakpoint.tag(450, name: 'DEFAULT'));
     });
     test('Sort Mixed', () {
@@ -47,10 +45,8 @@ void main() {
       // Duplicate behaviors have their orders preserved.
       expect(
           breakpoints[0], ResponsiveBreakpoint.autoScaleDown(450, name: '1'));
-      expect(
-          breakpoints[1], ResponsiveBreakpoint.autoScaleDown(450, name: '2'));
-      expect(
-          breakpoints[2], ResponsiveBreakpoint.autoScaleDown(450, name: '3'));
+      expect(breakpoints[1], ResponsiveBreakpoint.autoScale(450));
+      expect(breakpoints[2], ResponsiveBreakpoint.resize(450));
       expect(breakpoints[5], ResponsiveBreakpoint.tag(450, name: 'DEFAULT'));
     });
   });
