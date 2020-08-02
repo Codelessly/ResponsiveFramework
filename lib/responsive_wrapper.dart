@@ -833,18 +833,19 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
       breakpoints.firstWhere((element) => !element.isTag, orElse: () => null);
 
   // Construct initial segment that starts from 0.
+  // Initial segment inherits default behavior.
   breakpointHolder = ResponsiveBreakpoint(
       breakpoint: initialBreakpoint.breakpoint,
-      name: initialBreakpoint.name,
+      name: defaultBreakpoint.name,
       behavior: (initialBreakpoint.isAutoScaleDown)
           ? ResponsiveBreakpointBehavior.AUTOSCALE
-          : initialBreakpoint.behavior,
-      scaleFactor: initialBreakpoint.scaleFactor);
+          : defaultBreakpoint.behavior,
+      scaleFactor: defaultBreakpoint.scaleFactor);
   breakpointSegments.insert(
       0,
       ResponsiveBreakpointSegment(
           breakpoint: 0,
-          segmentType: initialBreakpoint.behavior,
+          segmentType: defaultBreakpoint.behavior,
           responsiveBreakpoint: breakpointHolder));
 
   // Convert breakpoints into internal breakpoint segments.
