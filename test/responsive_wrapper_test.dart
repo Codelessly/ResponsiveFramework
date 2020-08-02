@@ -124,7 +124,7 @@ void main() {
         450,
         451,
       ];
-      List<dynamic> expectedValues = [defaultName, null, null];
+      List<dynamic> expectedValues = [defaultName, defaultName, defaultName];
 
       for (var i = 0; i < boundaryValues.length; i++) {
         resetScreenSize(tester);
@@ -363,12 +363,13 @@ void main() {
 
     // Test breakpoint bounds (0, infinity)
     testWidgets('Breakpoint Bounds', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, Size(400, 1200));
       Key key = UniqueKey();
       String defaultName = 'defaultName';
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
+          minWidth: 450,
           defaultName: defaultName,
           defaultScale: true,
           breakpoints: [
