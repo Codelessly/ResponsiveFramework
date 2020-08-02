@@ -946,6 +946,8 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         // Update holder with active breakpoint
         breakpointHolder = breakpoint;
         break;
+      case ResponsiveBreakpointBehavior.TAG:
+        break;
     }
     // Merge duplicate segments.
     // Compare current segment to previous segment.
@@ -967,24 +969,22 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
             (element) => element.breakpoint <= breakpointTag.breakpoint);
     int breakpointHolderIndex =
         breakpointSegments.indexOf(breakpointSegmentHolder);
-    if (breakpointHolder.breakpoint == breakpointTag.breakpoint) {
-      breakpointSegments.insert(
-          breakpointHolderIndex,
-          ResponsiveBreakpointSegment(
-            breakpoint: breakpointTag.breakpoint,
-            segmentType: breakpointTag.behavior,
-            responsiveBreakpoint: breakpointTag
-                .merge(breakpointSegmentHolder.responsiveBreakpoint),
-          ));
+    if (breakpointSegmentHolder.breakpoint == breakpointTag.breakpoint) {
+      breakpointSegments[breakpointHolderIndex] = ResponsiveBreakpointSegment(
+        breakpoint: breakpointSegmentHolder.breakpoint,
+        segmentType: breakpointSegmentHolder.segmentType,
+        responsiveBreakpoint:
+            breakpointSegmentHolder.responsiveBreakpoint.merge(breakpointTag),
+      );
     } else {
       breakpointSegments.insert(
-          breakpointHolderIndex + 1,
-          ResponsiveBreakpointSegment(
+        breakpointHolderIndex + 1,
+        ResponsiveBreakpointSegment(
             breakpoint: breakpointTag.breakpoint,
             segmentType: breakpointTag.behavior,
-            responsiveBreakpoint: breakpointTag
-                .merge(breakpointSegmentHolder.responsiveBreakpoint),
-          ));
+            responsiveBreakpoint: breakpointSegmentHolder.responsiveBreakpoint
+                .merge(breakpointTag)),
+      );
     }
   }
 
