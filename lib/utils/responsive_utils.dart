@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../responsive_wrapper.dart';
 
 /// Util functions for the Responsive Framework.
@@ -38,11 +40,43 @@ class ResponsiveUtils {
 
   /// Print a visual view of [breakpointSegments]
   /// for debugging purposes.
-  static String debugLogBreakpoints(
+  static String debugLogBreakpointSegments(
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments) {
-    responsiveBreakpointSegments.forEach((element) {
-      print(element);
-    });
-    return responsiveBreakpointSegments.toString();
+    var stringBuffer = new StringBuffer();
+    stringBuffer.write('|');
+    for (int i = 0; i < responsiveBreakpointSegments.length; i++) {
+      // Convenience variable.
+      ResponsiveBreakpointSegment segment = responsiveBreakpointSegments[i];
+      print(segment);
+      stringBuffer.write(segment.breakpoint.round());
+      List<dynamic> attributes = [];
+      String name = segment.responsiveBreakpoint.name;
+      if (name != null) attributes.add(name);
+      double scaleFactor = segment.responsiveBreakpoint.scaleFactor;
+      if (scaleFactor != 1) attributes.add(scaleFactor);
+      if (attributes.isNotEmpty) {
+        stringBuffer.write('(');
+        for (int i = 0; i < attributes.length; i++) {
+          stringBuffer.write(attributes[i]);
+          if (i != attributes.length - 1) stringBuffer.write('|');
+        }
+        stringBuffer.write(')');
+      }
+      stringBuffer.write(' ----- ');
+      if (segment.segmentType == ResponsiveBreakpointBehavior.AUTOSCALEDOWN &&
+          segment.breakpoint < segment.responsiveBreakpoint.breakpoint) {
+        stringBuffer.write(describeEnum(segment.segmentType) +
+            ' from ' +
+            segment.responsiveBreakpoint.breakpoint.round().toString());
+      } else {
+        stringBuffer
+            .write('${describeEnum(segment.responsiveBreakpoint.behavior)}');
+      }
+      if (i != responsiveBreakpointSegments.length - 1)
+        stringBuffer.write(' ----- ');
+    }
+    stringBuffer.write(' ----- ∞ |');
+    print(stringBuffer.toString());
+    return stringBuffer.toString();
   }
 }

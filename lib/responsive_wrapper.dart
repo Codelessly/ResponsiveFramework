@@ -310,7 +310,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
     // Log breakpoints to console.
     if (widget.debugLog)
-      ResponsiveUtils.debugLogBreakpoints(breakpointSegments);
+      ResponsiveUtils.debugLogBreakpointSegments(breakpointSegments);
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
