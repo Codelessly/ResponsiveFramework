@@ -155,9 +155,11 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (rowColumn && (rowFlex != null || rowFit != null)) {
-      return Flexible(flex: rowFlex, fit: rowFit, child: child);
+      return Flexible(
+          flex: rowFlex ?? 1, fit: rowFit ?? FlexFit.loose, child: child);
     } else if (!rowColumn && (columnFlex != null || columnFit != null)) {
-      return Flexible(flex: columnFlex, fit: columnFit, child: child);
+      return Flexible(
+          flex: columnFlex ?? 1, fit: columnFit ?? FlexFit.loose, child: child);
     }
 
     return child;
