@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.8
+- New breakpoint calculation algorithm.
+- Create `debugLog` parameter. Pretty print a visual view of breakpoint segments for debugging purposes.
+- Add over 100+ tests.
+- Fix first frame black screen issue.
+
 ## 0.0.7
 - Add links to [Flutter Website](https://github.com/Codelessly/FlutterWebsite) example.
 
