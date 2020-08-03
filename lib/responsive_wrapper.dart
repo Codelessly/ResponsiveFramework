@@ -846,28 +846,29 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
   breakpointsHolder.sort(ResponsiveUtils.breakpointComparator);
   breakpointTags.sort(ResponsiveUtils.breakpointComparator);
 
-  // Breakpoint variable that holds the active behavior.
-  // Used to calculate and remember the breakpoint behavior.
-  ResponsiveBreakpoint breakpointHolder;
-
   // Find the first breakpoint behavior.
   ResponsiveBreakpoint initialBreakpoint = breakpointsHolder.first;
 
-  // Construct initial segment that starts from 0.
-  // Initial segment inherits default behavior.
-  breakpointHolder = ResponsiveBreakpoint(
+  // Breakpoint variable that holds the active behavior.
+  // Used to calculate and remember the breakpoint behavior.
+  ResponsiveBreakpoint breakpointHolder = ResponsiveBreakpoint(
       breakpoint: initialBreakpoint.breakpoint,
       name: defaultBreakpoint.name,
-      behavior: (initialBreakpoint.isAutoScaleDown)
-          ? ResponsiveBreakpointBehavior.AUTOSCALE
-          : defaultBreakpoint.behavior,
+      behavior: defaultBreakpoint.behavior,
       scaleFactor: defaultBreakpoint.scaleFactor);
+
+  // Construct initial segment that starts from 0.
+  // Initial segment inherits default behavior.
   breakpointSegments.insert(
       0,
       ResponsiveBreakpointSegment(
           breakpoint: 0,
           segmentType: defaultBreakpoint.behavior,
-          responsiveBreakpoint: breakpointHolder));
+          // Convert initial AutoScaleDown behavior to AutoScale.
+          responsiveBreakpoint: breakpointHolder.copyWith(
+              behavior: (initialBreakpoint.isAutoScaleDown)
+                  ? ResponsiveBreakpointBehavior.AUTOSCALE
+                  : defaultBreakpoint.behavior)));
 
   // Calculate segments from breakpoints.
   for (int i = 0; i < breakpointsHolder.length; i++) {
@@ -882,8 +883,6 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
             breakpoint: breakpoint.breakpoint,
             segmentType: breakpoint.behavior,
             responsiveBreakpoint: breakpoint);
-        // Update holder with active breakpoint
-        breakpointHolder = breakpoint;
         break;
       case ResponsiveBreakpointBehavior.AUTOSCALEDOWN:
         if (breakpointHolder.isAutoScaleDown) {
@@ -895,6 +894,17 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
                   name: breakpoint.name,
                   behavior: ResponsiveBreakpointBehavior.AUTOSCALE,
                   scaleFactor: breakpoint.scaleFactor));
+          // Construct override breakpoint segment.
+          int overrideBreakpointIndex = i;
+          ResponsiveBreakpointSegment overrideBreakpointSegment =
+              breakpointSegments[overrideBreakpointIndex];
+          overrideBreakpointSegment = overrideBreakpointSegment.copyWith(
+              responsiveBreakpoint:
+                  overrideBreakpointSegment.responsiveBreakpoint.copyWith(
+                      breakpoint: breakpoint.breakpoint,
+                      behavior: ResponsiveBreakpointBehavior.AUTOSCALE));
+          breakpointSegments[overrideBreakpointIndex] =
+              overrideBreakpointSegment;
         } else {
           // Split AutoScale behavior between autoScale and autoScaleDown.
           if (breakpointHolder.isAutoScale) {
@@ -921,7 +931,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
             // Construct override breakpoint segment.
             int overrideBreakpointIndex = breakpointSegments.lastIndexWhere(
                 (element) =>
-                    element.breakpoint == breakpointHolder.breakpoint &&
+                    element.breakpoint <= breakpointHolder.breakpoint &&
                     element.isResize);
             ResponsiveBreakpointSegment overrideBreakpointSegment =
                 breakpointSegments[overrideBreakpointIndex];
@@ -943,12 +953,12 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
                   behavior: ResponsiveBreakpointBehavior.AUTOSCALE,
                   scaleFactor: breakpoint.scaleFactor));
         }
-        // Update holder with active breakpoint
-        breakpointHolder = breakpoint;
         break;
       case ResponsiveBreakpointBehavior.TAG:
         break;
     }
+    // Update holder with active breakpoint
+    breakpointHolder = breakpoint;
     // Merge duplicate segments.
     // Compare current segment to previous segment.
     if (breakpointSegments.last.breakpoint ==
