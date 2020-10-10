@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.9
+- Create ResponsiveGridView that extends GridView with more grid layout controls.
+- Use ResponsiveGridView for shrink and fixed item sizing options with the ability to control alignment and max row count.
+- Breaking - simplified `autoScaleDown` behavior to only scale down from the specified breakpoint.
+
 ## 0.0.8
 - New breakpoint calculation algorithm.
 - Create `debugLog` parameter. Pretty print a visual view of breakpoint segments for debugging purposes.

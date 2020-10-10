@@ -6,9 +6,12 @@ import 'package:flutter/widgets.dart';
 ///
 /// ResponsiveGridView extends [GridView] with
 /// a custom [ResponsiveGridDelegate] [gridDelegate]
-/// that enables greater item size control.
-/// Additional parameters [alignment] and [maxRowCount]
-/// add grid item positioning capabilities.
+/// that adds more grid layout controls.
+/// See [ResponsiveGridDelegate] for shrink and
+/// fixed item size options.
+/// Additional customization parameters [alignment]
+/// and [maxRowCount] adds the ability to align
+/// items and limit items in a row.
 class ResponsiveGridView extends StatelessWidget {
   final Axis scrollDirection;
   final bool reverse;
