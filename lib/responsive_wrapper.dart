@@ -52,7 +52,20 @@ class ResponsiveWrapper extends StatefulWidget {
   final String defaultName;
   final bool defaultScale;
   final double defaultScaleFactor;
+
+  /// An optional background widget to insert behind
+  /// the responsive content. The background widget
+  /// expands to fill the entire space of the wrapper and
+  /// is not resized.
+  /// Can be used to set a background image, pattern,
+  /// or solid fill.
   final Widget background;
+
+  /// First frame initialization default background color.
+  /// Because layout initialization is delayed by 1 frame,
+  /// a solid background color is displayed instead.
+  /// Default white.
+  final Color backgroundColor;
   final MediaQueryData mediaQueryData;
   final bool shrinkWrap;
   final bool debugLog;
@@ -68,6 +81,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.defaultScale = false,
     this.defaultScaleFactor = 1,
     this.background,
+    this.backgroundColor,
     this.mediaQueryData,
     this.shrinkWrap = true,
     this.debugLog = false,
@@ -88,6 +102,7 @@ class ResponsiveWrapper extends StatefulWidget {
     bool defaultScale = false,
     double defaultScaleFactor = 1,
     Widget background,
+    Color backgroundColor,
     MediaQueryData mediaQueryData,
     bool debugLog = false,
   }) {
@@ -100,6 +115,7 @@ class ResponsiveWrapper extends StatefulWidget {
       defaultScale: defaultScale,
       defaultScaleFactor: defaultScaleFactor,
       background: background,
+      backgroundColor: backgroundColor,
       mediaQueryData: mediaQueryData,
       shrinkWrap: false,
       debugLog: debugLog,
@@ -349,7 +365,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   Widget build(BuildContext context) {
     return (screenWidth ==
             0) // Initialization check. Window measurements not available until postFrameCallback.
-        ? Container(color: Color(0x00FFFFFF))
+        ? (widget.backgroundColor ??
+            Container(
+                color: Color(
+                    0xFFFFFFFF))) // First frame empty background color or default white.
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
             child: Stack(
