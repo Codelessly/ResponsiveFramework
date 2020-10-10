@@ -1,7 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'utils/responsive_utils.dart';
 
@@ -352,7 +349,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   Widget build(BuildContext context) {
     return (screenWidth ==
             0) // Initialization check. Window measurements not available until postFrameCallback.
-        ? Container(color: Colors.white)
+        ? Container(color: Color(0x00FFFFFF))
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
             child: Stack(
