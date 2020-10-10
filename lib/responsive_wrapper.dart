@@ -867,6 +867,10 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
                   ? ResponsiveBreakpointBehavior.AUTOSCALE
                   : defaultBreakpoint.behavior)));
 
+  // A counter to keep track of the actual number of added breakpoints.
+  // Needed because breakpoints are merged so not every
+  // for-loop iteration adds a breakpoint segment.
+  int breakpointCounter = 0;
   // Calculate segments from breakpoints.
   for (int i = 0; i < breakpointsHolder.length; i++) {
     // Convenience variable.
@@ -886,7 +890,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
         // AutoScaleDown needs to override the breakpoint
         // interval because responsive calculations are
         // performed from 0 - ∞.
-        int overrideBreakpointIndex = i;
+        int overrideBreakpointIndex = breakpointCounter;
         ResponsiveBreakpointSegment overrideBreakpointSegment =
             breakpointSegments[overrideBreakpointIndex];
         overrideBreakpointSegment = overrideBreakpointSegment.copyWith(
@@ -921,6 +925,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
       continue;
     }
     breakpointSegments.add(breakpointSegmentHolder);
+    breakpointCounter += 1;
   }
 
   // Add tags to segments.
