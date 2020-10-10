@@ -882,74 +882,30 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
             responsiveBreakpoint: breakpoint);
         break;
       case ResponsiveBreakpointBehavior.AUTOSCALEDOWN:
-        if (breakpointHolder.isAutoScaleDown) {
-          breakpointSegmentHolder = ResponsiveBreakpointSegment(
-              breakpoint: breakpoint.breakpoint,
-              segmentType: breakpoint.behavior,
-              responsiveBreakpoint: ResponsiveBreakpoint(
-                  breakpoint: breakpoint.breakpoint,
-                  name: breakpoint.name,
-                  behavior: ResponsiveBreakpointBehavior.AUTOSCALE,
-                  scaleFactor: breakpoint.scaleFactor));
-          // Construct override breakpoint segment.
-          int overrideBreakpointIndex = i;
-          ResponsiveBreakpointSegment overrideBreakpointSegment =
-              breakpointSegments[overrideBreakpointIndex];
-          overrideBreakpointSegment = overrideBreakpointSegment.copyWith(
-              responsiveBreakpoint:
-                  overrideBreakpointSegment.responsiveBreakpoint.copyWith(
-                      breakpoint: breakpoint.breakpoint,
-                      behavior: ResponsiveBreakpointBehavior.AUTOSCALE));
-          breakpointSegments[overrideBreakpointIndex] =
-              overrideBreakpointSegment;
-        } else {
-          // Split AutoScale behavior between autoScale and autoScaleDown.
-          if (breakpointHolder.isAutoScale) {
-            // If breakpoints are duplicate, skip adding midway segment.
-            if (breakpoint.breakpoint != breakpointHolder.breakpoint) {
-              // Construct midway breakpoint segment.
-              ResponsiveBreakpointSegment midwayBreakpointSegment =
-                  ResponsiveBreakpointSegment(
-                      breakpoint: (breakpoint.breakpoint -
-                                  breakpointHolder.breakpoint) /
-                              2 +
-                          breakpointHolder.breakpoint,
-                      segmentType: ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
-                      responsiveBreakpoint: ResponsiveBreakpoint(
-                          breakpoint: breakpoint.breakpoint,
-                          name: breakpointHolder.name,
-                          behavior: ResponsiveBreakpointBehavior.AUTOSCALE,
-                          scaleFactor: breakpoint.scaleFactor));
-              breakpointSegments.add(midwayBreakpointSegment);
-            }
-          }
-          // AutoScaleDown overrides resize behavior.
-          if (breakpointHolder.isResize) {
-            // Construct override breakpoint segment.
-            int overrideBreakpointIndex = breakpointSegments.lastIndexWhere(
-                (element) =>
-                    element.breakpoint <= breakpointHolder.breakpoint &&
-                    element.isResize);
-            ResponsiveBreakpointSegment overrideBreakpointSegment =
-                breakpointSegments[overrideBreakpointIndex];
-            overrideBreakpointSegment = overrideBreakpointSegment.copyWith(
-                responsiveBreakpoint:
-                    overrideBreakpointSegment.responsiveBreakpoint.copyWith(
-                        breakpoint: breakpoint.breakpoint,
-                        behavior: ResponsiveBreakpointBehavior.AUTOSCALE));
-            breakpointSegments[overrideBreakpointIndex] =
-                overrideBreakpointSegment;
-          }
-          // Construct autoScaleDown breakpoint.
-          breakpointSegmentHolder = ResponsiveBreakpointSegment(
-              breakpoint: breakpoint.breakpoint,
-              segmentType: breakpoint.behavior,
-              responsiveBreakpoint: ResponsiveBreakpoint(
-                  breakpoint: breakpoint.breakpoint,
-                  name: breakpoint.name,
-                  behavior: ResponsiveBreakpointBehavior.AUTOSCALE,
-                  scaleFactor: breakpoint.scaleFactor));
-        }
+        // Construct override breakpoint segment.
+        // AutoScaleDown needs to override the breakpoint
+        // interval because responsive calculations are
+        // performed from 0 - ∞.
+        int overrideBreakpointIndex = i;
+        ResponsiveBreakpointSegment overrideBreakpointSegment =
+            breakpointSegments[overrideBreakpointIndex];
+        overrideBreakpointSegment = overrideBreakpointSegment.copyWith(
+            responsiveBreakpoint: overrideBreakpointSegment.responsiveBreakpoint
+                .copyWith(
+                    breakpoint: breakpoint.breakpoint,
+                    behavior: ResponsiveBreakpointBehavior.AUTOSCALE));
+        breakpointSegments[overrideBreakpointIndex] = overrideBreakpointSegment;
+
+        // AutoScaleDown acts as an AutoScale breakpoint
+        // in the 0 - ∞ direction.
+        breakpointSegmentHolder = ResponsiveBreakpointSegment(
+            breakpoint: breakpoint.breakpoint,
+            segmentType: breakpoint.behavior,
+            responsiveBreakpoint: ResponsiveBreakpoint(
+                breakpoint: breakpoint.breakpoint,
+                name: breakpoint.name,
+                behavior: ResponsiveBreakpointBehavior.AUTOSCALE,
+                scaleFactor: breakpoint.scaleFactor));
         break;
       case ResponsiveBreakpointBehavior.TAG:
         break;
