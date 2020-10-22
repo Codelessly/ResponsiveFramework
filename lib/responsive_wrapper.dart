@@ -280,6 +280,48 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
   }
 
+  /// Simulated view inset calculations.
+  ///
+  /// The [viewInset] is dependent upon the
+  /// [scaledWidth] and [scaledHeight] respectively.
+  /// If the screen is scaled, the view insets should
+  /// be scaled to preserve the aspect ratio.
+  /// The [scaledViewInsets] are computed with the
+  /// following algorithm:
+  /// 1. Find the percentage of screen height the original view insets are
+  /// 2. Calculate the number of pixels the same percentage of the scaled height is.
+  /// 4. Return calculated proportional insets
+  EdgeInsets scaledViewInsets;
+  EdgeInsets getScaledViewInsets() {
+    double leftInsetFactor;
+    double topInsetFactor;
+    double rightInsetFactor;
+    double bottomInsetFactor;
+    double scaledLeftInset;
+    double scaledTopInset;
+    double scaledRightInset;
+    double scaledBottomInset;   
+
+    if(widget.mediaQueryData != null) {
+      leftInsetFactor = widget.mediaQueryData.viewInsets.left / screenWidth;
+      topInsetFactor = widget.mediaQueryData.viewInsets.top / screenHeight;
+      rightInsetFactor = widget.mediaQueryData.viewInsets.right / screenWidth;
+      bottomInsetFactor = widget.mediaQueryData.viewInsets.bottom / screenHeight;
+    } else {
+      leftInsetFactor = MediaQuery.of(context).viewInsets.left / screenWidth;
+      topInsetFactor = MediaQuery.of(context).viewInsets.top / screenHeight;
+      rightInsetFactor = MediaQuery.of(context).viewInsets.right / screenWidth;
+      bottomInsetFactor = MediaQuery.of(context).viewInsets.bottom / screenHeight;   
+    }
+
+    scaledLeftInset = leftInsetFactor * scaledWidth;
+    scaledTopInset = topInsetFactor * scaledHeight;
+    scaledRightInset = rightInsetFactor * scaledWidth;
+    scaledBottomInset = bottomInsetFactor * scaledHeight;
+
+    return EdgeInsets.fromLTRB(scaledLeftInset, scaledTopInset, scaledRightInset, scaledBottomInset);
+  }
+
   double get activeScaleFactor =>
       activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
@@ -296,6 +338,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     screenHeight = getScreenHeight();
     scaledWidth = getScaledWidth();
     scaledHeight = getScaledHeight();
+    scaledViewInsets = getScaledViewInsets();
   }
 
   /// Set [activeBreakpointSegment].
@@ -410,12 +453,14 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     if (widget.mediaQueryData != null) {
       return widget.mediaQueryData.copyWith(
           size: Size(scaledWidth, scaledHeight),
-          devicePixelRatio: devicePixelRatio * activeScaleFactor);
+          devicePixelRatio: devicePixelRatio * activeScaleFactor,
+          viewInsets: scaledViewInsets);
     }
 
     return MediaQuery.of(context).copyWith(
         size: Size(scaledWidth, scaledHeight),
-        devicePixelRatio: devicePixelRatio * activeScaleFactor);
+        devicePixelRatio: devicePixelRatio * activeScaleFactor,
+        viewInsets: scaledViewInsets);
   }
 }
 
