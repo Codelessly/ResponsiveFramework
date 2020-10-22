@@ -322,6 +322,37 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     return EdgeInsets.fromLTRB(scaledLeftInset, scaledTopInset, scaledRightInset, scaledBottomInset);
   }
 
+  EdgeInsets scaledViewPadding;
+  EdgeInsets getScaledViewPadding() {
+    double leftPaddingFactor;
+    double topPaddingFactor;
+    double rightPaddingFactor;
+    double bottomPaddingFactor;
+    double scaledLeftPadding;
+    double scaledTopPadding;
+    double scaledRightPadding;
+    double scaledBottomPadding;   
+
+    if(widget.mediaQueryData != null) {
+      leftPaddingFactor = widget.mediaQueryData.viewPadding.left / screenWidth;
+      topPaddingFactor = widget.mediaQueryData.viewPadding.top / screenHeight;
+      rightPaddingFactor = widget.mediaQueryData.viewPadding.right / screenWidth;
+      bottomPaddingFactor = widget.mediaQueryData.viewPadding.bottom / screenHeight;
+    } else {
+      leftPaddingFactor = MediaQuery.of(context).viewPadding.left / screenWidth;
+      topPaddingFactor = MediaQuery.of(context).viewPadding.top / screenHeight;
+      rightPaddingFactor = MediaQuery.of(context).viewPadding.right / screenWidth;
+      bottomPaddingFactor = MediaQuery.of(context).viewPadding.bottom / screenHeight;   
+    }
+
+    scaledLeftPadding = leftPaddingFactor * scaledWidth;
+    scaledTopPadding = topPaddingFactor * scaledHeight;
+    scaledRightPadding = rightPaddingFactor * scaledWidth;
+    scaledBottomPadding = bottomPaddingFactor * scaledHeight;
+
+    return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding, scaledRightPadding, scaledBottomPadding);
+  }
+
   double get activeScaleFactor =>
       activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
@@ -339,6 +370,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     scaledWidth = getScaledWidth();
     scaledHeight = getScaledHeight();
     scaledViewInsets = getScaledViewInsets();
+    scaledViewPadding = getScaledViewPadding();
   }
 
   /// Set [activeBreakpointSegment].
@@ -454,13 +486,15 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       return widget.mediaQueryData.copyWith(
           size: Size(scaledWidth, scaledHeight),
           devicePixelRatio: devicePixelRatio * activeScaleFactor,
-          viewInsets: scaledViewInsets);
+          viewInsets: scaledViewInsets,
+          viewPadding: scaledViewPadding);
     }
 
     return MediaQuery.of(context).copyWith(
         size: Size(scaledWidth, scaledHeight),
         devicePixelRatio: devicePixelRatio * activeScaleFactor,
-        viewInsets: scaledViewInsets);
+        viewInsets: scaledViewInsets,
+        viewPadding: scaledViewPadding);
   }
 }
 
