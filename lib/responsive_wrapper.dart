@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 
 import 'utils/responsive_utils.dart';
@@ -353,6 +355,21 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding, scaledRightPadding, scaledBottomPadding);
   }
 
+  EdgeInsets scaledPadding;
+  EdgeInsets getScaledPadding() {
+    double scaledLeftPadding;
+    double scaledTopPadding;
+    double scaledRightPadding;
+    double scaledBottomPadding;
+
+    scaledLeftPadding = max(0.0, getScaledViewPadding().left - getScaledViewInsets().left);
+    scaledTopPadding = max(0.0, getScaledViewPadding().top - getScaledViewInsets().top);
+    scaledRightPadding = max(0.0, getScaledViewPadding().right - getScaledViewInsets().right);
+    scaledBottomPadding = max(0.0, getScaledViewPadding().bottom - getScaledViewInsets().bottom);
+
+    return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding, scaledRightPadding, scaledBottomPadding);
+  }
+
   double get activeScaleFactor =>
       activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
@@ -371,6 +388,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     scaledHeight = getScaledHeight();
     scaledViewInsets = getScaledViewInsets();
     scaledViewPadding = getScaledViewPadding();
+    scaledPadding = getScaledPadding();
   }
 
   /// Set [activeBreakpointSegment].
@@ -487,14 +505,18 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           size: Size(scaledWidth, scaledHeight),
           devicePixelRatio: devicePixelRatio * activeScaleFactor,
           viewInsets: scaledViewInsets,
-          viewPadding: scaledViewPadding);
+          viewPadding: scaledViewPadding,
+          padding: scaledPadding
+          );
     }
 
     return MediaQuery.of(context).copyWith(
         size: Size(scaledWidth, scaledHeight),
         devicePixelRatio: devicePixelRatio * activeScaleFactor,
         viewInsets: scaledViewInsets,
-        viewPadding: scaledViewPadding);
+        viewPadding: scaledViewPadding,
+        padding: scaledPadding
+        );
   }
 }
 
