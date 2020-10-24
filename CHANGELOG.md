@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.11
+- Dartfmt files. No functional changes.
+
 ## 0.0.10
 - Calculate padding for SafeArea scaling correctly.
 - Calculate ViewInsets for keyboard offset correctly.

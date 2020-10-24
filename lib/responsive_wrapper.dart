@@ -302,18 +302,20 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     double scaledLeftInset;
     double scaledTopInset;
     double scaledRightInset;
-    double scaledBottomInset;   
+    double scaledBottomInset;
 
-    if(widget.mediaQueryData != null) {
+    if (widget.mediaQueryData != null) {
       leftInsetFactor = widget.mediaQueryData.viewInsets.left / screenWidth;
       topInsetFactor = widget.mediaQueryData.viewInsets.top / screenHeight;
       rightInsetFactor = widget.mediaQueryData.viewInsets.right / screenWidth;
-      bottomInsetFactor = widget.mediaQueryData.viewInsets.bottom / screenHeight;
+      bottomInsetFactor =
+          widget.mediaQueryData.viewInsets.bottom / screenHeight;
     } else {
       leftInsetFactor = MediaQuery.of(context).viewInsets.left / screenWidth;
       topInsetFactor = MediaQuery.of(context).viewInsets.top / screenHeight;
       rightInsetFactor = MediaQuery.of(context).viewInsets.right / screenWidth;
-      bottomInsetFactor = MediaQuery.of(context).viewInsets.bottom / screenHeight;   
+      bottomInsetFactor =
+          MediaQuery.of(context).viewInsets.bottom / screenHeight;
     }
 
     scaledLeftInset = leftInsetFactor * scaledWidth;
@@ -321,7 +323,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     scaledRightInset = rightInsetFactor * scaledWidth;
     scaledBottomInset = bottomInsetFactor * scaledHeight;
 
-    return EdgeInsets.fromLTRB(scaledLeftInset, scaledTopInset, scaledRightInset, scaledBottomInset);
+    return EdgeInsets.fromLTRB(
+        scaledLeftInset, scaledTopInset, scaledRightInset, scaledBottomInset);
   }
 
   EdgeInsets scaledViewPadding;
@@ -333,18 +336,22 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     double scaledLeftPadding;
     double scaledTopPadding;
     double scaledRightPadding;
-    double scaledBottomPadding;   
+    double scaledBottomPadding;
 
-    if(widget.mediaQueryData != null) {
+    if (widget.mediaQueryData != null) {
       leftPaddingFactor = widget.mediaQueryData.viewPadding.left / screenWidth;
       topPaddingFactor = widget.mediaQueryData.viewPadding.top / screenHeight;
-      rightPaddingFactor = widget.mediaQueryData.viewPadding.right / screenWidth;
-      bottomPaddingFactor = widget.mediaQueryData.viewPadding.bottom / screenHeight;
+      rightPaddingFactor =
+          widget.mediaQueryData.viewPadding.right / screenWidth;
+      bottomPaddingFactor =
+          widget.mediaQueryData.viewPadding.bottom / screenHeight;
     } else {
       leftPaddingFactor = MediaQuery.of(context).viewPadding.left / screenWidth;
       topPaddingFactor = MediaQuery.of(context).viewPadding.top / screenHeight;
-      rightPaddingFactor = MediaQuery.of(context).viewPadding.right / screenWidth;
-      bottomPaddingFactor = MediaQuery.of(context).viewPadding.bottom / screenHeight;   
+      rightPaddingFactor =
+          MediaQuery.of(context).viewPadding.right / screenWidth;
+      bottomPaddingFactor =
+          MediaQuery.of(context).viewPadding.bottom / screenHeight;
     }
 
     scaledLeftPadding = leftPaddingFactor * scaledWidth;
@@ -352,7 +359,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     scaledRightPadding = rightPaddingFactor * scaledWidth;
     scaledBottomPadding = bottomPaddingFactor * scaledHeight;
 
-    return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding, scaledRightPadding, scaledBottomPadding);
+    return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding,
+        scaledRightPadding, scaledBottomPadding);
   }
 
   EdgeInsets scaledPadding;
@@ -362,12 +370,17 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     double scaledRightPadding;
     double scaledBottomPadding;
 
-    scaledLeftPadding = max(0.0, getScaledViewPadding().left - getScaledViewInsets().left);
-    scaledTopPadding = max(0.0, getScaledViewPadding().top - getScaledViewInsets().top);
-    scaledRightPadding = max(0.0, getScaledViewPadding().right - getScaledViewInsets().right);
-    scaledBottomPadding = max(0.0, getScaledViewPadding().bottom - getScaledViewInsets().bottom);
+    scaledLeftPadding =
+        max(0.0, getScaledViewPadding().left - getScaledViewInsets().left);
+    scaledTopPadding =
+        max(0.0, getScaledViewPadding().top - getScaledViewInsets().top);
+    scaledRightPadding =
+        max(0.0, getScaledViewPadding().right - getScaledViewInsets().right);
+    scaledBottomPadding =
+        max(0.0, getScaledViewPadding().bottom - getScaledViewInsets().bottom);
 
-    return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding, scaledRightPadding, scaledBottomPadding);
+    return EdgeInsets.fromLTRB(scaledLeftPadding, scaledTopPadding,
+        scaledRightPadding, scaledBottomPadding);
   }
 
   double get activeScaleFactor =>
@@ -506,8 +519,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           devicePixelRatio: devicePixelRatio * activeScaleFactor,
           viewInsets: scaledViewInsets,
           viewPadding: scaledViewPadding,
-          padding: scaledPadding
-          );
+          padding: scaledPadding);
     }
 
     return MediaQuery.of(context).copyWith(
@@ -515,8 +527,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         devicePixelRatio: devicePixelRatio * activeScaleFactor,
         viewInsets: scaledViewInsets,
         viewPadding: scaledViewPadding,
-        padding: scaledPadding
-        );
+        padding: scaledPadding);
   }
 }
 
