@@ -176,6 +176,7 @@ Now you can proudly display the time and headache saved by using Responsive Fram
 
 **Development:** 
 * [Ray Li](https://github.com/searchy2)
+* [Spencer Lindemuth](https://github.com/SpencerLindemuth)
 * *add yourself here by contributing*
 
 **Sponsor:** [Codelessly - Flutter App UI and Website Builder](https://codelessly.com/?utm_medium=link&utm_campaign=direct)

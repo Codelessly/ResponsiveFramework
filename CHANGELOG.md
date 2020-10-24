@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.10
+- Calculate padding for SafeArea scaling correctly.
+- Calculate ViewInsets for keyboard offset correctly.
+
 ## 0.0.9
 - Create ResponsiveGridView that extends GridView with more grid layout controls.
 - Use ResponsiveGridView for shrink and fixed item sizing options with the ability to control alignment and max row count.
