@@ -64,6 +64,12 @@ class ResponsiveGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     // LayoutBuilder provides constraints required for item sizing calculation.
     return LayoutBuilder(builder: (context, constraints) {
+      // A padding calculation variable that resolves null
+      // to a temporary zero value. The original null padding
+      // must be preserved for the [BoxScrollView] to calculate
+      // an effective padding with SafeArea. Create a
+      // temporary variable here to avoid overwriting null.
+      EdgeInsets paddingHolder = padding ?? EdgeInsets.zero;
       // The maximum number of items that can fit on one row.
       int crossAxisCount;
       // The maximum number of items that fit under the max row count.
@@ -73,9 +79,9 @@ class ResponsiveGridView extends StatelessWidget {
       // The width of all items and padding.
       double crossAxisWidth;
       // The maximum width available for items.
-      double crossAxisExtent = constraints.maxWidth - padding.horizontal;
+      double crossAxisExtent = constraints.maxWidth - paddingHolder.horizontal;
       assert(crossAxisExtent > 0,
-          '$padding exceeds layout width (${constraints.maxWidth})');
+          '$paddingHolder exceeds layout width (${constraints.maxWidth})');
       // Switch between grid delegate behavior.
       if (gridDelegate.crossAxisExtent != null) {
         // Fixed item size.
@@ -84,7 +90,7 @@ class ResponsiveGridView extends StatelessWidget {
             .floor();
         crossAxisWidth = crossAxisCount *
                 (gridDelegate.crossAxisExtent + gridDelegate.crossAxisSpacing) +
-            padding.horizontal;
+            paddingHolder.horizontal;
       } else if (gridDelegate.maxCrossAxisExtent != null) {
         // Max item size.
         crossAxisCount = (crossAxisExtent /
@@ -97,7 +103,7 @@ class ResponsiveGridView extends StatelessWidget {
             usableCrossAxisExtent / crossAxisCount;
         crossAxisWidth = crossAxisCount *
                 (childCrossAxisExtent + gridDelegate.crossAxisSpacing) +
-            padding.horizontal;
+            paddingHolder.horizontal;
       } else {
         // Min item size.
         crossAxisCount = (crossAxisExtent /
@@ -110,7 +116,7 @@ class ResponsiveGridView extends StatelessWidget {
             usableCrossAxisExtent / crossAxisCount;
         crossAxisWidth = crossAxisCount *
                 (childCrossAxisExtent + gridDelegate.crossAxisSpacing) +
-            padding.horizontal;
+            paddingHolder.horizontal;
       }
       // Calculate padding adjustment for alignment.
       if (alignment == Alignment.centerLeft ||
