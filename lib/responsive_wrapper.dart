@@ -70,6 +70,12 @@ class ResponsiveWrapper extends StatefulWidget {
   final Color backgroundColor;
   final MediaQueryData mediaQueryData;
   final bool shrinkWrap;
+
+  /// Control the internal Stack alignment. The ResponsiveWrapper
+  /// uses a Stack to enable child widgets to resize.
+  /// Defaults to [Alignment.topCenter] because app
+  /// content is usually top aligned.
+  final Alignment alignment;
   final bool debugLog;
 
   /// A wrapper widget that makes child widgets responsive.
@@ -86,6 +92,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.backgroundColor,
     this.mediaQueryData,
     this.shrinkWrap = true,
+    this.alignment = Alignment.topCenter,
     this.debugLog = false,
   })  : assert(minWidth != null),
         assert(defaultScale != null),
@@ -106,6 +113,7 @@ class ResponsiveWrapper extends StatefulWidget {
     Widget background,
     Color backgroundColor,
     MediaQueryData mediaQueryData,
+    Alignment alignment = Alignment.topCenter,
     bool debugLog = false,
   }) {
     return ResponsiveWrapper(
@@ -120,6 +128,7 @@ class ResponsiveWrapper extends StatefulWidget {
       backgroundColor: backgroundColor,
       mediaQueryData: mediaQueryData,
       shrinkWrap: false,
+      alignment: alignment,
       debugLog: debugLog,
     );
   }
@@ -431,6 +440,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     if (widget.debugLog)
       ResponsiveUtils.debugLogBreakpointSegments(breakpointSegments);
 
+    // Dimensions are only available after first frame paint.
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setDimensions();
@@ -478,7 +488,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
             child: Stack(
-              alignment: Alignment.topCenter,
+              alignment: widget.alignment,
               children: [
                 widget.background ?? SizedBox.shrink(),
                 MediaQuery(
