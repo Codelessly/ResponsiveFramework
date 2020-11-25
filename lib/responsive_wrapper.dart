@@ -461,8 +461,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // The required MediaQueryData is only available
     // on the next frame for physical dimension changes.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setDimensions();
-      setState(() {});
+      if(context != null) {
+        setDimensions();
+        setState(() {});
+      }
     });
   }
 
