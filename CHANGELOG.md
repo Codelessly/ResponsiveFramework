@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.14
+- Dartfmt files. No functional changes.
+
 ## 0.0.12
 - Add `alignment` property for setting internal Stack alignment.
 - Fix ResponsiveGridView Padding null.
