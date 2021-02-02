@@ -269,6 +269,39 @@ void main() {
       // Scale factor is 4.
       expect(state.screenWidth, 200);
     });
+
+    testWidgets('Background Color', (WidgetTester tester) async {
+      // 0 width to simulate screen loading.
+      setScreenSize(tester, Size(0, 1200));
+      Widget widget = MaterialApp(
+        builder: (context, widget) =>
+            ResponsiveWrapper.builder(widget, backgroundColor: Colors.amber),
+        home: Container(),
+      );
+      // Pump once to trigger one frame build.
+      await tester.pumpWidget(widget);
+      // Expect only a container with color.
+      WidgetPredicate widgetPredicate = (Widget widget) =>
+          widget is Container && widget.color == Colors.amber;
+      // Confirm defaults.
+      expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
+    });
+
+    testWidgets('Background Color Null', (WidgetTester tester) async {
+      // 0 width to simulate screen loading.
+      setScreenSize(tester, Size(0, 1200));
+      Widget widget = MaterialApp(
+        builder: (context, widget) => ResponsiveWrapper.builder(widget),
+        home: Container(),
+      );
+      // Pump once to trigger one frame build.
+      await tester.pumpWidget(widget);
+      // Expect only a container with default white color.
+      WidgetPredicate widgetPredicate = (Widget widget) =>
+          widget is Container && widget.color == Colors.white;
+      // Confirm defaults.
+      expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
+    });
   });
 
   group('ResponsiveBreakpoint', () {

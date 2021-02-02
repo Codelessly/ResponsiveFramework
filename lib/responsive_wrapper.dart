@@ -483,10 +483,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   Widget build(BuildContext context) {
     return (screenWidth ==
             0) // Initialization check. Window measurements not available until postFrameCallback.
-        ? (widget.backgroundColor ??
-            Container(
-                color: Color(
-                    0xFFFFFFFF))) // First frame empty background color or default white.
+        ? buildBackgroundColorWidget(widget
+            .backgroundColor) // First frame empty background color or default white.
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
             child: Stack(
@@ -540,6 +538,13 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         viewInsets: scaledViewInsets,
         viewPadding: scaledViewPadding,
         padding: scaledPadding);
+  }
+
+  /// Builds a container with [color].
+  /// Defaults to a white background.
+  Widget buildBackgroundColorWidget(Color color) {
+    if (color == null) return Container(color: Color(0xFFFFFFFF));
+    return Container(color: color);
   }
 }
 
