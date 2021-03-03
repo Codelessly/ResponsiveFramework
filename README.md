@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, widget) => ResponsiveWrapper.builder(
+          child,
           maxWidth: 1200,
           minWidth: 480,
           defaultScale: true,
