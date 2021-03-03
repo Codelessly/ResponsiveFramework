@@ -443,6 +443,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Dimensions are only available after first frame paint.
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Updating dimensions is safe because frame callbacks
+      // in initState are guaranteed.
       setDimensions();
       setState(() {});
     });
@@ -461,6 +463,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // The required MediaQueryData is only available
     // on the next frame for physical dimension changes.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Widget could be destroyed by resize. Verify widget
+      // exists before updating dimensions.
       if (mounted) {
         setDimensions();
         setState(() {});

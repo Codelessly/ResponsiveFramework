@@ -302,6 +302,35 @@ void main() {
       // Confirm defaults.
       expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
     });
+
+    /// Rebuilding ResponsiveWrapper should not
+    /// throw an error if the parent has been disposed
+    /// and the context no longer exists. This test verifies
+    /// that the error is fixed.
+    testWidgets('Parent Destroyed Context Null', (WidgetTester tester) async {
+      // 0 width to simulate screen loading.
+      setScreenSize(tester, Size(1200, 1200));
+      Widget responsiveWrapper = ResponsiveWrapper.builder(
+        Container(),
+        minWidth: 320,
+        defaultScale: false,
+        breakpoints: [],
+      );
+      Widget widget = MaterialApp(
+        key: ValueKey('1'),
+        home: responsiveWrapper,
+      );
+      // Pump once to trigger one frame build.
+      await tester.pumpWidget(widget);
+      setScreenSize(tester, Size(300, 1200));
+      // Changing the MaterialApp using a different ValueKey
+      // disposes the widget and triggers the error (before the fix).
+      widget = MaterialApp(
+        key: ValueKey('2'),
+        home: responsiveWrapper,
+      );
+      await tester.pumpWidget(widget);
+    });
   });
 
   group('ResponsiveBreakpoint', () {
