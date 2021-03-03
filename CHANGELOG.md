@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.15
+- Fix `backgroundColor` incorrectly requiring a widget.
+- Fix context null error when widget parent is destroyed on layout update.
+
 ## 0.0.14
 - Dartfmt files. No functional changes.
 
