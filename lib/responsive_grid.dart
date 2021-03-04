@@ -15,11 +15,11 @@ import 'package:flutter/widgets.dart';
 class ResponsiveGridView extends StatelessWidget {
   final Axis scrollDirection;
   final bool reverse;
-  final ScrollController controller;
-  final bool primary;
-  final ScrollPhysics physics;
+  final ScrollController? controller;
+  final bool? primary;
+  final ScrollPhysics? physics;
   final bool shrinkWrap;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// Align grid items together as a group.
   final AlignmentGeometry alignment;
@@ -27,18 +27,18 @@ class ResponsiveGridView extends StatelessWidget {
   /// A custom [SliverGridDelegate] with item size control.
   final ResponsiveGridDelegate gridDelegate;
   final IndexedWidgetBuilder itemBuilder;
-  final int itemCount;
-  final int maxRowCount;
+  final int? itemCount;
+  final int? maxRowCount;
   final bool addAutomaticKeepAlives;
   final bool addRepaintBoundaries;
   final bool addSemanticIndexes;
-  final double cacheExtent;
-  final int semanticChildCount;
+  final double? cacheExtent;
+  final int? semanticChildCount;
   final DragStartBehavior dragStartBehavior;
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
   ResponsiveGridView.builder({
-    Key key,
+    Key? key,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -47,8 +47,8 @@ class ResponsiveGridView extends StatelessWidget {
     this.shrinkWrap = false,
     this.padding,
     this.alignment = Alignment.centerLeft,
-    @required this.gridDelegate,
-    @required this.itemBuilder,
+    required this.gridDelegate,
+    required this.itemBuilder,
     this.itemCount,
     this.maxRowCount,
     this.addAutomaticKeepAlives = true,
@@ -69,11 +69,11 @@ class ResponsiveGridView extends StatelessWidget {
       // must be preserved for the [BoxScrollView] to calculate
       // an effective padding with SafeArea. Create a
       // temporary variable here to avoid overwriting null.
-      EdgeInsets paddingHolder = padding ?? EdgeInsets.zero;
+      EdgeInsets paddingHolder = padding as EdgeInsets? ?? EdgeInsets.zero;
       // The maximum number of items that can fit on one row.
       int crossAxisCount;
       // The maximum number of items that fit under the max row count.
-      int maxItemCount;
+      int? maxItemCount;
       // Manual padding adjustment for alignment.
       EdgeInsetsGeometry alignmentPadding;
       // The width of all items and padding.
@@ -86,15 +86,15 @@ class ResponsiveGridView extends StatelessWidget {
       if (gridDelegate.crossAxisExtent != null) {
         // Fixed item size.
         crossAxisCount = (crossAxisExtent /
-                (gridDelegate.crossAxisExtent + gridDelegate.crossAxisSpacing))
+                (gridDelegate.crossAxisExtent! + gridDelegate.crossAxisSpacing))
             .floor();
         crossAxisWidth = crossAxisCount *
-                (gridDelegate.crossAxisExtent + gridDelegate.crossAxisSpacing) +
+                (gridDelegate.crossAxisExtent! + gridDelegate.crossAxisSpacing) +
             paddingHolder.horizontal;
       } else if (gridDelegate.maxCrossAxisExtent != null) {
         // Max item size.
         crossAxisCount = (crossAxisExtent /
-                (gridDelegate.maxCrossAxisExtent +
+                (gridDelegate.maxCrossAxisExtent! +
                     gridDelegate.crossAxisSpacing))
             .ceil();
         final double usableCrossAxisExtent = crossAxisExtent -
@@ -107,7 +107,7 @@ class ResponsiveGridView extends StatelessWidget {
       } else {
         // Min item size.
         crossAxisCount = (crossAxisExtent /
-                (gridDelegate.minCrossAxisExtent +
+                (gridDelegate.minCrossAxisExtent! +
                     gridDelegate.crossAxisSpacing))
             .floor();
         final double usableCrossAxisExtent = crossAxisExtent -
@@ -155,7 +155,7 @@ class ResponsiveGridView extends StatelessWidget {
       }
       // Force row limit by calculating item limit.
       if (maxRowCount != null) {
-        maxItemCount = maxRowCount * crossAxisCount;
+        maxItemCount = maxRowCount! * crossAxisCount;
       }
       // Internal children builder delegate.
       SliverChildDelegate childrenDelegate = SliverChildBuilderDelegate(
@@ -191,22 +191,22 @@ class ResponsiveGridView extends StatelessWidget {
 class _ResponsiveGridViewLayout extends BoxScrollView {
   final ResponsiveGridDelegate gridDelegate;
   final SliverChildDelegate childrenDelegate;
-  final int itemCount;
+  final int? itemCount;
 
   _ResponsiveGridViewLayout({
-    Key key,
+    Key? key,
     Axis scrollDirection = Axis.vertical,
     bool reverse = false,
-    ScrollController controller,
-    bool primary,
-    ScrollPhysics physics,
+    ScrollController? controller,
+    bool? primary,
+    ScrollPhysics? physics,
     bool shrinkWrap = false,
-    EdgeInsetsGeometry padding,
-    @required this.gridDelegate,
-    @required this.childrenDelegate,
+    EdgeInsetsGeometry? padding,
+    required this.gridDelegate,
+    required this.childrenDelegate,
     this.itemCount,
-    double cacheExtent,
-    int semanticChildCount,
+    double? cacheExtent,
+    int? semanticChildCount,
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
     ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
@@ -259,13 +259,13 @@ class ResponsiveGridDelegate extends SliverGridDelegate {
         assert(childAspectRatio != null && childAspectRatio > 0);
 
   /// Fixed item size.
-  final double crossAxisExtent;
+  final double? crossAxisExtent;
 
   /// Maximum item size.
-  final double maxCrossAxisExtent;
+  final double? maxCrossAxisExtent;
 
   /// Minimum item size.
-  final double minCrossAxisExtent;
+  final double? minCrossAxisExtent;
   final double mainAxisSpacing;
   final double crossAxisSpacing;
   final double childAspectRatio;
@@ -290,19 +290,19 @@ class ResponsiveGridDelegate extends SliverGridDelegate {
     // Item height.
     double childMainAxisExtent;
     // Item width.
-    double childCrossAxisExtent;
+    double? childCrossAxisExtent;
     // Switch between item sizing behaviors.
     if (this.crossAxisExtent != null) {
       crossAxisCount =
-          (constraints.crossAxisExtent / (crossAxisExtent + crossAxisSpacing))
+          (constraints.crossAxisExtent / (crossAxisExtent! + crossAxisSpacing))
               .floor();
       childCrossAxisExtent = crossAxisExtent;
-      childMainAxisExtent = childCrossAxisExtent / childAspectRatio;
+      childMainAxisExtent = childCrossAxisExtent! / childAspectRatio;
       mainAxisStride = childMainAxisExtent + mainAxisSpacing;
       crossAxisStride = childCrossAxisExtent + crossAxisSpacing;
     } else if (this.maxCrossAxisExtent != null) {
       crossAxisCount = (constraints.crossAxisExtent /
-              (maxCrossAxisExtent + crossAxisSpacing))
+              (maxCrossAxisExtent! + crossAxisSpacing))
           .ceil();
       final double usableCrossAxisExtent =
           constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1);
@@ -312,7 +312,7 @@ class ResponsiveGridDelegate extends SliverGridDelegate {
       crossAxisStride = childCrossAxisExtent + crossAxisSpacing;
     } else {
       crossAxisCount = (constraints.crossAxisExtent /
-              (minCrossAxisExtent + crossAxisSpacing))
+              (minCrossAxisExtent! + crossAxisSpacing))
           .floor();
       final double usableCrossAxisExtent =
           constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1);

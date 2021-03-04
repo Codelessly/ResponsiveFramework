@@ -30,8 +30,8 @@ class ResponsiveUtils {
       ResponsiveBreakpoint a, ResponsiveBreakpoint b) {
     // If breakpoints are equal, return in comparator order.
     if (a.breakpoint == b.breakpoint) {
-      return breakpointCompartorList[a.behavior]
-          .compareTo(breakpointCompartorList[b.behavior]);
+      return breakpointCompartorList[a.behavior]!
+          .compareTo(breakpointCompartorList[b.behavior]!);
     }
 
     // Breakpoints are not equal can be compared directly.
@@ -50,7 +50,7 @@ class ResponsiveUtils {
       print(segment);
       stringBuffer.write(segment.breakpoint.round());
       List<dynamic> attributes = [];
-      String name = segment.responsiveBreakpoint.name;
+      String name = segment.responsiveBreakpoint.name!;
       if (name != null) attributes.add(name);
       double scaleFactor = segment.responsiveBreakpoint.scaleFactor;
       if (scaleFactor != 1) attributes.add(scaleFactor);

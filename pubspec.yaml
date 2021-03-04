@@ -7,11 +7,12 @@ issue_tracker: https://github.com/Codelessly/ResponsiveFramework/issues
 documentation: https://github.com/Codelessly/ResponsiveFramework
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  collection: ^1.15.0
 
 dev_dependencies:
   flutter_test:

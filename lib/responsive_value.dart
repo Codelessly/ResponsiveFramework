@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/widgets.dart';
 
 import 'responsive_framework.dart';
@@ -13,19 +14,17 @@ import 'responsive_framework.dart';
 /// No validation is performed on [Condition]s so
 /// valid conditions must be passed.
 class ResponsiveValue<T> {
-  T value;
+  T? value;
   final T defaultValue;
   final List<Condition> valueWhen;
 
   final BuildContext context;
 
   ResponsiveValue(this.context,
-      {@required this.defaultValue, @required this.valueWhen}) {
+      {required this.defaultValue, required this.valueWhen}) {
     // Breakpoint reference check. Verify a parent
     // [ResponsiveWrapper] exists if a reference is found.
-    if (valueWhen.firstWhere((element) => element.name != null,
-            orElse: () => null) !=
-        null) {
+    if (valueWhen.firstWhereOrNull((element) => element.name != null) != null) {
       try {
         ResponsiveWrapper.of(context);
       } catch (e) {
@@ -40,30 +39,30 @@ class ResponsiveValue<T> {
     }
 
     List<Condition> conditions = valueWhen;
-    List<ResponsiveBreakpointSegment> segments =
-        ResponsiveWrapper.of(context).breakpointSegments;
+    List<ResponsiveBreakpointSegment?>? segments =
+        ResponsiveWrapper.of(context)!.breakpointSegments;
     conditions = conditions.map((e) {
       if (e.breakpoint == null) {
         return e.copyWith(
-            breakpoint: segments
+            breakpoint: segments!
                 .firstWhere(
-                    (element) => element.responsiveBreakpoint.name == e.name,
+                    (element) => element!.responsiveBreakpoint.name == e.name,
                     orElse: () =>
-                        throw ('No breakpoint named `${e.name}` found.'))
+                        throw ('No breakpoint named `${e.name}` found.'))!
                 .responsiveBreakpoint
                 .breakpoint
                 .toInt());
       }
       return e;
     }).toList();
-    conditions.sort((a, b) => a.breakpoint.compareTo(b.breakpoint));
+    conditions.sort((a, b) => a.breakpoint!.compareTo(b.breakpoint!));
     // Get visible value from active condition.
     value = getValue(context, conditions) ?? defaultValue;
   }
 
-  T getValue(BuildContext context, List<Condition> conditions) {
+  T? getValue(BuildContext context, List<Condition> conditions) {
     // Find the active condition.
-    Condition activeCondition = getActiveCondition(context, conditions);
+    Condition? activeCondition = getActiveCondition(context, conditions);
     // Return active condition value or default value if null.
     return activeCondition?.value;
   }
@@ -80,44 +79,45 @@ class ResponsiveValue<T> {
   ///   a. Named breakpoints.
   ///   b. Unnamed breakpoints.
   /// Returns null if no Active Condition is found.
-  Condition getActiveCondition(
+  Condition? getActiveCondition(
       BuildContext context, List<Condition> conditions) {
-    Condition equalsCondition = conditions.firstWhere((element) {
+    Condition? equalsCondition = conditions.firstWhereOrNull((element) {
       if (element.condition == Conditional.EQUALS) {
-        return ResponsiveWrapper.of(context).activeBreakpoint?.name ==
+        return ResponsiveWrapper.of(context)!.activeBreakpoint?.name ==
             element.name;
       }
 
       return false;
-    }, orElse: () => null);
+    });
     if (equalsCondition != null) {
       return equalsCondition;
     }
 
-    Condition smallerThanCondition = conditions.firstWhere((element) {
+    Condition? smallerThanCondition = conditions.firstWhereOrNull((element) {
       if (element.condition == Conditional.SMALLER_THAN) {
         if (element.name != null) {
-          return ResponsiveWrapper.of(context).isSmallerThan(element.name);
+          return ResponsiveWrapper.of(context)!.isSmallerThan(element.name!);
         }
 
-        return MediaQuery.of(context).size.width < element.breakpoint;
+        return MediaQuery.of(context).size.width < element.breakpoint!;
       }
       return false;
-    }, orElse: () => null);
+    });
     if (smallerThanCondition != null) {
       return smallerThanCondition;
     }
 
-    Condition largerThanCondition = conditions.reversed.firstWhere((element) {
+    Condition? largerThanCondition =
+        conditions.reversed.firstWhereOrNull((element) {
       if (element.condition == Conditional.LARGER_THAN) {
         if (element.name != null) {
-          return ResponsiveWrapper.of(context).isLargerThan(element.name);
+          return ResponsiveWrapper.of(context)!.isLargerThan(element.name);
         }
 
-        return MediaQuery.of(context).size.width >= element.breakpoint;
+        return MediaQuery.of(context).size.width >= element.breakpoint!;
       }
       return false;
-    }, orElse: () => null);
+    });
     if (largerThanCondition != null) {
       return largerThanCondition;
     }
@@ -139,38 +139,38 @@ enum Conditional {
 /// Compare conditions by setting either [breakpoint] or
 /// [name] values.
 class Condition<T> {
-  final int breakpoint;
-  final String name;
-  final Conditional condition;
-  final T value;
+  final int? breakpoint;
+  final String? name;
+  final Conditional? condition;
+  final T? value;
 
   const Condition._({this.breakpoint, this.name, this.condition, this.value})
       : assert(breakpoint != null || name != null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  const Condition.equals({@required String name, T value})
+  const Condition.equals({required String name, T? value})
       : this.breakpoint = null,
         this.name = name,
         this.condition = Conditional.EQUALS,
         this.value = value;
 
-  const Condition.largerThan({int breakpoint, String name, T value})
+  const Condition.largerThan({int? breakpoint, String? name, T? value})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.LARGER_THAN,
         this.value = value;
 
-  const Condition.smallerThan({int breakpoint, String name, T value})
+  const Condition.smallerThan({int? breakpoint, String? name, T? value})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.SMALLER_THAN,
         this.value = value;
 
   Condition copyWith({
-    int breakpoint,
-    String name,
-    Conditional condition,
-    bool value,
+    int? breakpoint,
+    String? name,
+    Conditional? condition,
+    bool? value,
   }) =>
       Condition._(
         breakpoint: breakpoint ?? this.breakpoint,
@@ -189,13 +189,13 @@ class Condition<T> {
       ', condition: ' +
       condition.toString() +
       ', value: ' +
-      value?.toString() +
+      value.toString() +
       ')';
 
   int sort(Condition a, Condition b) {
     if (a.breakpoint == b.breakpoint) return 0;
 
-    return (a.breakpoint < b.breakpoint) ? -1 : 1;
+    return (a.breakpoint! < b.breakpoint!) ? -1 : 1;
   }
 }
 
@@ -217,8 +217,8 @@ class ResponsiveVisibility extends StatelessWidget {
   final bool maintainInteractivity;
 
   const ResponsiveVisibility({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.visible = true,
     this.visibleWhen = const [],
     this.hiddenWhen = const [],
@@ -234,7 +234,7 @@ class ResponsiveVisibility extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initialize mutable value holders.
     List<Condition> conditions = [];
-    bool visibleValue = visible;
+    bool? visibleValue = visible;
 
     // Combine Conditions.
     conditions.addAll(visibleWhen?.map((e) => e.copyWith(value: true)) ?? []);
@@ -247,7 +247,7 @@ class ResponsiveVisibility extends StatelessWidget {
     return Visibility(
       child: child,
       replacement: replacement,
-      visible: visibleValue,
+      visible: visibleValue!,
       maintainState: maintainState,
       maintainAnimation: maintainAnimation,
       maintainSize: maintainSize,
@@ -259,12 +259,12 @@ class ResponsiveVisibility extends StatelessWidget {
 
 class ResponsiveConstraints extends StatelessWidget {
   final Widget child;
-  final BoxConstraints constraint;
+  final BoxConstraints? constraint;
   final List<Condition> constraintsWhen;
 
   const ResponsiveConstraints(
-      {Key key,
-      @required this.child,
+      {Key? key,
+      required this.child,
       this.constraint,
       this.constraintsWhen = const []})
       : super(key: key);
@@ -272,7 +272,7 @@ class ResponsiveConstraints extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initialize mutable value holders.
-    BoxConstraints constraintValue = constraint;
+    BoxConstraints? constraintValue = constraint;
     // Get value from active condition.
     constraintValue = ResponsiveValue(context,
             defaultValue: constraintValue, valueWhen: constraintsWhen)
