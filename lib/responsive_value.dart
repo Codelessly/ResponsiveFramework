@@ -39,16 +39,16 @@ class ResponsiveValue<T> {
     }
 
     List<Condition> conditions = valueWhen;
-    List<ResponsiveBreakpointSegment?>? segments =
-        ResponsiveWrapper.of(context)!.breakpointSegments;
+    List<ResponsiveBreakpointSegment>? segments =
+        ResponsiveWrapper.of(context).breakpointSegments;
     conditions = conditions.map((e) {
       if (e.breakpoint == null) {
         return e.copyWith(
-            breakpoint: segments!
+            breakpoint: segments
                 .firstWhere(
-                    (element) => element!.responsiveBreakpoint.name == e.name,
+                    (element) => element.responsiveBreakpoint.name == e.name,
                     orElse: () =>
-                        throw ('No breakpoint named `${e.name}` found.'))!
+                        throw ('No breakpoint named `${e.name}` found.'))
                 .responsiveBreakpoint
                 .breakpoint
                 .toInt());
@@ -83,7 +83,7 @@ class ResponsiveValue<T> {
       BuildContext context, List<Condition> conditions) {
     Condition? equalsCondition = conditions.firstWhereOrNull((element) {
       if (element.condition == Conditional.EQUALS) {
-        return ResponsiveWrapper.of(context)!.activeBreakpoint?.name ==
+        return ResponsiveWrapper.of(context).activeBreakpoint.name ==
             element.name;
       }
 
@@ -96,7 +96,7 @@ class ResponsiveValue<T> {
     Condition? smallerThanCondition = conditions.firstWhereOrNull((element) {
       if (element.condition == Conditional.SMALLER_THAN) {
         if (element.name != null) {
-          return ResponsiveWrapper.of(context)!.isSmallerThan(element.name!);
+          return ResponsiveWrapper.of(context).isSmallerThan(element.name!);
         }
 
         return MediaQuery.of(context).size.width < element.breakpoint!;
@@ -111,7 +111,7 @@ class ResponsiveValue<T> {
         conditions.reversed.firstWhereOrNull((element) {
       if (element.condition == Conditional.LARGER_THAN) {
         if (element.name != null) {
-          return ResponsiveWrapper.of(context)!.isLargerThan(element.name);
+          return ResponsiveWrapper.of(context).isLargerThan(element.name);
         }
 
         return MediaQuery.of(context).size.width >= element.breakpoint!;
@@ -237,8 +237,8 @@ class ResponsiveVisibility extends StatelessWidget {
     bool? visibleValue = visible;
 
     // Combine Conditions.
-    conditions.addAll(visibleWhen?.map((e) => e.copyWith(value: true)) ?? []);
-    conditions.addAll(hiddenWhen?.map((e) => e.copyWith(value: false)) ?? []);
+    conditions.addAll(visibleWhen.map((e) => e.copyWith(value: true)));
+    conditions.addAll(hiddenWhen.map((e) => e.copyWith(value: false)));
     // Get visible value from active condition.
     visibleValue = ResponsiveValue(context,
             defaultValue: visibleValue, valueWhen: conditions)

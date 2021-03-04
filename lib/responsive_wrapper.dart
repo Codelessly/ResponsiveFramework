@@ -561,34 +561,34 @@ const String DESKTOP = 'DESKTOP';
 /// such as [ResponsiveWrapperData.scaledWidth].
 @immutable
 class ResponsiveWrapperData {
-  final double? screenWidth;
-  final double? screenHeight;
-  final double? scaledWidth;
-  final double? scaledHeight;
-  final List<ResponsiveBreakpoint>? breakpoints;
-  final List<ResponsiveBreakpointSegment?>? breakpointSegments;
-  final ResponsiveBreakpoint? activeBreakpoint;
-  final bool? isMobile;
-  final bool? isPhone;
-  final bool? isTablet;
-  final bool? isDesktop;
+  final double screenWidth;
+  final double screenHeight;
+  final double scaledWidth;
+  final double scaledHeight;
+  final List<ResponsiveBreakpoint> breakpoints;
+  final List<ResponsiveBreakpointSegment> breakpointSegments;
+  final ResponsiveBreakpoint activeBreakpoint;
+  final bool isMobile;
+  final bool isPhone;
+  final bool isTablet;
+  final bool isDesktop;
 
   /// Creates responsive data with explicit values.
   ///
   /// Consider using [ResponsiveWrapperData.fromResponsiveWrapper]
   /// to create data based on the [ResponsiveWrapper] state.
   const ResponsiveWrapperData({
-    this.screenWidth,
-    this.screenHeight,
-    this.scaledWidth,
-    this.scaledHeight,
-    this.breakpoints,
-    this.breakpointSegments,
-    this.activeBreakpoint,
-    this.isMobile,
-    this.isPhone,
-    this.isTablet,
-    this.isDesktop,
+    this.screenWidth = 0,
+    this.screenHeight = 0,
+    this.scaledWidth = 0,
+    this.scaledHeight = 0,
+    this.breakpoints = const [],
+    this.breakpointSegments = const [],
+    this.activeBreakpoint = const ResponsiveBreakpoint.tag(0, name: ''),
+    this.isMobile = false,
+    this.isPhone = false,
+    this.isTablet = false,
+    this.isDesktop = false,
   });
 
   /// Creates data based on the [ResponsiveWrapper] state.
@@ -624,7 +624,7 @@ class ResponsiveWrapperData {
       ', scaledHeight: ' +
       scaledHeight.toString() +
       ', breakpoints: ' +
-      (breakpoints?.asMap() ?? '').toString() +
+      breakpoints.asMap().toString() +
       ', breakpointSegments: ' +
       breakpointSegments.toString() +
       ', activeBreakpoint: ' +
@@ -639,30 +639,29 @@ class ResponsiveWrapperData {
       isDesktop.toString() +
       ')';
 
-  bool equals(String? name) => activeBreakpoint!.name == name;
+  bool equals(String? name) => activeBreakpoint.name == name;
 
   /// Is the [scaledWidth] larger than or equal to [name]?
   /// Defaults to false if the [name] cannot be found.
   bool isLargerThan(String? name) {
     // No breakpoints to match.
-    if (breakpoints!.length == 0) return false;
+    if (breakpoints.length == 0) return false;
 
     // Breakpoint is active breakpoint.
-    if (activeBreakpoint!.name == name) return false;
+    if (activeBreakpoint.name == name) return false;
 
     // Single breakpoint is active and screen width
     // is larger than default breakpoint.
-    if (breakpoints!.length == 1 &&
-        screenWidth! >= breakpoints![0].breakpoint) {
+    if (breakpoints.length == 1 && screenWidth >= breakpoints[0].breakpoint) {
       return true;
     }
     // Find first breakpoint end boundary that is larger
     // than screen width. Breakpoint names could be
     // chained so perform a full search from largest to smallest.
-    for (var i = breakpoints!.length - 2; i >= 0; i--) {
-      if (breakpoints![i].name == name &&
-          breakpoints![i + 1].name != name &&
-          screenWidth! >= breakpoints![i + 1].breakpoint) return true;
+    for (var i = breakpoints.length - 2; i >= 0; i--) {
+      if (breakpoints[i].name == name &&
+          breakpoints[i + 1].name != name &&
+          screenWidth >= breakpoints[i + 1].breakpoint) return true;
     }
 
     return false;
@@ -671,19 +670,19 @@ class ResponsiveWrapperData {
   /// Is the [screenWidth] smaller than the [name]?
   /// Defaults to false if the [name] cannot be found.
   bool isSmallerThan(String? name) =>
-      screenWidth! <
-      breakpointSegments!
-          .firstWhere((element) => element!.responsiveBreakpoint.name == name,
+      screenWidth <
+      breakpointSegments
+          .firstWhere((element) => element.responsiveBreakpoint.name == name,
               orElse: () => ResponsiveBreakpointSegment(
                   breakpoint: 0,
                   segmentType: ResponsiveBreakpointBehavior.TAG,
-                  responsiveBreakpoint: ResponsiveBreakpoint.tag(0, name: '')))!
+                  responsiveBreakpoint: ResponsiveBreakpoint.tag(0, name: '')))
           .breakpoint;
 
-  ResponsiveBreakpoint? firstBreakpointNamed(String name) => breakpointSegments!
-      .firstWhere((element) => element!.responsiveBreakpoint.name == name,
+  ResponsiveBreakpoint? firstBreakpointNamed(String name) => breakpointSegments
+      .firstWhere((element) => element.responsiveBreakpoint.name == name,
           orElse: null)
-      ?.responsiveBreakpoint;
+      .responsiveBreakpoint;
 }
 
 /// Creates an immutable widget that exposes [ResponsiveWrapperData]
