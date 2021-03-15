@@ -50,9 +50,10 @@ class ClampingScrollBehavior extends ScrollBehavior {
 }
 
 class ClampingScrollWrapper extends StatelessWidget {
-  final Widget? child;
+  final Widget child;
 
-  const ClampingScrollWrapper({Key? key, this.child}) : super(key: key);
+  const ClampingScrollWrapper({Key? key, required this.child})
+      : super(key: key);
 
   static Widget builder(BuildContext context, Widget child) {
     return ClampingScrollWrapper(child: child);
@@ -62,7 +63,7 @@ class ClampingScrollWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: ClampingScrollBehavior(),
-      child: child!,
+      child: child,
     );
   }
 }
