@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.0
+- Null Safety Migration.
+
 ## 0.0.15
 - Fix `backgroundColor` incorrectly requiring a widget.
 - Fix context null error when widget parent is destroyed on layout update.
