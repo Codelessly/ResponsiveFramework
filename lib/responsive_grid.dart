@@ -36,6 +36,8 @@ class ResponsiveGridView extends StatelessWidget {
   final int? semanticChildCount;
   final DragStartBehavior dragStartBehavior;
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+  final Clip clipBehavior;
+  final String? restorationId;
 
   ResponsiveGridView.builder({
     Key? key,
@@ -58,6 +60,8 @@ class ResponsiveGridView extends StatelessWidget {
     this.semanticChildCount,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.clipBehavior = Clip.hardEdge,
+    this.restorationId,
   });
 
   @override
@@ -182,6 +186,8 @@ class ResponsiveGridView extends StatelessWidget {
           semanticChildCount: semanticChildCount,
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
+          clipBehavior: clipBehavior,
+          restorationId: restorationId,
         ),
       );
     });
@@ -211,6 +217,8 @@ class _ResponsiveGridViewLayout extends BoxScrollView {
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
     ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
+    String? restorationId,
+    Clip clipBehavior = Clip.hardEdge,
   }) : super(
           key: key,
           scrollDirection: scrollDirection,
@@ -224,6 +232,8 @@ class _ResponsiveGridViewLayout extends BoxScrollView {
           semanticChildCount: semanticChildCount ?? itemCount,
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
+          restorationId: restorationId,
+          clipBehavior: clipBehavior,
         );
 
   @override
