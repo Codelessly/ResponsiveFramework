@@ -16,9 +16,10 @@ class BouncingScrollBehavior extends ScrollBehavior {
 }
 
 class BouncingScrollWrapper extends StatelessWidget {
-  final Widget? child;
+  final Widget child;
 
-  const BouncingScrollWrapper({Key? key, this.child}) : super(key: key);
+  const BouncingScrollWrapper({Key? key, required this.child})
+      : super(key: key);
 
   static Widget builder(BuildContext context, Widget child) {
     return BouncingScrollWrapper(child: child);
@@ -28,7 +29,7 @@ class BouncingScrollWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: BouncingScrollBehavior(),
-      child: child!,
+      child: child,
     );
   }
 }
