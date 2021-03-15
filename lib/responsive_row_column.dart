@@ -23,26 +23,26 @@ class ResponsiveRowColumn extends StatelessWidget {
   final MainAxisAlignment rowMainAxisAlignment;
   final MainAxisSize rowMainAxisSize;
   final CrossAxisAlignment rowCrossAxisAlignment;
-  final TextDirection rowTextDirection;
+  final TextDirection? rowTextDirection;
   final VerticalDirection rowVerticalDirection;
-  final TextBaseline rowTextBaseline;
+  final TextBaseline? rowTextBaseline;
   final MainAxisAlignment columnMainAxisAlignment;
   final MainAxisSize columnMainAxisSize;
   final CrossAxisAlignment columnCrossAxisAlignment;
-  final TextDirection columnTextDirection;
+  final TextDirection? columnTextDirection;
   final VerticalDirection columnVerticalDirection;
-  final TextBaseline columnTextBaseline;
-  final double rowSpacing;
-  final double columnSpacing;
+  final TextBaseline? columnTextBaseline;
+  final double? rowSpacing;
+  final double? columnSpacing;
   final EdgeInsets rowPadding;
   final EdgeInsets columnPadding;
   get isRow => rowColumn;
   get isColumn => !rowColumn;
 
   const ResponsiveRowColumn(
-      {Key key,
+      {Key? key,
       this.children = const [],
-      @required this.rowColumn,
+      required this.rowColumn,
       this.rowMainAxisAlignment = MainAxisAlignment.start,
       this.rowMainAxisSize = MainAxisSize.max,
       this.rowCrossAxisAlignment = CrossAxisAlignment.center,
@@ -96,7 +96,7 @@ class ResponsiveRowColumn extends StatelessWidget {
 
   /// Logic to construct widget [children].
   List<Widget> buildChildren(
-      List<ResponsiveRowColumnItem> children, bool rowColumn, double spacing) {
+      List<ResponsiveRowColumnItem> children, bool rowColumn, double? spacing) {
     // Sort ResponsiveRowColumnItems by their order.
     List<ResponsiveRowColumnItem> childrenHolder = children;
     childrenHolder.sort((a, b) {
@@ -135,14 +135,14 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   final int rowOrder;
   final int columnOrder;
   final bool rowColumn;
-  final int rowFlex;
-  final int columnFlex;
-  final FlexFit rowFit;
-  final FlexFit columnFit;
+  final int? rowFlex;
+  final int? columnFlex;
+  final FlexFit? rowFit;
+  final FlexFit? columnFit;
 
   const ResponsiveRowColumnItem(
-      {Key key,
-      @required this.child,
+      {Key? key,
+      required this.child,
       this.rowOrder = 1073741823,
       this.columnOrder = 1073741823,
       this.rowColumn = true,
@@ -166,14 +166,14 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   }
 
   ResponsiveRowColumnItem copyWith({
-    Widget child,
-    int rowOrder,
-    int columnOrder,
-    bool rowColumn,
-    int rowFlex,
-    int columnFlex,
-    FlexFit rowFlexFit,
-    FlexFit columnFlexFit,
+    Widget? child,
+    int? rowOrder,
+    int? columnOrder,
+    bool? rowColumn,
+    int? rowFlex,
+    int? columnFlex,
+    FlexFit? rowFlexFit,
+    FlexFit? columnFlexFit,
   }) =>
       ResponsiveRowColumnItem(
         child: child ?? this.child,

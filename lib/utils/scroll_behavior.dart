@@ -18,7 +18,8 @@ class BouncingScrollBehavior extends ScrollBehavior {
 class BouncingScrollWrapper extends StatelessWidget {
   final Widget child;
 
-  const BouncingScrollWrapper({Key key, this.child}) : super(key: key);
+  const BouncingScrollWrapper({Key? key, required this.child})
+      : super(key: key);
 
   static Widget builder(BuildContext context, Widget child) {
     return BouncingScrollWrapper(child: child);
@@ -51,7 +52,8 @@ class ClampingScrollBehavior extends ScrollBehavior {
 class ClampingScrollWrapper extends StatelessWidget {
   final Widget child;
 
-  const ClampingScrollWrapper({Key key, this.child}) : super(key: key);
+  const ClampingScrollWrapper({Key? key, required this.child})
+      : super(key: key);
 
   static Widget builder(BuildContext context, Widget child) {
     return ClampingScrollWrapper(child: child);

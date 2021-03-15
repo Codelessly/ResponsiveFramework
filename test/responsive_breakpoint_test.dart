@@ -253,7 +253,7 @@ void main() {
         ResponsiveBreakpoint(breakpoint: 450);
     test('No Breakpoints', () {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Breakpoint segment always starts from 0.
       expect(
@@ -271,7 +271,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.autoScale(450)
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Breakpoint segment starts at 0. Inherits behavior from default breakpoint.
       expect(
@@ -294,7 +294,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.resize(600)
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // AutoScale breakpoint segment from 450 - 0.
       expect(
@@ -324,7 +324,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.autoScaleDown(320)
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // AutoScaleDown is the first breakpoint so the
       // behavior becomes AutoScale.
@@ -353,7 +353,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.autoScaleDown(450)
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // AutoScaleDown is the first breakpoint so the
       // behavior is converted to AutoScale.
@@ -377,7 +377,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.autoScaleDown(600)
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment with AutoScale behavior.
       expect(
@@ -406,7 +406,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.autoScaleDown(600)
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment with default Resize behavior.
       expect(
@@ -438,7 +438,7 @@ void main() {
         ResponsiveBreakpoint.autoScaleDown(320),
         ResponsiveBreakpoint.autoScaleDown(600),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment with converted AutoScale behavior.
       expect(
@@ -478,7 +478,7 @@ void main() {
         ResponsiveBreakpoint.autoScale(450),
         ResponsiveBreakpoint.autoScaleDown(450),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment with converted AutoScale behavior.
       expect(
@@ -506,7 +506,7 @@ void main() {
         ResponsiveBreakpoint.tag(440, name: 'PHONE'),
         ResponsiveBreakpoint.autoScaleDown(450),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       expect(
           responsiveBreakpointSegments[0],
@@ -569,7 +569,7 @@ void main() {
         ResponsiveBreakpoint.autoScaleDown(400),
         ResponsiveBreakpoint.autoScaleDown(480),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial AutoScaleDown segment.
       expect(
@@ -613,7 +613,7 @@ void main() {
         ResponsiveBreakpoint.autoScale(450);
     test('No Breakpoints', () {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment from 0 - ∞
       expect(
@@ -627,7 +627,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.tag(320, name: 'DEFAULT'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment from 0 - 320.
       // Inherits default behavior from 450.
@@ -658,7 +658,7 @@ void main() {
       List<ResponsiveBreakpoint> responsiveBreakpoints = [
         ResponsiveBreakpoint.tag(600, name: 'DEFAULT'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment from 0 - 450.
       expect(
@@ -689,7 +689,7 @@ void main() {
         ResponsiveBreakpoint.resize(320, name: 'DEFAULT'),
         ResponsiveBreakpoint.tag(360, name: 'PHONE'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment from 0 - 320.
       expect(
@@ -728,7 +728,7 @@ void main() {
         ResponsiveBreakpoint.tag(800, name: 'TABLET'),
         ResponsiveBreakpoint.tag(1200, name: 'DESKTOP'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Tag is appended to initial breakpoint.
       expect(
@@ -763,7 +763,7 @@ void main() {
         ResponsiveBreakpoint.tag(450, name: 'DEFAULT'),
         ResponsiveBreakpoint.tag(600, name: 'TABLET'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment with Resize behavior and tag appended.
       expect(
@@ -807,7 +807,7 @@ void main() {
         ResponsiveBreakpoint.tag(450, name: 'DEFAULT'),
         ResponsiveBreakpoint.tag(600, name: 'TABLET'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial segment with AutoScale behavior and tag appended.
       expect(
@@ -852,7 +852,7 @@ void main() {
         ResponsiveBreakpoint.autoScaleDown(450),
         ResponsiveBreakpoint.tag(600, name: 'TABLET'),
       ];
-      List<ResponsiveBreakpointSegment> responsiveBreakpointSegments =
+      List<ResponsiveBreakpointSegment?> responsiveBreakpointSegments =
           getBreakpointSegments(responsiveBreakpoints, defaultBreakpoint);
       // Initial AutoScaleDown segment with behavior
       // converted to AutoScale.
