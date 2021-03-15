@@ -58,7 +58,7 @@ class ResponsiveGridView extends StatelessWidget {
     this.semanticChildCount,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
-  }) : assert(gridDelegate != null);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,8 @@ class ResponsiveGridView extends StatelessWidget {
                 (gridDelegate.crossAxisExtent! + gridDelegate.crossAxisSpacing))
             .floor();
         crossAxisWidth = crossAxisCount *
-                (gridDelegate.crossAxisExtent! + gridDelegate.crossAxisSpacing) +
+                (gridDelegate.crossAxisExtent! +
+                    gridDelegate.crossAxisSpacing) +
             paddingHolder.horizontal;
       } else if (gridDelegate.maxCrossAxisExtent != null) {
         // Max item size.
@@ -210,8 +211,7 @@ class _ResponsiveGridViewLayout extends BoxScrollView {
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
     ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
-  })  : assert(gridDelegate != null),
-        super(
+  }) : super(
           key: key,
           scrollDirection: scrollDirection,
           reverse: reverse,
@@ -254,9 +254,9 @@ class ResponsiveGridDelegate extends SliverGridDelegate {
                 (maxCrossAxisExtent != null && maxCrossAxisExtent >= 0) ||
                 (minCrossAxisExtent != null && minCrossAxisExtent >= 0),
             'Must provide a valid cross axis extent.'),
-        assert(mainAxisSpacing != null && mainAxisSpacing >= 0),
-        assert(crossAxisSpacing != null && crossAxisSpacing >= 0),
-        assert(childAspectRatio != null && childAspectRatio > 0);
+        assert(mainAxisSpacing >= 0),
+        assert(crossAxisSpacing >= 0),
+        assert(childAspectRatio > 0);
 
   /// Fixed item size.
   final double? crossAxisExtent;
