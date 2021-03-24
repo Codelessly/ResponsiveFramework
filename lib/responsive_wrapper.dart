@@ -176,7 +176,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double screenWidth = 0;
   double getScreenWidth() {
     // Special 0 width condition.
-    activeBreakpointSegment = getActiveBreakpointSegment(windowWidth);
+    activeBreakpointSegment = getActiveBreakpointSegment(MediaQuery.of(context).orientation == Orientation.landscape?windowHeight :windowWidth);
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null && windowWidth > widget.maxWidth!) {
