@@ -63,8 +63,13 @@ class ResponsiveValue<T> {
   T? getValue(BuildContext context, List<Condition> conditions) {
     // Find the active condition.
     Condition? activeCondition = getActiveCondition(context, conditions);
+    if (activeCondition == null) return null;
+    // Return landscape value if orientation is landscape and landscape override value is provided.
+    if (ResponsiveWrapper.of(context).orientation == Orientation.landscape &&
+        activeCondition.landscapeValue != null)
+      return activeCondition.landscapeValue;
     // Return active condition value or default value if null.
-    return activeCondition?.value;
+    return activeCondition.value;
   }
 
   /// Set [activeCondition].
@@ -143,40 +148,53 @@ class Condition<T> {
   final String? name;
   final Conditional? condition;
   final T? value;
+  final T? landscapeValue;
 
-  const Condition._({this.breakpoint, this.name, this.condition, this.value})
+  const Condition._(
+      {this.breakpoint,
+      this.name,
+      this.condition,
+      this.value,
+      this.landscapeValue})
       : assert(breakpoint != null || name != null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  const Condition.equals({required String name, T? value})
+  const Condition.equals({required String name, T? value, T? landscapeValue})
       : this.breakpoint = null,
         this.name = name,
         this.condition = Conditional.EQUALS,
-        this.value = value;
+        this.value = value,
+        this.landscapeValue = landscapeValue;
 
-  const Condition.largerThan({int? breakpoint, String? name, T? value})
+  const Condition.largerThan(
+      {int? breakpoint, String? name, T? value, T? landscapeValue})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.LARGER_THAN,
-        this.value = value;
+        this.value = value,
+        this.landscapeValue = landscapeValue;
 
-  const Condition.smallerThan({int? breakpoint, String? name, T? value})
+  const Condition.smallerThan(
+      {int? breakpoint, String? name, T? value, T? landscapeValue})
       : this.breakpoint = breakpoint,
         this.name = name,
         this.condition = Conditional.SMALLER_THAN,
-        this.value = value;
+        this.value = value,
+        this.landscapeValue = landscapeValue;
 
   Condition copyWith({
     int? breakpoint,
     String? name,
     Conditional? condition,
-    bool? value,
+    T? value,
+    T? landscapeValue,
   }) =>
       Condition._(
         breakpoint: breakpoint ?? this.breakpoint,
         name: name ?? this.name,
         condition: condition ?? this.condition,
         value: value ?? this.value,
+        landscapeValue: landscapeValue ?? this.value,
       );
 
   @override
@@ -190,6 +208,8 @@ class Condition<T> {
       condition.toString() +
       ', value: ' +
       value.toString() +
+      ', landscapeValue: ' +
+      landscapeValue.toString() +
       ')';
 
   int sort(Condition a, Condition b) {

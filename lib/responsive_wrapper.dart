@@ -572,6 +572,7 @@ class ResponsiveWrapperData {
   final bool isPhone;
   final bool isTablet;
   final bool isDesktop;
+  final Orientation orientation;
 
   /// Creates responsive data with explicit values.
   ///
@@ -589,6 +590,7 @@ class ResponsiveWrapperData {
     this.isPhone = false,
     this.isTablet = false,
     this.isDesktop = false,
+    this.orientation = Orientation.portrait,
   });
 
   /// Creates data based on the [ResponsiveWrapper] state.
@@ -609,6 +611,9 @@ class ResponsiveWrapperData {
           state.activeBreakpointSegment.responsiveBreakpoint.name == TABLET,
       isDesktop:
           state.activeBreakpointSegment.responsiveBreakpoint.name == DESKTOP,
+      orientation: state.screenWidth > state.screenHeight
+          ? Orientation.portrait
+          : Orientation.landscape,
     );
   }
 
