@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
+enum ResponsiveRowColumnType {
+  ROW,
+  COLUMN,
+}
+
 /// A convenience wrapper for responsive [Row] and
 /// [Column] switching with padding and spacing.
 ///
@@ -8,9 +13,8 @@ import 'package:flutter/widgets.dart';
 /// behaviors for managing rows and columns into one
 /// convenience widget. This widget requires all [children]
 /// to be [ResponsiveRowColumnItem] widgets.
-/// Row vs column layout is controlled by [rowColumn].
-/// RowColumn is Row layout when true and Column
-/// layout when false.
+/// Row vs column layout is controlled by passing a
+/// [ResponsiveRowColumnType] to [layout].
 /// Add spacing between widgets with [rowSpacing] and
 /// [columnSpacing]. Add padding around widgets with
 /// [rowPadding] and [columnPadding].
@@ -19,7 +23,7 @@ import 'package:flutter/widgets.dart';
 /// [FlexFit] options.
 class ResponsiveRowColumn extends StatelessWidget {
   final List<ResponsiveRowColumnItem> children;
-  final bool rowColumn;
+  final ResponsiveRowColumnType layout;
   final MainAxisAlignment rowMainAxisAlignment;
   final MainAxisSize rowMainAxisSize;
   final CrossAxisAlignment rowCrossAxisAlignment;
@@ -36,13 +40,13 @@ class ResponsiveRowColumn extends StatelessWidget {
   final double? columnSpacing;
   final EdgeInsets rowPadding;
   final EdgeInsets columnPadding;
-  get isRow => rowColumn;
-  get isColumn => !rowColumn;
+  get isRow => layout == ResponsiveRowColumnType.ROW;
+  get isColumn => layout == ResponsiveRowColumnType.COLUMN;
 
   const ResponsiveRowColumn(
       {Key? key,
       this.children = const [],
-      required this.rowColumn,
+      required this.layout,
       this.rowMainAxisAlignment = MainAxisAlignment.start,
       this.rowMainAxisSize = MainAxisSize.max,
       this.rowCrossAxisAlignment = CrossAxisAlignment.center,
@@ -63,35 +67,36 @@ class ResponsiveRowColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return rowColumn
-        ? Padding(
-            padding: rowPadding,
-            child: Row(
-              mainAxisAlignment: rowMainAxisAlignment,
-              mainAxisSize: rowMainAxisSize,
-              crossAxisAlignment: rowCrossAxisAlignment,
-              textDirection: rowTextDirection,
-              verticalDirection: rowVerticalDirection,
-              textBaseline: rowTextBaseline,
-              children: [
-                ...buildChildren(children, rowColumn, rowSpacing),
-              ],
-            ),
-          )
-        : Padding(
-            padding: columnPadding,
-            child: Column(
-              mainAxisAlignment: columnMainAxisAlignment,
-              mainAxisSize: columnMainAxisSize,
-              crossAxisAlignment: columnCrossAxisAlignment,
-              textDirection: columnTextDirection,
-              verticalDirection: columnVerticalDirection,
-              textBaseline: columnTextBaseline,
-              children: [
-                ...buildChildren(children, rowColumn, columnSpacing),
-              ],
-            ),
-          );
+    if (layout == ResponsiveRowColumnType.ROW)
+      return Padding(
+        padding: rowPadding,
+        child: Row(
+          mainAxisAlignment: rowMainAxisAlignment,
+          mainAxisSize: rowMainAxisSize,
+          crossAxisAlignment: rowCrossAxisAlignment,
+          textDirection: rowTextDirection,
+          verticalDirection: rowVerticalDirection,
+          textBaseline: rowTextBaseline,
+          children: [
+            ...buildChildren(children, true, rowSpacing),
+          ],
+        ),
+      );
+
+    return Padding(
+      padding: columnPadding,
+      child: Column(
+        mainAxisAlignment: columnMainAxisAlignment,
+        mainAxisSize: columnMainAxisSize,
+        crossAxisAlignment: columnCrossAxisAlignment,
+        textDirection: columnTextDirection,
+        verticalDirection: columnVerticalDirection,
+        textBaseline: columnTextBaseline,
+        children: [
+          ...buildChildren(children, false, columnSpacing),
+        ],
+      ),
+    );
   }
 
   /// Logic to construct widget [children].
