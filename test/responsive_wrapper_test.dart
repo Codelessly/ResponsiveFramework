@@ -38,7 +38,6 @@ void main() {
     // Verify empty wrapper does nothing.
     testWidgets('Empty Wrapper', (WidgetTester tester) async {
       setScreenSize(tester, Size(450, 1200));
-      Key key = UniqueKey();
       Widget widget = MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
           widget,
@@ -70,7 +69,6 @@ void main() {
       setScreenSize(tester, Size(450, 1200));
       // No breakpoints.
       Key key = UniqueKey();
-      String defaultName = 'defaultName';
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
@@ -207,6 +205,7 @@ void main() {
       expect(
           find
               .byType(MediaQuery)
+              // ignore: invalid_use_of_protected_member
               .allCandidates
               .firstWhere((element) => element.size == Size(600, 1200)),
           isNotNull);

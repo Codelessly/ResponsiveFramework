@@ -50,7 +50,7 @@ class ResponsiveUtils {
       print(segment);
       stringBuffer.write(segment.breakpoint.round());
       List<dynamic> attributes = [];
-      String name = segment.responsiveBreakpoint.name!;
+      String? name = segment.responsiveBreakpoint.name;
       if (name != null) attributes.add(name);
       double scaleFactor = segment.responsiveBreakpoint.scaleFactor;
       if (scaleFactor != 1) attributes.add(scaleFactor);
