@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'utils/responsive_utils.dart';
@@ -50,6 +51,23 @@ import 'utils/responsive_utils.dart';
 class ResponsiveWrapper extends StatefulWidget {
   final Widget? child;
   final List<ResponsiveBreakpoint>? breakpoints;
+
+  /// A list of breakpoints that are active when the device is in landscape orientation.
+  ///
+  /// In Flutter, the returned device orientation is not the real device orientation,
+  /// but is calculated based on the screen width and height.
+  /// This means that landscape only makes sense on devices that support
+  /// orientation changes. By default, landscape breakpoints are only
+  /// active when the [TargetPlatform] is Android, iOS, or Fuchsia.
+  /// To enable landscape breakpoints on other platforms, pass a custom
+  /// list of supported platforms to [landscapePlatforms].
+  final List<ResponsiveBreakpoint>? landscapeBreakpoints;
+
+  /// Override list of platforms to enable landscape mode on.
+  /// By default, only mobile platforms support landscape mode.
+  /// This override exists primarily to enable custom landscape vs portrait behavior
+  /// and future compatibility with Fuschia.
+  final List<TargetPlatform>? landscapePlatforms;
   final double minWidth;
   final double? maxWidth;
   final String? defaultName;
@@ -84,6 +102,8 @@ class ResponsiveWrapper extends StatefulWidget {
     Key? key,
     required this.child,
     this.breakpoints,
+    this.landscapeBreakpoints,
+    this.landscapePlatforms,
     this.minWidth = 450,
     this.maxWidth,
     this.defaultName,
@@ -103,6 +123,8 @@ class ResponsiveWrapper extends StatefulWidget {
   static Widget builder(
     Widget? child, {
     List<ResponsiveBreakpoint>? breakpoints,
+    List<ResponsiveBreakpoint>? landscapeBreakpoints,
+    List<TargetPlatform>? landscapePlatforms,
     double minWidth = 450,
     double? maxWidth,
     String? defaultName,
@@ -117,6 +139,8 @@ class ResponsiveWrapper extends StatefulWidget {
     return ResponsiveWrapper(
       child: child,
       breakpoints: breakpoints,
+      landscapeBreakpoints: landscapeBreakpoints,
+      landscapePlatforms: landscapePlatforms,
       minWidth: minWidth,
       maxWidth: maxWidth,
       defaultName: defaultName,
@@ -169,14 +193,16 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         MediaQuery.of(context).size.height;
   }
 
+  TargetPlatform get platform => Theme.of(context).platform;
+
   late List<ResponsiveBreakpoint> breakpoints;
   late List<ResponsiveBreakpointSegment> breakpointSegments;
 
   /// Get screen width calculation.
   double screenWidth = 0;
   double getScreenWidth() {
-    // Special 0 width condition.
     activeBreakpointSegment = getActiveBreakpointSegment(windowWidth);
+    // Special 0 width condition.
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
     if (widget.maxWidth != null && windowWidth > widget.maxWidth!) {
@@ -396,6 +422,20 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Default fullscreen enabled.
   get fullscreen => widget.maxWidth == null;
 
+  Orientation get orientation => (screenWidth > screenHeight)
+      ? Orientation.landscape
+      : Orientation.portrait;
+
+  static const List<TargetPlatform> _landscapePlatforms = [
+    TargetPlatform.iOS,
+    TargetPlatform.android,
+    TargetPlatform.fuchsia,
+  ];
+
+  bool get isLandscapePlatform =>
+      (widget.landscapePlatforms ?? _landscapePlatforms)
+          .contains(Theme.of(context).platform);
+
   /// Calculate updated dimensions.
   void setDimensions() {
     devicePixelRatio = getDevicePixelRatio();
@@ -410,6 +450,32 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     scaledPadding = getScaledPadding();
   }
 
+  /// Get enabled breakpoints based on [orientation] and [platform].
+  List<ResponsiveBreakpoint> getActiveBreakpoints() {
+    // If the device is landscape enabled and the current orientation is landscape, use landscape breakpoints.
+    if (orientation == Orientation.landscape &&
+        isLandscapePlatform &&
+        widget.landscapeBreakpoints != null) {
+      return widget.landscapeBreakpoints ?? [];
+    }
+
+    return widget.breakpoints ?? [];
+  }
+
+  /// Calculate [breakpointSegments] from [breakpoints].
+  List<ResponsiveBreakpointSegment> calcBreakpointSegments(
+      List<ResponsiveBreakpoint> breakpoints) {
+    // Seed breakpoint based on config values.
+    ResponsiveBreakpoint defaultBreakpoint = ResponsiveBreakpoint(
+        breakpoint: widget.minWidth,
+        name: widget.defaultName,
+        behavior: widget.defaultScale
+            ? ResponsiveBreakpointBehavior.AUTOSCALE
+            : ResponsiveBreakpointBehavior.RESIZE,
+        scaleFactor: widget.defaultScaleFactor);
+    return getBreakpointSegments(breakpoints, defaultBreakpoint);
+  }
+
   /// Set [activeBreakpointSegment].
   /// Active breakpoint segment is the first breakpoint segment
   /// smaller or equal to the [windowWidth].
@@ -420,27 +486,39 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     return activeBreakpointSegment;
   }
 
+  /// Set [breakpoints] and [breakpointSegments].
+  void setBreakpoints() {
+    breakpoints = getActiveBreakpoints();
+    breakpointSegments = calcBreakpointSegments(breakpoints);
+  }
+
   @override
   void initState() {
     super.initState();
-    breakpoints = widget.breakpoints ?? [];
-    ResponsiveBreakpoint defaultBreakpoint = ResponsiveBreakpoint(
-        breakpoint: widget.minWidth,
-        name: widget.defaultName,
-        behavior: widget.defaultScale
-            ? ResponsiveBreakpointBehavior.AUTOSCALE
-            : ResponsiveBreakpointBehavior.RESIZE,
-        scaleFactor: widget.defaultScaleFactor);
-    breakpointSegments = getBreakpointSegments(breakpoints, defaultBreakpoint);
+    // Breakpoints must be initialized before the first frame is drawn.
+    setBreakpoints();
 
     // Log breakpoints to console.
-    if (widget.debugLog)
-      ResponsiveUtils.debugLogBreakpointSegments(breakpointSegments);
+    if (widget.debugLog) {
+      List<ResponsiveBreakpoint> defaultBreakpoints = widget.breakpoints ?? [];
+      List<ResponsiveBreakpointSegment> defaultBreakpointSegments =
+          calcBreakpointSegments(defaultBreakpoints);
+      ResponsiveUtils.debugLogBreakpointSegments(defaultBreakpointSegments);
+      // Print landscape breakpoints.
+      if (widget.landscapeBreakpoints != null) {
+        List<ResponsiveBreakpoint> landscapeBreakpoints =
+            widget.landscapeBreakpoints ?? [];
+        List<ResponsiveBreakpointSegment> landscapeBreakpointSegments =
+            calcBreakpointSegments(landscapeBreakpoints);
+        print('Landscape Breakpoints:');
+        ResponsiveUtils.debugLogBreakpointSegments(landscapeBreakpointSegments);
+      }
+    }
 
     // Dimensions are only available after first frame paint.
     WidgetsBinding.instance!.addObserver(this);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // Updating dimensions is safe because frame callbacks
+      // Directly updating dimensions is safe because frame callbacks
       // in initState are guaranteed.
       setDimensions();
       setState(() {});
@@ -463,6 +541,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       // Widget could be destroyed by resize. Verify widget
       // exists before updating dimensions.
       if (mounted) {
+        setBreakpoints();
         setDimensions();
         setState(() {});
       }
@@ -476,6 +555,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // used directly in the widget tree and a parent
     // MediaQueryData changes, update state.
     // The screen dimensions are passed immediately.
+    setBreakpoints();
     setDimensions();
     setState(() {});
   }
@@ -611,9 +691,7 @@ class ResponsiveWrapperData {
           state.activeBreakpointSegment.responsiveBreakpoint.name == TABLET,
       isDesktop:
           state.activeBreakpointSegment.responsiveBreakpoint.name == DESKTOP,
-      orientation: state.screenWidth > state.screenHeight
-          ? Orientation.portrait
-          : Orientation.landscape,
+      orientation: state.orientation,
     );
   }
 
