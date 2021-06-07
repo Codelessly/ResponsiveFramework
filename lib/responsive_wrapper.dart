@@ -195,8 +195,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   TargetPlatform get platform => Theme.of(context).platform;
 
-  late List<ResponsiveBreakpoint> breakpoints;
-  late List<ResponsiveBreakpointSegment> breakpointSegments;
+  List<ResponsiveBreakpoint> breakpoints = [];
+  List<ResponsiveBreakpointSegment> breakpointSegments = [];
 
   /// Get screen width calculation.
   double screenWidth = 0;
@@ -422,7 +422,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Default fullscreen enabled.
   get fullscreen => widget.maxWidth == null;
 
-  Orientation get orientation => (screenWidth > screenHeight)
+  Orientation get orientation => (windowWidth > windowHeight)
       ? Orientation.landscape
       : Orientation.portrait;
 
@@ -488,8 +488,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   /// Set [breakpoints] and [breakpointSegments].
   void setBreakpoints() {
-    breakpoints = getActiveBreakpoints();
-    breakpointSegments = calcBreakpointSegments(breakpoints);
+    breakpoints.clear();
+    breakpointSegments.clear();
+    breakpoints.addAll(getActiveBreakpoints());
+    breakpointSegments.addAll(calcBreakpointSegments(breakpoints));
   }
 
   @override
@@ -510,7 +512,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
             widget.landscapeBreakpoints ?? [];
         List<ResponsiveBreakpointSegment> landscapeBreakpointSegments =
             calcBreakpointSegments(landscapeBreakpoints);
-        print('Landscape Breakpoints:');
         ResponsiveUtils.debugLogBreakpointSegments(landscapeBreakpointSegments);
       }
     }
@@ -534,6 +535,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
+    setBreakpoints();
     // When physical dimensions change, update state.
     // The required MediaQueryData is only available
     // on the next frame for physical dimension changes.
@@ -541,7 +543,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       // Widget could be destroyed by resize. Verify widget
       // exists before updating dimensions.
       if (mounted) {
-        setBreakpoints();
         setDimensions();
         setState(() {});
       }
