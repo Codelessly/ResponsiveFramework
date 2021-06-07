@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.1
+- Add initial support for `landscapeBreakpoints` which enables overriding default breakpoints on platforms with landscape orientations.
+
 ## 0.1.0
 - Null Safety Migration.
 
