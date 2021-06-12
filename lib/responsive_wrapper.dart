@@ -61,7 +61,7 @@ class ResponsiveWrapper extends StatefulWidget {
   /// active when the [TargetPlatform] is Android, iOS, or Fuchsia.
   /// To enable landscape breakpoints on other platforms, pass a custom
   /// list of supported platforms to [landscapePlatforms].
-  final List<ResponsiveBreakpoint>? landscapeBreakpoints;
+  final List<ResponsiveBreakpoint>? breakpointsLandscape;
 
   /// Override list of platforms to enable landscape mode on.
   /// By default, only mobile platforms support landscape mode.
@@ -102,7 +102,7 @@ class ResponsiveWrapper extends StatefulWidget {
     Key? key,
     required this.child,
     this.breakpoints,
-    this.landscapeBreakpoints,
+    this.breakpointsLandscape,
     this.landscapePlatforms,
     this.minWidth = 450,
     this.maxWidth,
@@ -139,7 +139,7 @@ class ResponsiveWrapper extends StatefulWidget {
     return ResponsiveWrapper(
       child: child,
       breakpoints: breakpoints,
-      landscapeBreakpoints: landscapeBreakpoints,
+      breakpointsLandscape: landscapeBreakpoints,
       landscapePlatforms: landscapePlatforms,
       minWidth: minWidth,
       maxWidth: maxWidth,
@@ -455,8 +455,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // If the device is landscape enabled and the current orientation is landscape, use landscape breakpoints.
     if (orientation == Orientation.landscape &&
         isLandscapePlatform &&
-        widget.landscapeBreakpoints != null) {
-      return widget.landscapeBreakpoints ?? [];
+        widget.breakpointsLandscape != null) {
+      return widget.breakpointsLandscape ?? [];
     }
 
     return widget.breakpoints ?? [];
@@ -492,6 +492,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     breakpointSegments.clear();
     breakpoints.addAll(getActiveBreakpoints());
     breakpointSegments.addAll(calcBreakpointSegments(breakpoints));
+    print('Breakpoints: ${(widget.landscapePlatforms ?? _landscapePlatforms)}');
+    print('Theme: ${Theme.of(context).platform}');
+    print(breakpointSegments);
   }
 
   @override
@@ -507,9 +510,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           calcBreakpointSegments(defaultBreakpoints);
       ResponsiveUtils.debugLogBreakpointSegments(defaultBreakpointSegments);
       // Print landscape breakpoints.
-      if (widget.landscapeBreakpoints != null) {
+      if (widget.breakpointsLandscape != null) {
         List<ResponsiveBreakpoint> landscapeBreakpoints =
-            widget.landscapeBreakpoints ?? [];
+            widget.breakpointsLandscape ?? [];
         List<ResponsiveBreakpointSegment> landscapeBreakpointSegments =
             calcBreakpointSegments(landscapeBreakpoints);
         ResponsiveUtils.debugLogBreakpointSegments(landscapeBreakpointSegments);
@@ -535,6 +538,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
+    print('didChangeMetrics ${windowWidth}');
     setBreakpoints();
     // When physical dimensions change, update state.
     // The required MediaQueryData is only available
