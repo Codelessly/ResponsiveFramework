@@ -74,6 +74,12 @@ class ResponsiveWrapper extends StatefulWidget {
   final bool defaultScale;
   final double defaultScaleFactor;
 
+  final double minWidthLandscape;
+  final double? maxWidthLandscape;
+  final String? defaultNameLandscape;
+  final bool defaultScaleLandscape;
+  final double defaultScaleFactorLandscape;
+
   /// An optional background widget to insert behind
   /// the responsive content. The background widget
   /// expands to fill the entire space of the wrapper and
@@ -109,6 +115,11 @@ class ResponsiveWrapper extends StatefulWidget {
     this.defaultName,
     this.defaultScale = false,
     this.defaultScaleFactor = 1,
+    this.minWidthLandscape = 450,
+    this.maxWidthLandscape,
+    this.defaultNameLandscape,
+    this.defaultScaleLandscape = false,
+    this.defaultScaleFactorLandscape = 1,
     this.background,
     this.backgroundColor,
     this.mediaQueryData,
@@ -130,6 +141,11 @@ class ResponsiveWrapper extends StatefulWidget {
     String? defaultName,
     bool defaultScale = false,
     double defaultScaleFactor = 1,
+    double minWidthLandscape = 450,
+    double? maxWidthLandscape,
+    String? defaultNameLandscape,
+    bool defaultScaleLandscape = false,
+    double defaultScaleFactorLandscape = 1,
     Widget? background,
     Color? backgroundColor,
     MediaQueryData? mediaQueryData,
@@ -146,6 +162,11 @@ class ResponsiveWrapper extends StatefulWidget {
       defaultName: defaultName,
       defaultScale: defaultScale,
       defaultScaleFactor: defaultScaleFactor,
+      minWidthLandscape: minWidthLandscape,
+      maxWidthLandscape: maxWidthLandscape,
+      defaultNameLandscape: defaultNameLandscape,
+      defaultScaleLandscape: defaultScaleLandscape,
+      defaultScaleFactorLandscape: defaultScaleFactorLandscape,
       background: background,
       backgroundColor: backgroundColor,
       mediaQueryData: mediaQueryData,
@@ -205,17 +226,17 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Special 0 width condition.
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
-    if (widget.maxWidth != null && windowWidth > widget.maxWidth!) {
+    if (maxWidth != null && windowWidth > maxWidth!) {
       // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpointSegment.breakpoint >= widget.maxWidth! &&
+      if (activeBreakpointSegment.breakpoint >= maxWidth! &&
           activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
         // Proportionally scaled width that exceeds maxWidth.
-        return widget.maxWidth! +
+        return maxWidth! +
             (windowWidth -
                 activeBreakpointSegment.responsiveBreakpoint.breakpoint);
       } else {
         // Max Width reached. Return Max Width because no breakpoint is active.
-        return widget.maxWidth!;
+        return maxWidth!;
       }
     }
 
@@ -228,12 +249,12 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Special 0 height condition.
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
-    if (widget.maxWidth != null) if (windowWidth > widget.maxWidth!) {
+    if (maxWidth != null) if (windowWidth > maxWidth!) {
       // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpointSegment.breakpoint > widget.maxWidth! &&
+      if (activeBreakpointSegment.breakpoint > maxWidth! &&
           activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
         // Scale screen height by the amount the width was scaled.
-        return windowHeight / (screenWidth / widget.maxWidth!);
+        return windowHeight / (screenWidth / maxWidth!);
       }
     }
 
@@ -251,9 +272,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// that breakpoint's logic.
   /// 2. If no breakpoint is found, check if the [screenWidth]
   /// is smaller than the smallest breakpoint. If so,
-  /// follow [widget.defaultScale] behavior to resize.
+  /// follow [defaultScale] behavior to resize.
   /// 3. There are no breakpoints set. Resize using
-  /// [widget.defaultScale] behavior and [widget.minWidth].
+  /// [defaultScale] behavior and [minWidth].
   double scaledWidth = 0;
   double getScaledWidth() {
     // If widget should resize, use screenWidth.
@@ -262,9 +283,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
     // Screen is larger than max width. Scale from max width.
-    if (widget.maxWidth != null) if (activeBreakpointSegment.breakpoint >
-        widget.maxWidth!)
-      return widget.maxWidth! /
+    if (maxWidth != null) if (activeBreakpointSegment.breakpoint > maxWidth!)
+      return maxWidth! /
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
 
     // Return width from breakpoint with scale factor applied.
@@ -284,10 +304,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// resize, nothing more needs to be done.
   /// 2. If the widget should scale, calculate the screen
   /// aspect ratio and return the proportional height.
-  /// 3. If there are no active breakpoints and [widget.defaultScale]
+  /// 3. If there are no active breakpoints and [defaultScale]
   /// is resize, nothing more needs to be done.
   /// 4. Return calculated proportional height with
-  /// [widget.minWidth].
+  /// [minWidth].
   double scaledHeight = 0;
   double getScaledHeight() {
     // If widget should resize, use screenHeight.
@@ -297,8 +317,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
     // Screen is larger than max width. Calculate height
     // from max width.
-    if (widget.maxWidth != null) if (activeBreakpointSegment.breakpoint >
-        widget.maxWidth!) {
+    if (maxWidth != null) if (activeBreakpointSegment.breakpoint > maxWidth!) {
       return screenHeight /
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
     }
@@ -420,7 +439,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   /// Fullscreen is enabled if maxWidth is not set.
   /// Default fullscreen enabled.
-  get fullscreen => widget.maxWidth == null;
+  get fullscreen => maxWidth == null;
 
   Orientation get orientation => (windowWidth > windowHeight)
       ? Orientation.landscape
@@ -435,6 +454,23 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   bool get isLandscapePlatform =>
       (widget.landscapePlatforms ?? _landscapePlatforms)
           .contains(Theme.of(context).platform);
+
+  bool get isLandscape =>
+      orientation == Orientation.landscape &&
+      isLandscapePlatform &&
+      widget.breakpointsLandscape != null;
+
+  double get minWidth =>
+      isLandscape ? widget.minWidthLandscape : widget.minWidth;
+  double? get maxWidth =>
+      isLandscape ? widget.maxWidthLandscape : widget.maxWidth;
+  String? get defaultName =>
+      isLandscape ? widget.defaultNameLandscape : widget.defaultName;
+  bool get defaultScale =>
+      isLandscape ? widget.defaultScaleLandscape : widget.defaultScale;
+  double get defaultScaleFactor => isLandscape
+      ? widget.defaultScaleFactorLandscape
+      : widget.defaultScaleFactor;
 
   /// Calculate updated dimensions.
   void setDimensions() {
@@ -467,12 +503,12 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       List<ResponsiveBreakpoint> breakpoints) {
     // Seed breakpoint based on config values.
     ResponsiveBreakpoint defaultBreakpoint = ResponsiveBreakpoint(
-        breakpoint: widget.minWidth,
-        name: widget.defaultName,
-        behavior: widget.defaultScale
+        breakpoint: minWidth,
+        name: defaultName,
+        behavior: defaultScale
             ? ResponsiveBreakpointBehavior.AUTOSCALE
             : ResponsiveBreakpointBehavior.RESIZE,
-        scaleFactor: widget.defaultScaleFactor);
+        scaleFactor: defaultScaleFactor);
     return getBreakpointSegments(breakpoints, defaultBreakpoint);
   }
 
@@ -492,9 +528,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     breakpointSegments.clear();
     breakpoints.addAll(getActiveBreakpoints());
     breakpointSegments.addAll(calcBreakpointSegments(breakpoints));
-    print('Breakpoints: ${(widget.landscapePlatforms ?? _landscapePlatforms)}');
-    print('Theme: ${Theme.of(context).platform}');
-    print(breakpointSegments);
   }
 
   @override
@@ -538,7 +571,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    print('didChangeMetrics ${windowWidth}');
     setBreakpoints();
     // When physical dimensions change, update state.
     // The required MediaQueryData is only available

@@ -47,7 +47,6 @@ class ResponsiveUtils {
     for (int i = 0; i < responsiveBreakpointSegments.length; i++) {
       // Convenience variable.
       ResponsiveBreakpointSegment segment = responsiveBreakpointSegments[i];
-      print(segment);
       stringBuffer.write(segment.breakpoint.round());
       List<dynamic> attributes = [];
       String? name = segment.responsiveBreakpoint.name;
