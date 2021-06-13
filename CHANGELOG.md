@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+- Full support for `landscapeBreakpoints` - breakpoints in landscape mode. Create landscape overrides with `minWidthLandscape`, `maxWidthLandscape`, `defaultScaleLandscape`, etc.
+- Use `ResponsiveTargetPlatform` to enable landscape support for platforms including web.
+
 ## 0.1.1
 - Add initial support for `landscapeBreakpoints` which enables overriding default breakpoints on platforms with landscape orientations.
 
