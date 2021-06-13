@@ -79,3 +79,32 @@ class ResponsiveUtils {
     return stringBuffer.toString();
   }
 }
+
+enum ResponsiveTargetPlatform {
+  android,
+  fuchsia,
+  iOS,
+  linux,
+  macOS,
+  windows,
+  web,
+}
+
+extension TargetPlatformExtension on TargetPlatform {
+  ResponsiveTargetPlatform get responsiveTargetPlatform {
+    switch (this) {
+      case TargetPlatform.android:
+        return ResponsiveTargetPlatform.android;
+      case TargetPlatform.fuchsia:
+        return ResponsiveTargetPlatform.fuchsia;
+      case TargetPlatform.iOS:
+        return ResponsiveTargetPlatform.iOS;
+      case TargetPlatform.linux:
+        return ResponsiveTargetPlatform.linux;
+      case TargetPlatform.macOS:
+        return ResponsiveTargetPlatform.macOS;
+      case TargetPlatform.windows:
+        return ResponsiveTargetPlatform.windows;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -58,7 +59,7 @@ class ResponsiveWrapper extends StatefulWidget {
   /// but is calculated based on the screen width and height.
   /// This means that landscape only makes sense on devices that support
   /// orientation changes. By default, landscape breakpoints are only
-  /// active when the [TargetPlatform] is Android, iOS, or Fuchsia.
+  /// active when the [ResponsiveTargetPlatform] is Android, iOS, or Fuchsia.
   /// To enable landscape breakpoints on other platforms, pass a custom
   /// list of supported platforms to [landscapePlatforms].
   final List<ResponsiveBreakpoint>? breakpointsLandscape;
@@ -67,18 +68,27 @@ class ResponsiveWrapper extends StatefulWidget {
   /// By default, only mobile platforms support landscape mode.
   /// This override exists primarily to enable custom landscape vs portrait behavior
   /// and future compatibility with Fuschia.
-  final List<TargetPlatform>? landscapePlatforms;
+  final List<ResponsiveTargetPlatform>? landscapePlatforms;
   final double minWidth;
   final double? maxWidth;
   final String? defaultName;
   final bool defaultScale;
   final double defaultScaleFactor;
 
-  final double minWidthLandscape;
+  /// Landscape minWidth value. Defaults to [minWidth] if not set.
+  final double? minWidthLandscape;
+
+  /// Landscape maxWidth value. Defaults to [maxWidth] if not set.
   final double? maxWidthLandscape;
+
+  /// Landscape defaultName value. Defaults to [defaultName] if not set.
   final String? defaultNameLandscape;
-  final bool defaultScaleLandscape;
-  final double defaultScaleFactorLandscape;
+
+  /// Landscape defaultScale value. Defaults to [defaultScale] if not set.
+  final bool? defaultScaleLandscape;
+
+  /// Landscape defaultScaleFactor value. Defaults to [defaultScaleFactor] if not set.
+  final double? defaultScaleFactorLandscape;
 
   /// An optional background widget to insert behind
   /// the responsive content. The background widget
@@ -115,11 +125,11 @@ class ResponsiveWrapper extends StatefulWidget {
     this.defaultName,
     this.defaultScale = false,
     this.defaultScaleFactor = 1,
-    this.minWidthLandscape = 450,
+    this.minWidthLandscape,
     this.maxWidthLandscape,
     this.defaultNameLandscape,
-    this.defaultScaleLandscape = false,
-    this.defaultScaleFactorLandscape = 1,
+    this.defaultScaleLandscape,
+    this.defaultScaleFactorLandscape,
     this.background,
     this.backgroundColor,
     this.mediaQueryData,
@@ -134,18 +144,18 @@ class ResponsiveWrapper extends StatefulWidget {
   static Widget builder(
     Widget? child, {
     List<ResponsiveBreakpoint>? breakpoints,
-    List<ResponsiveBreakpoint>? landscapeBreakpoints,
-    List<TargetPlatform>? landscapePlatforms,
+    List<ResponsiveBreakpoint>? breakpointsLandscape,
+    List<ResponsiveTargetPlatform>? landscapePlatforms,
     double minWidth = 450,
     double? maxWidth,
     String? defaultName,
     bool defaultScale = false,
     double defaultScaleFactor = 1,
-    double minWidthLandscape = 450,
+    double? minWidthLandscape,
     double? maxWidthLandscape,
     String? defaultNameLandscape,
-    bool defaultScaleLandscape = false,
-    double defaultScaleFactorLandscape = 1,
+    bool? defaultScaleLandscape,
+    double? defaultScaleFactorLandscape,
     Widget? background,
     Color? backgroundColor,
     MediaQueryData? mediaQueryData,
@@ -155,7 +165,7 @@ class ResponsiveWrapper extends StatefulWidget {
     return ResponsiveWrapper(
       child: child,
       breakpoints: breakpoints,
-      breakpointsLandscape: landscapeBreakpoints,
+      breakpointsLandscape: breakpointsLandscape,
       landscapePlatforms: landscapePlatforms,
       minWidth: minWidth,
       maxWidth: maxWidth,
@@ -213,8 +223,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     return widget.mediaQueryData?.size.height ??
         MediaQuery.of(context).size.height;
   }
-
-  TargetPlatform get platform => Theme.of(context).platform;
 
   List<ResponsiveBreakpoint> breakpoints = [];
   List<ResponsiveBreakpointSegment> breakpointSegments = [];
@@ -445,31 +453,42 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       ? Orientation.landscape
       : Orientation.portrait;
 
-  static const List<TargetPlatform> _landscapePlatforms = [
-    TargetPlatform.iOS,
-    TargetPlatform.android,
-    TargetPlatform.fuchsia,
+  static const List<ResponsiveTargetPlatform> _landscapePlatforms = [
+    ResponsiveTargetPlatform.iOS,
+    ResponsiveTargetPlatform.android,
+    ResponsiveTargetPlatform.fuchsia,
   ];
 
+  ResponsiveTargetPlatform? platform;
+
+  void setPlatform() {
+    platform = kIsWeb
+        ? ResponsiveTargetPlatform.web
+        : Theme.of(context).platform.responsiveTargetPlatform;
+  }
+
   bool get isLandscapePlatform =>
-      (widget.landscapePlatforms ?? _landscapePlatforms)
-          .contains(Theme.of(context).platform);
+      (widget.landscapePlatforms ?? _landscapePlatforms).contains(platform);
 
   bool get isLandscape =>
       orientation == Orientation.landscape &&
       isLandscapePlatform &&
       widget.breakpointsLandscape != null;
 
-  double get minWidth =>
-      isLandscape ? widget.minWidthLandscape : widget.minWidth;
-  double? get maxWidth =>
-      isLandscape ? widget.maxWidthLandscape : widget.maxWidth;
-  String? get defaultName =>
-      isLandscape ? widget.defaultNameLandscape : widget.defaultName;
-  bool get defaultScale =>
-      isLandscape ? widget.defaultScaleLandscape : widget.defaultScale;
+  double get minWidth => isLandscape
+      ? (widget.minWidthLandscape ?? widget.minWidth)
+      : widget.minWidth;
+  double? get maxWidth => isLandscape
+      ? (widget.maxWidthLandscape ?? widget.maxWidth)
+      : widget.maxWidth;
+  String? get defaultName => isLandscape
+      ? (widget.defaultNameLandscape ?? widget.defaultName)
+      : widget.defaultName;
+  bool get defaultScale => isLandscape
+      ? (widget.defaultScaleLandscape ?? widget.defaultScale)
+      : widget.defaultScale;
   double get defaultScaleFactor => isLandscape
-      ? widget.defaultScaleFactorLandscape
+      ? (widget.defaultScaleFactorLandscape ?? widget.defaultScaleFactor)
       : widget.defaultScaleFactor;
 
   /// Calculate updated dimensions.
@@ -489,12 +508,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Get enabled breakpoints based on [orientation] and [platform].
   List<ResponsiveBreakpoint> getActiveBreakpoints() {
     // If the device is landscape enabled and the current orientation is landscape, use landscape breakpoints.
-    if (orientation == Orientation.landscape &&
-        isLandscapePlatform &&
-        widget.breakpointsLandscape != null) {
+    if (isLandscape) {
       return widget.breakpointsLandscape ?? [];
     }
-
     return widget.breakpoints ?? [];
   }
 
@@ -524,18 +540,21 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   /// Set [breakpoints] and [breakpointSegments].
   void setBreakpoints() {
-    breakpoints.clear();
-    breakpointSegments.clear();
-    breakpoints.addAll(getActiveBreakpoints());
-    breakpointSegments.addAll(calcBreakpointSegments(breakpoints));
+    // Optimization. Only update breakpoints if dimensions have changed.
+    if ((windowWidth != getWindowWidth()) ||
+        (windowHeight != getWindowHeight())) {
+      windowWidth = getWindowWidth();
+      windowHeight = getWindowHeight();
+      breakpoints.clear();
+      breakpointSegments.clear();
+      breakpoints.addAll(getActiveBreakpoints());
+      breakpointSegments.addAll(calcBreakpointSegments(breakpoints));
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    // Breakpoints must be initialized before the first frame is drawn.
-    setBreakpoints();
-
     // Log breakpoints to console.
     if (widget.debugLog) {
       List<ResponsiveBreakpoint> defaultBreakpoints = widget.breakpoints ?? [];
@@ -555,6 +574,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Dimensions are only available after first frame paint.
     WidgetsBinding.instance!.addObserver(this);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
+      // Breakpoints must be initialized before the first frame is drawn.
+      setBreakpoints();
       // Directly updating dimensions is safe because frame callbacks
       // in initState are guaranteed.
       setDimensions();
@@ -571,7 +592,6 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    setBreakpoints();
     // When physical dimensions change, update state.
     // The required MediaQueryData is only available
     // on the next frame for physical dimension changes.
@@ -579,6 +599,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       // Widget could be destroyed by resize. Verify widget
       // exists before updating dimensions.
       if (mounted) {
+        setBreakpoints();
         setDimensions();
         setState(() {});
       }
@@ -599,6 +620,9 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   @override
   Widget build(BuildContext context) {
+    // Platform initialization requires context.
+    setPlatform();
+
     return (screenWidth ==
             0) // Initialization check. Window measurements not available until postFrameCallback.
         ? buildBackgroundColorWidget(widget
