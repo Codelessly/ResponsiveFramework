@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:responsive_framework/utils/responsive_utils.dart';
 
 import 'test_utils.dart';
 
@@ -825,6 +827,281 @@ void main() {
           ResponsiveWrapperData.fromResponsiveWrapper(state)
               .isSmallerThan(null),
           false);
+    });
+  });
+
+  group('Landscape Mode', () {
+    // Test if platform correctly detects landscape mode.
+    testWidgets('Landscape Platform Android', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Landscape supported in Android by default.
+      expect(state.isLandscapePlatform, true);
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets('Landscape Platform iOS', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Landscape supported in Android by default.
+      expect(state.isLandscapePlatform, true);
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets('Landscape Platform Windows', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Windows.
+      debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              child: Container(),
+              shrinkWrap: false,
+            ),
+            // Set target platform to Windows.
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Landscape not supported in windows by default.
+      expect(state.isLandscapePlatform, false);
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets('Landscape Platform Web', (WidgetTester tester) async {
+      // TODO: How to simulate test on web?
+    });
+
+    // Test landscape platforms override
+    testWidgets('Landscape Platform Override', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Windows.
+      debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              shrinkWrap: false,
+              // Override platform to enable landscape on windows.
+              landscapePlatforms: [ResponsiveTargetPlatform.windows],
+              child: Container(),
+            ),
+            // Set target platform to Windows.
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      expect(state.isLandscapePlatform, true);
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets('isLandscape Function', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              breakpointsLandscape: [
+                ResponsiveBreakpoint.autoScale(800),
+              ],
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Landscape supported in Android by default.
+      expect(state.isLandscape, true);
+
+      // Switch to portrait.
+      setScreenSize(tester, Size(800, 1200));
+      await tester.pump();
+      state = tester.state(find.byKey(key));
+      expect(state.isLandscape, false);
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    // Text active breakpoints.
+    testWidgets('Landscape Active Breakpoints', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+
+      List<ResponsiveBreakpoint> breakpoints = [
+        ResponsiveBreakpoint.autoScale(400),
+        ResponsiveBreakpoint.autoScale(800),
+        ResponsiveBreakpoint.autoScale(1200),
+      ];
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              breakpointsLandscape: breakpoints,
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      expect(state.breakpoints, breakpoints);
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    // Test switch active breakpoints.
+    testWidgets('Landscape Switch Breakpoints', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+
+      List<ResponsiveBreakpoint> breakpoints = [
+        ResponsiveBreakpoint.autoScale(600),
+        ResponsiveBreakpoint.autoScale(700),
+        ResponsiveBreakpoint.autoScale(1000),
+      ];
+
+      List<ResponsiveBreakpoint> breakpointsLandscape = [
+        ResponsiveBreakpoint.autoScale(400),
+        ResponsiveBreakpoint.autoScale(800),
+        ResponsiveBreakpoint.autoScale(1200),
+      ];
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: breakpoints,
+              breakpointsLandscape: breakpointsLandscape,
+              minWidth: 400,
+              minWidthLandscape: 800,
+              maxWidth: 1200,
+              maxWidthLandscape: 2560,
+              defaultScale: true,
+              defaultScaleLandscape: false,
+              defaultScaleFactor: 0.8,
+              defaultScaleFactorLandscape: 1.2,
+              defaultName: 'PORTRAIT',
+              defaultNameLandscape: 'LANDSCAPE',
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      expect(state.breakpoints, breakpointsLandscape);
+      expect(state.minWidth, 800);
+      expect(state.maxWidth, 2560);
+      expect(state.defaultScale, false);
+      expect(state.defaultScaleFactor, 1.2);
+      expect(state.defaultName, 'LANDSCAPE');
+
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(600, 1200));
+      await tester.pump();
+      expect(state.breakpoints, breakpoints);
+      expect(state.minWidth, 400);
+      expect(state.maxWidth, 1200);
+      expect(state.defaultScale, true);
+      expect(state.defaultScaleFactor, 0.8);
+      expect(state.defaultName, 'PORTRAIT');
+
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
     });
   });
 }
