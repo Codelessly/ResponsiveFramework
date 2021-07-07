@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4
+- Fix ListIterable.firstWhere `Bad state: No element` breakpoint initialization error.
+
 ## 0.1.2
 - Full support for `landscapeBreakpoints` - breakpoints in landscape mode. Create landscape overrides with `minWidthLandscape`, `maxWidthLandscape`, `defaultScaleLandscape`, etc.
 - Use `ResponsiveTargetPlatform` to enable landscape support for platforms including web.
