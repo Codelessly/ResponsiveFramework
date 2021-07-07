@@ -560,6 +560,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
       List<ResponsiveBreakpoint> defaultBreakpoints = widget.breakpoints ?? [];
       List<ResponsiveBreakpointSegment> defaultBreakpointSegments =
           calcBreakpointSegments(defaultBreakpoints);
+      // Add Portrait and Landscape annotations if landscape breakpoints are provided.
+      if (widget.breakpointsLandscape != null) {
+        print('**PORTRAIT**');
+      }
       ResponsiveUtils.debugLogBreakpointSegments(defaultBreakpointSegments);
       // Print landscape breakpoints.
       if (widget.breakpointsLandscape != null) {
@@ -567,6 +571,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
             widget.breakpointsLandscape ?? [];
         List<ResponsiveBreakpointSegment> landscapeBreakpointSegments =
             calcBreakpointSegments(landscapeBreakpoints);
+        print('**LANDSCAPE**');
         ResponsiveUtils.debugLogBreakpointSegments(landscapeBreakpointSegments);
       }
     }
