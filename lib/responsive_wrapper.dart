@@ -542,7 +542,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   void setBreakpoints() {
     // Optimization. Only update breakpoints if dimensions have changed.
     if ((windowWidth != getWindowWidth()) ||
-        (windowHeight != getWindowHeight())) {
+        (windowHeight != getWindowHeight()) ||
+        (windowWidth == 0)) {
       windowWidth = getWindowWidth();
       windowHeight = getWindowHeight();
       breakpoints.clear();

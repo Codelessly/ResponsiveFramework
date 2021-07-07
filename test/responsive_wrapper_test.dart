@@ -550,8 +550,8 @@ void main() {
     // Test 0 screen width and height.
     // Verify no errors are thrown.
     testWidgets('Screen Size 0', (WidgetTester tester) async {
-      // Screen Width 0.
-      setScreenSize(tester, Size(0, 1200));
+      // Screen width and height 0.
+      setScreenSize(tester, Size(0, 0));
       Key key = UniqueKey();
       String defaultName = 'defaultName';
       Widget widget = MaterialApp(
@@ -574,7 +574,7 @@ void main() {
       expect(
           state.activeBreakpointSegment.responsiveBreakpoint.name, defaultName);
       MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(0, 1200));
+      expect(mediaQuery.data.size, Size(0, 0));
 
       resetScreenSize(tester);
       setScreenSize(tester, Size(450, 0));
@@ -592,6 +592,58 @@ void main() {
           state.activeBreakpointSegment.responsiveBreakpoint.breakpoint, 450);
       mediaQuery = tester.widget(find.byType(MediaQuery).first);
       expect(mediaQuery.data.size, Size(0, 0));
+    });
+
+    testWidgets('Screen Width 0 Initialization', (WidgetTester tester) async {
+      // Screen width and height 0.
+      setScreenSize(tester, Size(0, 1200));
+      Key key = UniqueKey();
+      String defaultName = 'defaultName';
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultName: defaultName,
+          defaultScale: true,
+          breakpoints: [
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(600, name: TABLET),
+            ResponsiveBreakpoint.resize(800, name: DESKTOP),
+          ],
+          child: Container(),
+          shrinkWrap: false,
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
+      expect(mediaQuery.data.size, Size(0, 1200));
+    });
+
+    testWidgets('Screen Height 0 Initialization', (WidgetTester tester) async {
+      // Screen width and height 0.
+      setScreenSize(tester, Size(1200, 0));
+      Key key = UniqueKey();
+      String defaultName = 'defaultName';
+      Widget widget = MaterialApp(
+        home: ResponsiveWrapper(
+          key: key,
+          defaultName: defaultName,
+          defaultScale: true,
+          breakpoints: [
+            ResponsiveBreakpoint.resize(450, name: MOBILE),
+            ResponsiveBreakpoint.resize(600, name: TABLET),
+            ResponsiveBreakpoint.resize(800, name: DESKTOP),
+          ],
+          child: Container(),
+          shrinkWrap: false,
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
+      expect(mediaQuery.data.size, Size(1200, 0));
     });
 
     // Test infinite screen width and height.
