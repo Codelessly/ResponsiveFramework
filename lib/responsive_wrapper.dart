@@ -75,6 +75,10 @@ class ResponsiveWrapper extends StatefulWidget {
   final bool defaultScale;
   final double defaultScaleFactor;
 
+  /// Useful if you want the scaling/resizing to be calculated based on the shortest
+  /// side of the screen, instead of using just width
+  final bool useShortestSide;
+
   /// Landscape minWidth value. Defaults to [minWidth] if not set.
   final double? minWidthLandscape;
 
@@ -135,6 +139,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.mediaQueryData,
     this.shrinkWrap = true,
     this.alignment = Alignment.topCenter,
+    this.useShortestSide = false,
     this.debugLog = false,
   }) : super(key: key);
 
@@ -152,6 +157,7 @@ class ResponsiveWrapper extends StatefulWidget {
     bool defaultScale = false,
     double defaultScaleFactor = 1,
     double? minWidthLandscape,
+    bool useShortestSide = false,
     double? maxWidthLandscape,
     String? defaultNameLandscape,
     bool? defaultScaleLandscape,
@@ -170,6 +176,7 @@ class ResponsiveWrapper extends StatefulWidget {
       minWidth: minWidth,
       maxWidth: maxWidth,
       defaultName: defaultName,
+      useShortestSide: useShortestSide,
       defaultScale: defaultScale,
       defaultScaleFactor: defaultScaleFactor,
       minWidthLandscape: minWidthLandscape,
@@ -230,7 +237,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Get screen width calculation.
   double screenWidth = 0;
   double getScreenWidth() {
-    activeBreakpointSegment = getActiveBreakpointSegment(windowWidth);
+    double _size = useShortestSide
+        ? (windowWidth < windowHeight ? windowWidth : windowHeight)
+        : windowWidth;
+    activeBreakpointSegment = getActiveBreakpointSegment(_size);
     // Special 0 width condition.
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
@@ -490,6 +500,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double get defaultScaleFactor => isLandscape
       ? (widget.defaultScaleFactorLandscape ?? widget.defaultScaleFactor)
       : widget.defaultScaleFactor;
+  bool get useShortestSide => widget.useShortestSide;
 
   /// Calculate updated dimensions.
   void setDimensions() {
