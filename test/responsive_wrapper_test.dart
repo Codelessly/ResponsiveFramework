@@ -1156,4 +1156,207 @@ void main() {
       debugDefaultTargetPlatformOverride = null;
     });
   });
+
+  group('useShortestSide Behaviour', () {
+    // Test that useShortestSide is disabled by default
+    testWidgets('useShortestSide Disabled', (WidgetTester tester) async {
+      // Width is greater than height.
+      setScreenSize(tester, Size(1200, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: [],
+              breakpointsLandscape: [],
+              minWidth: 400,
+              minWidthLandscape: 800,
+              maxWidth: 1200,
+              maxWidthLandscape: 2560,
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Test Landscape
+      expect(state.useShortestSide, false);
+      expect(state.minWidth, 800);
+      expect(state.maxWidth, 2560);
+      // Change to Portrait
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(600, 1200));
+      await tester.pump();
+      // Test Portrait
+      expect(state.useShortestSide, false);
+      expect(state.minWidth, 400);
+      expect(state.maxWidth, 1200);
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    // Test that useShortestSide is disabled by default
+    testWidgets('useShortestSide + Breakpoints', (WidgetTester tester) async {
+      // Height is greater than width.
+      setScreenSize(tester, Size(400, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+
+      List<ResponsiveBreakpoint> breakpoints = [
+        ResponsiveBreakpoint.autoScale(350, scaleFactor: 1),
+        ResponsiveBreakpoint.autoScale(600, scaleFactor: 2),
+        ResponsiveBreakpoint.autoScale(750, scaleFactor: 3),
+      ];
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: breakpoints,
+              minWidth: 100,
+              useShortestSide: true,
+              maxWidth: 400,
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Test Portrait scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 1);
+      // Change to Landscape
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(800, 400));
+      await tester.pump();
+      // Test Landscape scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 1);
+      // Make screen biggger
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(650, 900));
+      await tester.pump();
+      // Test Portrait scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 2);
+      // Change to Landscape
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(900, 650));
+      await tester.pump();
+      // Test Landscape scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 2);
+      // Make screen biggger
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(800, 1200));
+      await tester.pump();
+      // Test Portrait scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 3);
+      // Change to Landscape
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(1200, 800));
+      await tester.pump();
+      // Test Landscape scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 3);
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+    testWidgets('useShortestSide + Breakpoints + breakpointsLandscape',
+        (WidgetTester tester) async {
+      // Height is greater than width.
+      setScreenSize(tester, Size(400, 800));
+
+      // Set target platform to Android.
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+
+      List<ResponsiveBreakpoint> breakpoints = [
+        ResponsiveBreakpoint.autoScale(350, scaleFactor: 1),
+        ResponsiveBreakpoint.autoScale(600, scaleFactor: 2),
+        ResponsiveBreakpoint.autoScale(750, scaleFactor: 3),
+      ];
+      // Over exagerated to note the difference
+      List<ResponsiveBreakpoint> breakpointsLandscape = [
+        ResponsiveBreakpoint.autoScale(350, scaleFactor: 6),
+        ResponsiveBreakpoint.autoScale(600, scaleFactor: 7),
+        ResponsiveBreakpoint.autoScale(750, scaleFactor: 8),
+      ];
+
+      Key key = UniqueKey();
+      Widget widget = Builder(
+        builder: (context) {
+          return MaterialApp(
+            home: ResponsiveWrapper(
+              key: key,
+              breakpoints: breakpoints,
+              breakpointsLandscape: breakpointsLandscape,
+              minWidth: 100,
+              useShortestSide: true,
+              maxWidth: 400,
+              child: Container(),
+              shrinkWrap: false,
+            ),
+          );
+        },
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      dynamic state = tester.state(find.byKey(key));
+      // Test Portrait scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 1);
+      // Change to Landscape
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(800, 400));
+      await tester.pump();
+      // Test Landscape scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 6);
+      // Make screen biggger
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(650, 900));
+      await tester.pump();
+      // Test Portrait scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 2);
+      // Change to Landscape
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(900, 650));
+      await tester.pump();
+      // Test Landscape scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 7);
+      // Make screen biggger
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(800, 1200));
+      await tester.pump();
+      // Test Portrait scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 3);
+      // Change to Landscape
+      resetScreenSize(tester);
+      setScreenSize(tester, Size(1200, 800));
+      await tester.pump();
+      // Test Landscape scaleFactor
+      expect(state.useShortestSide, true);
+      expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 8);
+      // Unset global to avoid crash.
+      debugDefaultTargetPlatformOverride = null;
+    });
+  });
 }
