@@ -75,6 +75,28 @@ class ResponsiveWrapper extends StatefulWidget {
   final bool defaultScale;
   final double defaultScaleFactor;
 
+  /// Calculate responsiveness based on the shortest
+  /// side of the screen, instead of the actual
+  /// landscape orientation.
+  ///
+  /// This is useful for apps that want to avoid
+  /// scrolling screens and distribute their content
+  /// based on width/height regardless of orientation.
+  /// Size units can remain the same when the phone
+  /// is in landscape mode or portrait mode.
+  /// The developer needs only change a few widgets'
+  /// hard-coded size depending on the orientation.
+  /// The rest of the widgets maintain their size but
+  /// change the way they are displayed.
+  ///
+  /// `useShortestSide` can be used in conjunction with
+  /// [breakpointsLandscape] for additional configurability.
+  /// Landscape breakpoints will activate when the
+  /// physical device is in landscape mode but base
+  /// calculations on the shortest side instead of
+  /// the actual landscape width.
+  final bool useShortestSide;
+
   /// Landscape minWidth value. Defaults to [minWidth] if not set.
   final double? minWidthLandscape;
 
@@ -135,6 +157,7 @@ class ResponsiveWrapper extends StatefulWidget {
     this.mediaQueryData,
     this.shrinkWrap = true,
     this.alignment = Alignment.topCenter,
+    this.useShortestSide = false,
     this.debugLog = false,
   }) : super(key: key);
 
@@ -152,6 +175,7 @@ class ResponsiveWrapper extends StatefulWidget {
     bool defaultScale = false,
     double defaultScaleFactor = 1,
     double? minWidthLandscape,
+    bool useShortestSide = false,
     double? maxWidthLandscape,
     String? defaultNameLandscape,
     bool? defaultScaleLandscape,
@@ -170,6 +194,7 @@ class ResponsiveWrapper extends StatefulWidget {
       minWidth: minWidth,
       maxWidth: maxWidth,
       defaultName: defaultName,
+      useShortestSide: useShortestSide,
       defaultScale: defaultScale,
       defaultScaleFactor: defaultScaleFactor,
       minWidthLandscape: minWidthLandscape,
@@ -230,7 +255,10 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Get screen width calculation.
   double screenWidth = 0;
   double getScreenWidth() {
-    activeBreakpointSegment = getActiveBreakpointSegment(windowWidth);
+    double widthCalc = useShortestSide
+        ? (windowWidth < windowHeight ? windowWidth : windowHeight)
+        : windowWidth;
+    activeBreakpointSegment = getActiveBreakpointSegment(widthCalc);
     // Special 0 width condition.
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
@@ -490,6 +518,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double get defaultScaleFactor => isLandscape
       ? (widget.defaultScaleFactorLandscape ?? widget.defaultScaleFactor)
       : widget.defaultScaleFactor;
+  bool get useShortestSide => widget.useShortestSide;
 
   /// Calculate updated dimensions.
   void setDimensions() {
