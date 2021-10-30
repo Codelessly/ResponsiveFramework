@@ -136,6 +136,20 @@ An arbitrary number of breakpoints can be set. Resizing/scaling behavior can be 
 - 1000+: resize on desktops to use available space. 
 - 2460+: scale on extra large 4K displays so text is still legible and widgets are not spaced too far apart.
 
+## Additional Resources
+
+### Resocoder Tutorial
+
+The wonderful people at Resocoder created a great tutorial video and article walking through the usage of the Responsive Framework at the link below.
+
+[View Responsive Framework Tutorial](https://resocoder.com/2021/10/03/create-responsive-flutter-apps-with-minimal-effort/)
+
+### Project Wiki
+
+No project wiki exists yet unfortunately. That means this is an opportunity for you to create and maintain the wiki for one of the most popular Flutter packages. This package needs **your** help with documentation!
+
+Please reach out via the contact links below if you are interested.
+
 ## About
 
 Responsive Framework was created out of a desire for a better way to manage responsiveness. The ability to automatically adapt UI to different sizes opens up a world of possibilities. Here at Codelessly, we're building a Flutter app UI and website builder, development tools, and UI templates to increase productivity. If that sounds interesting, you'll want to subscribe to updates below 😎
