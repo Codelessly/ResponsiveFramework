@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.5
+- Add `useShortestSide` property to calculate responsiveness based on the shortest side of the screen, instead of the actual landscape orientation.
+
 ## 0.1.4
 - Fix ListIterable.firstWhere `Bad state: No element` breakpoint initialization error.
 
