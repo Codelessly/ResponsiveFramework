@@ -123,7 +123,8 @@ class ResponsiveWrapper extends StatefulWidget {
   /// First frame initialization default background color.
   /// Because layout initialization is delayed by 1 frame,
   /// a solid background color is displayed instead.
-  /// Default white.
+  /// By default uses `background` widget if it is set,
+  /// otherwise uses white color.
   final Color? backgroundColor;
   final MediaQueryData? mediaQueryData;
   final bool shrinkWrap;
@@ -661,7 +662,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     return (screenWidth ==
             0) // Initialization check. Window measurements not available until postFrameCallback.
         ? buildBackgroundColorWidget(widget
-            .backgroundColor) // First frame empty background color or default white.
+            .backgroundColor) // First frame with empty background.
         : InheritedResponsiveWrapper(
             data: ResponsiveWrapperData.fromResponsiveWrapper(this),
             child: Stack(
@@ -720,7 +721,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   /// Builds a container with [color].
   /// Defaults to a white background.
   Widget buildBackgroundColorWidget(Color? color) {
-    if (color == null) return Container(color: Color(0xFFFFFFFF));
+    if (color == null) return widget.background ?? Container(color: Color(0xFFFFFFFF));
     return Container(color: color);
   }
 }

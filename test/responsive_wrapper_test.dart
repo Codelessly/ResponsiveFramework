@@ -275,8 +275,11 @@ void main() {
       // 0 width to simulate screen loading.
       setScreenSize(tester, Size(0, 1200));
       Widget widget = MaterialApp(
-        builder: (context, widget) =>
-            ResponsiveWrapper.builder(widget, backgroundColor: Colors.amber),
+        builder: (context, widget) => ResponsiveWrapper.builder(
+          widget,
+          background: Container(color: Colors.blue), // won't be used
+          backgroundColor: Colors.amber,
+        ),
         home: Container(),
       );
       // Pump once to trigger one frame build.
@@ -284,6 +287,25 @@ void main() {
       // Expect only a container with color.
       WidgetPredicate widgetPredicate = (Widget widget) =>
           widget is Container && widget.color == Colors.amber;
+      // Confirm defaults.
+      expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
+    });
+
+    testWidgets('Background Color Null Fallback', (WidgetTester tester) async {
+      // 0 width to simulate screen loading.
+      setScreenSize(tester, Size(0, 1200));
+      Widget widget = MaterialApp(
+        builder: (context, widget) => ResponsiveWrapper.builder(
+          widget,
+          background: Container(color: Colors.blue),
+        ),
+        home: Container(),
+      );
+      // Pump once to trigger one frame build.
+      await tester.pumpWidget(widget);
+      // Expect only a container with default white color.
+      WidgetPredicate widgetPredicate = (Widget widget) =>
+          widget is Container && widget.color == Colors.blue;
       // Confirm defaults.
       expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
     });
