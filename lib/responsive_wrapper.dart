@@ -118,13 +118,14 @@ class ResponsiveWrapper extends StatefulWidget {
   /// is not resized.
   /// Can be used to set a background image, pattern,
   /// or solid fill.
+  /// Overrides [backgroundColor] if a widget is set.
   final Widget? background;
 
   /// First frame initialization default background color.
   /// Because layout initialization is delayed by 1 frame,
   /// a solid background color is displayed instead.
-  /// By default uses `background` widget if it is set,
-  /// otherwise uses white color.
+  /// Is overridden by [background] if set.
+  /// Defaults to a white background.
   final Color? backgroundColor;
   final MediaQueryData? mediaQueryData;
   final bool shrinkWrap;
@@ -659,39 +660,41 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Platform initialization requires context.
     setPlatform();
 
-    return (screenWidth ==
-            0) // Initialization check. Window measurements not available until postFrameCallback.
-        ? buildBackgroundColorWidget(widget
-            .backgroundColor) // First frame with empty background.
-        : InheritedResponsiveWrapper(
-            data: ResponsiveWrapperData.fromResponsiveWrapper(this),
-            child: Stack(
-              alignment: widget.alignment,
-              children: [
-                widget.background ?? SizedBox.shrink(),
-                MediaQuery(
-                  data: calculateMediaQueryData(),
-                  child: SizedBox(
-                    width: screenWidth,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        width: scaledWidth,
-                        height: (widget.shrinkWrap == true &&
-                                widget.mediaQueryData == null)
-                            ? null
-                            : scaledHeight,
-                        // Shrink wrap height if no MediaQueryData is passed.
-                        alignment: Alignment.center,
-                        child: widget.child,
-                      ),
-                    ),
-                  ),
+    // Initialization check. Window measurements not available until postFrameCallback.
+    // Return first frame with empty background.
+    if (screenWidth == 0)
+      return buildBackground(
+          background: widget.background, color: widget.backgroundColor);
+
+    return InheritedResponsiveWrapper(
+      data: ResponsiveWrapperData.fromResponsiveWrapper(this),
+      child: Stack(
+        alignment: widget.alignment,
+        children: [
+          widget.background ?? SizedBox.shrink(),
+          MediaQuery(
+            data: calculateMediaQueryData(),
+            child: SizedBox(
+              width: screenWidth,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: scaledWidth,
+                  height: (widget.shrinkWrap == true &&
+                          widget.mediaQueryData == null)
+                      ? null
+                      : scaledHeight,
+                  // Shrink wrap height if no MediaQueryData is passed.
+                  alignment: Alignment.center,
+                  child: widget.child,
                 ),
-              ],
+              ),
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   /// Return updated [MediaQueryData] values.
@@ -718,11 +721,13 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
         padding: scaledPadding);
   }
 
-  /// Builds a container with [color].
+  /// Builds a container with widget [background] or [color].
   /// Defaults to a white background.
-  Widget buildBackgroundColorWidget(Color? color) {
-    if (color == null) return widget.background ?? Container(color: Color(0xFFFFFFFF));
-    return Container(color: color);
+  Widget buildBackground({Widget? background, Color? color}) {
+    if (background != null) return background;
+    if (color != null) return Container(color: color);
+
+    return Container(color: Colors.white);
   }
 }
 
