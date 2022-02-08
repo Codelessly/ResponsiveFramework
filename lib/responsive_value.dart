@@ -16,7 +16,7 @@ import 'responsive_framework.dart';
 class ResponsiveValue<T> {
   T? value;
   final T defaultValue;
-  final List<Condition> valueWhen;
+  final List<Condition<T>> valueWhen;
 
   final BuildContext context;
 
