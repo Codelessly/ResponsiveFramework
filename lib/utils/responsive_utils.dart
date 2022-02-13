@@ -42,7 +42,7 @@ class ResponsiveUtils {
   /// for debugging purposes.
   static String debugLogBreakpointSegments(
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments) {
-    var stringBuffer = new StringBuffer();
+    var stringBuffer = StringBuffer();
     stringBuffer.write('|');
     for (int i = 0; i < responsiveBreakpointSegments.length; i++) {
       // Convenience variable.
@@ -68,14 +68,14 @@ class ResponsiveUtils {
             ' from ' +
             segment.responsiveBreakpoint.breakpoint.round().toString());
       } else {
-        stringBuffer
-            .write('${describeEnum(segment.responsiveBreakpoint.behavior)}');
+        stringBuffer.write(describeEnum(segment.responsiveBreakpoint.behavior));
       }
-      if (i != responsiveBreakpointSegments.length - 1)
+      if (i != responsiveBreakpointSegments.length - 1) {
         stringBuffer.write(' ----- ');
+      }
     }
     stringBuffer.write(' ----- ∞ |');
-    print(stringBuffer.toString());
+    debugPrint(stringBuffer.toString());
     return stringBuffer.toString();
   }
 }

@@ -10,7 +10,7 @@ void main() {
   group('ResponsiveWrapper', () {
     // Verify empty widget does nothing.
     testWidgets('Empty', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       Key key = UniqueKey();
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
@@ -34,12 +34,12 @@ void main() {
       // Verify dimensions unchanged.
       MediaQuery mediaQuery = tester.widget(find.descendant(
           of: find.byKey(key), matching: find.byType(MediaQuery)));
-      expect(mediaQuery.data.size, Size(450, 1200));
+      expect(mediaQuery.data.size, const Size(450, 1200));
     });
 
     // Verify empty wrapper does nothing.
     testWidgets('Empty Wrapper', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       Widget widget = MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
           widget,
@@ -63,18 +63,18 @@ void main() {
       MediaQuery mediaQuery = tester.widget(find.descendant(
           of: find.byType(ResponsiveWrapper),
           matching: find.byType(MediaQuery)));
-      expect(mediaQuery.data.size, Size(450, 1200));
+      expect(mediaQuery.data.size, const Size(450, 1200));
     });
 
     // Verify initialization returns [SizedBox.shrink].
     testWidgets('Initialization', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       // No breakpoints.
       Key key = UniqueKey();
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.autoScale(450, name: MOBILE),
           ],
           child: Container(color: Colors.white),
@@ -97,7 +97,7 @@ void main() {
 
     // Verify default name settings.
     testWidgets('Default Name', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       // No breakpoints.
       Key key = UniqueKey();
       String defaultName = 'defaultName';
@@ -132,7 +132,7 @@ void main() {
           home: ResponsiveWrapper(
             key: key,
             defaultName: defaultName,
-            breakpoints: [
+            breakpoints: const [
               ResponsiveBreakpoint.resize(450),
             ],
             child: Container(),
@@ -158,7 +158,7 @@ void main() {
           home: ResponsiveWrapper(
             key: key,
             defaultName: defaultName,
-            breakpoints: [
+            breakpoints: const [
               ResponsiveBreakpoint.resize(450, name: MOBILE),
               ResponsiveBreakpoint.resize(500),
               ResponsiveBreakpoint.resize(600, name: TABLET),
@@ -177,13 +177,13 @@ void main() {
 
     // Verify inherited mediaQueryData is used.
     testWidgets('MediaQueryData Inherited', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       Key key = UniqueKey();
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
           mediaQueryData:
-              MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3),
+              const MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3),
           child: Container(),
           shrinkWrap: false,
         ),
@@ -192,14 +192,14 @@ void main() {
       await tester.pump();
       MediaQuery mediaQuery = tester.widget(find.descendant(
           of: find.byKey(key), matching: find.byType(MediaQuery)));
-      expect(mediaQuery.data.size, Size(600, 1200));
+      expect(mediaQuery.data.size, const Size(600, 1200));
 
       // Pass MediaQueryData through builder.
       key = UniqueKey();
       widget = MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(widget,
-            mediaQueryData:
-                MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3)),
+            mediaQueryData: const MediaQueryData(
+                size: Size(600, 1200), devicePixelRatio: 3)),
         home: Container(),
       );
       await tester.pumpWidget(widget);
@@ -209,14 +209,14 @@ void main() {
               .byType(MediaQuery)
               // ignore: invalid_use_of_protected_member
               .allCandidates
-              .firstWhere((element) => element.size == Size(600, 1200)),
+              .firstWhere((element) => element.size == const Size(600, 1200)),
           isNotNull);
     });
 
     // Test maxWidth and minWidth values.
     testWidgets('Max and Min Width', (WidgetTester tester) async {
       // 0 value.
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       Key key = UniqueKey();
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
@@ -273,7 +273,7 @@ void main() {
 
     testWidgets('Background Color', (WidgetTester tester) async {
       // 0 width to simulate screen loading.
-      setScreenSize(tester, Size(0, 1200));
+      setScreenSize(tester, const Size(0, 1200));
       Widget widget = MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
           widget,
@@ -284,7 +284,7 @@ void main() {
       // Pump once to trigger one frame build.
       await tester.pumpWidget(widget);
       // Expect only a container with color.
-      WidgetPredicate widgetPredicate = (Widget widget) =>
+      widgetPredicate(Widget widget) =>
           widget is Container && widget.color == Colors.amber;
       // Confirm defaults.
       expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
@@ -292,7 +292,7 @@ void main() {
 
     testWidgets('Background Color Null', (WidgetTester tester) async {
       // 0 width to simulate screen loading.
-      setScreenSize(tester, Size(0, 1200));
+      setScreenSize(tester, const Size(0, 1200));
       Widget widget = MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(widget),
         home: Container(),
@@ -300,7 +300,7 @@ void main() {
       // Pump once to trigger one frame build.
       await tester.pumpWidget(widget);
       // Expect only a container with default white color.
-      WidgetPredicate widgetPredicate = (Widget widget) =>
+      widgetPredicate(Widget widget) =>
           widget is Container && widget.color == Colors.white;
       // Confirm defaults.
       expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
@@ -308,7 +308,7 @@ void main() {
 
     testWidgets('Background Widget', (WidgetTester tester) async {
       // 0 width to simulate screen loading.
-      setScreenSize(tester, Size(0, 1200));
+      setScreenSize(tester, const Size(0, 1200));
       Widget widget = MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
           widget,
@@ -320,8 +320,8 @@ void main() {
       // Pump once to trigger one frame build.
       await tester.pumpWidget(widget);
       // Expect background to be a blue container.
-      WidgetPredicate widgetPredicate =
-          (Widget widget) => widget is Container && widget.color == Colors.blue;
+      widgetPredicate(Widget widget) =>
+          widget is Container && widget.color == Colors.blue;
       // Confirm defaults.
       expect(find.byWidgetPredicate(widgetPredicate), findsOneWidget);
     });
@@ -332,7 +332,7 @@ void main() {
     /// that the error is fixed.
     testWidgets('Parent Destroyed Context Null', (WidgetTester tester) async {
       // 0 width to simulate screen loading.
-      setScreenSize(tester, Size(1200, 1200));
+      setScreenSize(tester, const Size(1200, 1200));
       Widget responsiveWrapper = ResponsiveWrapper.builder(
         Container(),
         minWidth: 320,
@@ -340,16 +340,16 @@ void main() {
         breakpoints: [],
       );
       Widget widget = MaterialApp(
-        key: ValueKey('1'),
+        key: const ValueKey('1'),
         home: responsiveWrapper,
       );
       // Pump once to trigger one frame build.
       await tester.pumpWidget(widget);
-      setScreenSize(tester, Size(300, 1200));
+      setScreenSize(tester, const Size(300, 1200));
       // Changing the MaterialApp using a different ValueKey
       // disposes the widget and triggers the error (before the fix).
       widget = MaterialApp(
-        key: ValueKey('2'),
+        key: const ValueKey('2'),
         home: responsiveWrapper,
       );
       await tester.pumpWidget(widget);
@@ -361,29 +361,29 @@ void main() {
     test('Parameters', () {
       // Test empty breakpoint.
       ResponsiveBreakpoint responsiveBreakpoint =
-          ResponsiveBreakpoint.resize(0);
+          const ResponsiveBreakpoint.resize(0);
       // Test print empty.
-      print(responsiveBreakpoint);
+      debugPrint(responsiveBreakpoint.toString());
       expect(responsiveBreakpoint.breakpoint, 0);
       expect(responsiveBreakpoint.scaleFactor, 1);
       expect(responsiveBreakpoint.name, null);
 
       // Test setting parameters types.
-      responsiveBreakpoint =
-          ResponsiveBreakpoint.autoScale(600, name: MOBILE, scaleFactor: 1.2);
+      responsiveBreakpoint = const ResponsiveBreakpoint.autoScale(600,
+          name: MOBILE, scaleFactor: 1.2);
       // Test print parameters.
-      print(responsiveBreakpoint);
+      debugPrint(responsiveBreakpoint.toString());
     });
 
     // Test duplicate breakpoints.
     testWidgets('Breakpoint Duplicate', (WidgetTester tester) async {
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       Key key = UniqueKey();
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
           defaultScale: true,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(600),
             ResponsiveBreakpoint.resize(450),
             ResponsiveBreakpoint.resize(450),
@@ -403,7 +403,7 @@ void main() {
           state.activeBreakpointSegment.responsiveBreakpoint.breakpoint, 450);
 
       resetScreenSize(tester);
-      setScreenSize(tester, Size(600, 1200));
+      setScreenSize(tester, const Size(600, 1200));
       await tester.pump();
       state = tester.state(find.byKey(key));
       expect(
@@ -411,14 +411,14 @@ void main() {
 
       // Test duplicate named breakpoints.
       resetScreenSize(tester);
-      setScreenSize(tester, Size(450, 1200));
+      setScreenSize(tester, const Size(450, 1200));
       await tester.pump();
       key = UniqueKey();
       widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
           defaultScale: true,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(450, name: MOBILE),
@@ -437,7 +437,7 @@ void main() {
       expect(state.activeBreakpointSegment.responsiveBreakpoint.name, MOBILE);
 
       resetScreenSize(tester);
-      setScreenSize(tester, Size(600, 1200));
+      setScreenSize(tester, const Size(600, 1200));
       await tester.pump();
       state = tester.state(find.byKey(key));
       expect(state.activeBreakpointSegment.responsiveBreakpoint.name, TABLET);
@@ -445,7 +445,7 @@ void main() {
 
     // Test breakpoint bounds (0, infinity)
     testWidgets('Breakpoint Bounds', (WidgetTester tester) async {
-      setScreenSize(tester, Size(400, 1200));
+      setScreenSize(tester, const Size(400, 1200));
       Key key = UniqueKey();
       String defaultName = 'defaultName';
       Widget widget = MaterialApp(
@@ -454,7 +454,7 @@ void main() {
           minWidth: 450,
           defaultName: defaultName,
           defaultScale: true,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(0, name: '0'),
             ResponsiveBreakpoint.resize(1073741823, name: 'Infinity'),
           ],
@@ -502,7 +502,7 @@ void main() {
         Widget widget = MaterialApp(
           home: ResponsiveWrapper(
             key: key,
-            breakpoints: [
+            breakpoints: const [
               ResponsiveBreakpoint.resize(450),
               ResponsiveBreakpoint.resize(600),
               ResponsiveBreakpoint.resize(800),
@@ -552,7 +552,7 @@ void main() {
         Widget widget = MaterialApp(
           home: ResponsiveWrapper(
             key: key,
-            breakpoints: [
+            breakpoints: const [
               ResponsiveBreakpoint.resize(450, name: MOBILE),
               ResponsiveBreakpoint.resize(600, name: TABLET),
               ResponsiveBreakpoint.resize(800, name: DESKTOP),
@@ -573,7 +573,7 @@ void main() {
     // Verify no errors are thrown.
     testWidgets('Screen Size 0', (WidgetTester tester) async {
       // Screen width and height 0.
-      setScreenSize(tester, Size(0, 0));
+      setScreenSize(tester, const Size(0, 0));
       Key key = UniqueKey();
       String defaultName = 'defaultName';
       Widget widget = MaterialApp(
@@ -581,7 +581,7 @@ void main() {
           key: key,
           defaultName: defaultName,
           defaultScale: true,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
@@ -596,29 +596,29 @@ void main() {
       expect(
           state.activeBreakpointSegment.responsiveBreakpoint.name, defaultName);
       MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(0, 0));
+      expect(mediaQuery.data.size, const Size(0, 0));
 
       resetScreenSize(tester);
-      setScreenSize(tester, Size(450, 0));
+      setScreenSize(tester, const Size(450, 0));
       await tester.pump();
       state = tester.state(find.byKey(key));
       expect(state.activeBreakpointSegment.responsiveBreakpoint.name, MOBILE);
       mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(450, 0));
+      expect(mediaQuery.data.size, const Size(450, 0));
 
       resetScreenSize(tester);
-      setScreenSize(tester, Size(0, 0));
+      setScreenSize(tester, const Size(0, 0));
       await tester.pump();
       state = tester.state(find.byKey(key));
       expect(
           state.activeBreakpointSegment.responsiveBreakpoint.breakpoint, 450);
       mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(0, 0));
+      expect(mediaQuery.data.size, const Size(0, 0));
     });
 
     testWidgets('Screen Width 0 Initialization', (WidgetTester tester) async {
       // Screen width and height 0.
-      setScreenSize(tester, Size(0, 1200));
+      setScreenSize(tester, const Size(0, 1200));
       Key key = UniqueKey();
       String defaultName = 'defaultName';
       Widget widget = MaterialApp(
@@ -626,7 +626,7 @@ void main() {
           key: key,
           defaultName: defaultName,
           defaultScale: true,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
@@ -637,14 +637,13 @@ void main() {
       );
       await tester.pumpWidget(widget);
       await tester.pump();
-      dynamic state = tester.state(find.byKey(key));
       MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(0, 1200));
+      expect(mediaQuery.data.size, const Size(0, 1200));
     });
 
     testWidgets('Screen Height 0 Initialization', (WidgetTester tester) async {
       // Screen width and height 0.
-      setScreenSize(tester, Size(1200, 0));
+      setScreenSize(tester, const Size(1200, 0));
       Key key = UniqueKey();
       String defaultName = 'defaultName';
       Widget widget = MaterialApp(
@@ -652,7 +651,7 @@ void main() {
           key: key,
           defaultName: defaultName,
           defaultScale: true,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
@@ -663,9 +662,8 @@ void main() {
       );
       await tester.pumpWidget(widget);
       await tester.pump();
-      dynamic state = tester.state(find.byKey(key));
       MediaQuery mediaQuery = tester.widget(find.byType(MediaQuery).first);
-      expect(mediaQuery.data.size, Size(1200, 0));
+      expect(mediaQuery.data.size, const Size(1200, 0));
     });
 
     // Test infinite screen width and height.
@@ -674,12 +672,12 @@ void main() {
     // Test convenience comparators.
     testWidgets('Breakpoint Comparators', (WidgetTester tester) async {
       // Verify comparator at named breakpoint returns correct values.
-      setScreenSize(tester, Size(600, 1200));
+      setScreenSize(tester, const Size(600, 1200));
       Key key = UniqueKey();
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(500, name: MOBILE),
             ResponsiveBreakpoint.resize(550),
@@ -731,7 +729,7 @@ void main() {
       widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(500, name: MOBILE),
             ResponsiveBreakpoint.resize(550, name: MOBILE),
@@ -783,7 +781,7 @@ void main() {
       widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(500, name: TABLET),
             ResponsiveBreakpoint.resize(550, name: DESKTOP),
@@ -828,7 +826,7 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           defaultName: defaultName,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(600),
           ],
           child: Container(),
@@ -856,7 +854,7 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           defaultName: defaultName,
-          breakpoints: [
+          breakpoints: const [
             ResponsiveBreakpoint.resize(800),
           ],
           child: Container(),
@@ -884,7 +882,7 @@ void main() {
       widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
-          breakpoints: [],
+          breakpoints: const [],
           child: Container(),
           shrinkWrap: false,
         ),
@@ -908,7 +906,7 @@ void main() {
     // Test if platform correctly detects landscape mode.
     testWidgets('Landscape Platform Android', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
@@ -919,7 +917,7 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
+              breakpoints: const [],
               child: Container(),
               shrinkWrap: false,
             ),
@@ -938,7 +936,7 @@ void main() {
 
     testWidgets('Landscape Platform iOS', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
@@ -949,7 +947,7 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
+              breakpoints: const [],
               child: Container(),
               shrinkWrap: false,
             ),
@@ -968,7 +966,7 @@ void main() {
 
     testWidgets('Landscape Platform Windows', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Windows.
       debugDefaultTargetPlatformOverride = TargetPlatform.windows;
@@ -979,7 +977,7 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
+              breakpoints: const [],
               child: Container(),
               shrinkWrap: false,
             ),
@@ -1004,7 +1002,7 @@ void main() {
     // Test landscape platforms override
     testWidgets('Landscape Platform Override', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Windows.
       debugDefaultTargetPlatformOverride = TargetPlatform.windows;
@@ -1015,10 +1013,10 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
+              breakpoints: const [],
               shrinkWrap: false,
               // Override platform to enable landscape on windows.
-              landscapePlatforms: [ResponsiveTargetPlatform.windows],
+              landscapePlatforms: const [ResponsiveTargetPlatform.windows],
               child: Container(),
             ),
             // Set target platform to Windows.
@@ -1036,7 +1034,7 @@ void main() {
 
     testWidgets('isLandscape Function', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
@@ -1047,8 +1045,8 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
-              breakpointsLandscape: [
+              breakpoints: const [],
+              breakpointsLandscape: const [
                 ResponsiveBreakpoint.autoScale(800),
               ],
               child: Container(),
@@ -1064,7 +1062,7 @@ void main() {
       expect(state.isLandscape, true);
 
       // Switch to portrait.
-      setScreenSize(tester, Size(800, 1200));
+      setScreenSize(tester, const Size(800, 1200));
       await tester.pump();
       state = tester.state(find.byKey(key));
       expect(state.isLandscape, false);
@@ -1076,15 +1074,15 @@ void main() {
     // Text active breakpoints.
     testWidgets('Landscape Active Breakpoints', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
 
       List<ResponsiveBreakpoint> breakpoints = [
-        ResponsiveBreakpoint.autoScale(400),
-        ResponsiveBreakpoint.autoScale(800),
-        ResponsiveBreakpoint.autoScale(1200),
+        const ResponsiveBreakpoint.autoScale(400),
+        const ResponsiveBreakpoint.autoScale(800),
+        const ResponsiveBreakpoint.autoScale(1200),
       ];
 
       Key key = UniqueKey();
@@ -1093,7 +1091,7 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
+              breakpoints: const [],
               breakpointsLandscape: breakpoints,
               child: Container(),
               shrinkWrap: false,
@@ -1113,21 +1111,21 @@ void main() {
     // Test switch active breakpoints.
     testWidgets('Landscape Switch Breakpoints', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
 
       List<ResponsiveBreakpoint> breakpoints = [
-        ResponsiveBreakpoint.autoScale(600),
-        ResponsiveBreakpoint.autoScale(700),
-        ResponsiveBreakpoint.autoScale(1000),
+        const ResponsiveBreakpoint.autoScale(600),
+        const ResponsiveBreakpoint.autoScale(700),
+        const ResponsiveBreakpoint.autoScale(1000),
       ];
 
       List<ResponsiveBreakpoint> breakpointsLandscape = [
-        ResponsiveBreakpoint.autoScale(400),
-        ResponsiveBreakpoint.autoScale(800),
-        ResponsiveBreakpoint.autoScale(1200),
+        const ResponsiveBreakpoint.autoScale(400),
+        const ResponsiveBreakpoint.autoScale(800),
+        const ResponsiveBreakpoint.autoScale(1200),
       ];
 
       Key key = UniqueKey();
@@ -1165,7 +1163,7 @@ void main() {
       expect(state.defaultName, 'LANDSCAPE');
 
       resetScreenSize(tester);
-      setScreenSize(tester, Size(600, 1200));
+      setScreenSize(tester, const Size(600, 1200));
       await tester.pump();
       expect(state.breakpoints, breakpoints);
       expect(state.minWidth, 400);
@@ -1183,7 +1181,7 @@ void main() {
     // Test that useShortestSide is disabled by default
     testWidgets('useShortestSide Disabled', (WidgetTester tester) async {
       // Width is greater than height.
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
@@ -1194,8 +1192,8 @@ void main() {
           return MaterialApp(
             home: ResponsiveWrapper(
               key: key,
-              breakpoints: [],
-              breakpointsLandscape: [],
+              breakpoints: const [],
+              breakpointsLandscape: const [],
               minWidth: 400,
               minWidthLandscape: 800,
               maxWidth: 1200,
@@ -1215,7 +1213,7 @@ void main() {
       expect(state.maxWidth, 2560);
       // Change to Portrait
       resetScreenSize(tester);
-      setScreenSize(tester, Size(600, 1200));
+      setScreenSize(tester, const Size(600, 1200));
       await tester.pump();
       // Test Portrait
       expect(state.useShortestSide, false);
@@ -1228,15 +1226,15 @@ void main() {
     // Test that useShortestSide is disabled by default
     testWidgets('useShortestSide + Breakpoints', (WidgetTester tester) async {
       // Height is greater than width.
-      setScreenSize(tester, Size(400, 800));
+      setScreenSize(tester, const Size(400, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
 
       List<ResponsiveBreakpoint> breakpoints = [
-        ResponsiveBreakpoint.autoScale(350, scaleFactor: 1),
-        ResponsiveBreakpoint.autoScale(600, scaleFactor: 2),
-        ResponsiveBreakpoint.autoScale(750, scaleFactor: 3),
+        const ResponsiveBreakpoint.autoScale(350, scaleFactor: 1),
+        const ResponsiveBreakpoint.autoScale(600, scaleFactor: 2),
+        const ResponsiveBreakpoint.autoScale(750, scaleFactor: 3),
       ];
 
       Key key = UniqueKey();
@@ -1263,35 +1261,35 @@ void main() {
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 1);
       // Change to Landscape
       resetScreenSize(tester);
-      setScreenSize(tester, Size(800, 400));
+      setScreenSize(tester, const Size(800, 400));
       await tester.pump();
       // Test Landscape scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 1);
       // Make screen biggger
       resetScreenSize(tester);
-      setScreenSize(tester, Size(650, 900));
+      setScreenSize(tester, const Size(650, 900));
       await tester.pump();
       // Test Portrait scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 2);
       // Change to Landscape
       resetScreenSize(tester);
-      setScreenSize(tester, Size(900, 650));
+      setScreenSize(tester, const Size(900, 650));
       await tester.pump();
       // Test Landscape scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 2);
       // Make screen biggger
       resetScreenSize(tester);
-      setScreenSize(tester, Size(800, 1200));
+      setScreenSize(tester, const Size(800, 1200));
       await tester.pump();
       // Test Portrait scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 3);
       // Change to Landscape
       resetScreenSize(tester);
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
       await tester.pump();
       // Test Landscape scaleFactor
       expect(state.useShortestSide, true);
@@ -1302,21 +1300,21 @@ void main() {
     testWidgets('useShortestSide + Breakpoints + breakpointsLandscape',
         (WidgetTester tester) async {
       // Height is greater than width.
-      setScreenSize(tester, Size(400, 800));
+      setScreenSize(tester, const Size(400, 800));
 
       // Set target platform to Android.
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
 
       List<ResponsiveBreakpoint> breakpoints = [
-        ResponsiveBreakpoint.autoScale(350, scaleFactor: 1),
-        ResponsiveBreakpoint.autoScale(600, scaleFactor: 2),
-        ResponsiveBreakpoint.autoScale(750, scaleFactor: 3),
+        const ResponsiveBreakpoint.autoScale(350, scaleFactor: 1),
+        const ResponsiveBreakpoint.autoScale(600, scaleFactor: 2),
+        const ResponsiveBreakpoint.autoScale(750, scaleFactor: 3),
       ];
       // Over exagerated to note the difference
       List<ResponsiveBreakpoint> breakpointsLandscape = [
-        ResponsiveBreakpoint.autoScale(350, scaleFactor: 6),
-        ResponsiveBreakpoint.autoScale(600, scaleFactor: 7),
-        ResponsiveBreakpoint.autoScale(750, scaleFactor: 8),
+        const ResponsiveBreakpoint.autoScale(350, scaleFactor: 6),
+        const ResponsiveBreakpoint.autoScale(600, scaleFactor: 7),
+        const ResponsiveBreakpoint.autoScale(750, scaleFactor: 8),
       ];
 
       Key key = UniqueKey();
@@ -1344,35 +1342,35 @@ void main() {
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 1);
       // Change to Landscape
       resetScreenSize(tester);
-      setScreenSize(tester, Size(800, 400));
+      setScreenSize(tester, const Size(800, 400));
       await tester.pump();
       // Test Landscape scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 6);
       // Make screen biggger
       resetScreenSize(tester);
-      setScreenSize(tester, Size(650, 900));
+      setScreenSize(tester, const Size(650, 900));
       await tester.pump();
       // Test Portrait scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 2);
       // Change to Landscape
       resetScreenSize(tester);
-      setScreenSize(tester, Size(900, 650));
+      setScreenSize(tester, const Size(900, 650));
       await tester.pump();
       // Test Landscape scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 7);
       // Make screen biggger
       resetScreenSize(tester);
-      setScreenSize(tester, Size(800, 1200));
+      setScreenSize(tester, const Size(800, 1200));
       await tester.pump();
       // Test Portrait scaleFactor
       expect(state.useShortestSide, true);
       expect(state.activeBreakpointSegment.responsiveBreakpoint.scaleFactor, 3);
       // Change to Landscape
       resetScreenSize(tester);
-      setScreenSize(tester, Size(1200, 800));
+      setScreenSize(tester, const Size(1200, 800));
       await tester.pump();
       // Test Landscape scaleFactor
       expect(state.useShortestSide, true);

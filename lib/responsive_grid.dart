@@ -39,7 +39,7 @@ class ResponsiveGridView extends StatelessWidget {
   final Clip clipBehavior;
   final String? restorationId;
 
-  ResponsiveGridView.builder({
+  const ResponsiveGridView.builder({
     Key? key,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
@@ -62,7 +62,7 @@ class ResponsiveGridView extends StatelessWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,7 @@ class ResponsiveGridView extends StatelessWidget {
           alignment == Alignment.topLeft ||
           alignment == Alignment.bottomLeft) {
         // Align left, no padding.
-        alignmentPadding = EdgeInsets.only(left: 0);
+        alignmentPadding = const EdgeInsets.only(left: 0);
       } else if (alignment == Alignment.center ||
           alignment == Alignment.topCenter ||
           alignment == Alignment.bottomCenter) {
@@ -137,7 +137,7 @@ class ResponsiveGridView extends StatelessWidget {
         double paddingCalc = constraints.maxWidth - crossAxisWidth;
         if (paddingCalc <= 0) {
           // There is no additional space. No padding.
-          alignmentPadding = EdgeInsets.only(left: 0);
+          alignmentPadding = const EdgeInsets.only(left: 0);
         } else if (paddingCalc > gridDelegate.crossAxisSpacing) {
           // There is enough room to center items correctly.
           // Add padding equivalent to the last item to the first item.
@@ -200,7 +200,7 @@ class _ResponsiveGridViewLayout extends BoxScrollView {
   final SliverChildDelegate childrenDelegate;
   final int? itemCount;
 
-  _ResponsiveGridViewLayout({
+  const _ResponsiveGridViewLayout({
     Key? key,
     Axis scrollDirection = Axis.vertical,
     bool reverse = false,
@@ -302,7 +302,7 @@ class ResponsiveGridDelegate extends SliverGridDelegate {
     // Item width.
     double? childCrossAxisExtent;
     // Switch between item sizing behaviors.
-    if (this.crossAxisExtent != null) {
+    if (crossAxisExtent != null) {
       crossAxisCount =
           (constraints.crossAxisExtent / (crossAxisExtent! + crossAxisSpacing))
               .floor();
@@ -310,7 +310,7 @@ class ResponsiveGridDelegate extends SliverGridDelegate {
       childMainAxisExtent = childCrossAxisExtent! / childAspectRatio;
       mainAxisStride = childMainAxisExtent + mainAxisSpacing;
       crossAxisStride = childCrossAxisExtent + crossAxisSpacing;
-    } else if (this.maxCrossAxisExtent != null) {
+    } else if (maxCrossAxisExtent != null) {
       crossAxisCount = (constraints.crossAxisExtent /
               (maxCrossAxisExtent! + crossAxisSpacing))
           .ceil();

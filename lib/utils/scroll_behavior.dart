@@ -11,7 +11,7 @@ class BouncingScrollBehavior extends ScrollBehavior {
   // Set physics to bouncing.
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
-    return BouncingScrollPhysics();
+    return const BouncingScrollPhysics();
   }
 }
 
@@ -45,7 +45,7 @@ class ClampingScrollBehavior extends ScrollBehavior {
   // Set physics to clamping.
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
-    return ClampingScrollPhysics();
+    return const ClampingScrollPhysics();
   }
 }
 

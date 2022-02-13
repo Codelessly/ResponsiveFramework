@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
@@ -67,7 +69,7 @@ class ResponsiveRowColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (layout == ResponsiveRowColumnType.ROW)
+    if (layout == ResponsiveRowColumnType.ROW) {
       return Padding(
         padding: rowPadding,
         child: Row(
@@ -82,6 +84,7 @@ class ResponsiveRowColumn extends StatelessWidget {
           ],
         ),
       );
+    }
 
     return Padding(
       padding: columnPadding,
@@ -115,11 +118,12 @@ class ResponsiveRowColumn extends StatelessWidget {
     List<Widget> widgetList = [];
     for (int i = 0; i < childrenHolder.length; i++) {
       widgetList.add(childrenHolder[i].copyWith(rowColumn: rowColumn));
-      if (spacing != null && i != childrenHolder.length - 1)
+      if (spacing != null && i != childrenHolder.length - 1) {
         widgetList.add(Padding(
             padding: rowColumn
                 ? EdgeInsets.only(right: spacing)
                 : EdgeInsets.only(bottom: spacing)));
+      }
     }
     return widgetList;
   }
@@ -187,7 +191,7 @@ class ResponsiveRowColumnItem extends StatelessWidget {
         rowColumn: rowColumn ?? this.rowColumn,
         rowFlex: rowFlex ?? this.rowFlex,
         columnFlex: columnFlex ?? this.columnFlex,
-        rowFit: rowFlexFit ?? this.rowFit,
-        columnFit: columnFlexFit ?? this.columnFit,
+        rowFit: rowFlexFit ?? rowFit,
+        columnFit: columnFlexFit ?? columnFit,
       );
 }

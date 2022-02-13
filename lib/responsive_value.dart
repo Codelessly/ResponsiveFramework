@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/widgets.dart';
 
@@ -66,8 +68,9 @@ class ResponsiveValue<T> {
     if (activeCondition == null) return null;
     // Return landscape value if orientation is landscape and landscape override value is provided.
     if (ResponsiveWrapper.of(context).orientation == Orientation.landscape &&
-        activeCondition.landscapeValue != null)
+        activeCondition.landscapeValue != null) {
       return activeCondition.landscapeValue;
+    }
     // Return active condition value or default value if null.
     return activeCondition.value;
   }
@@ -159,28 +162,17 @@ class Condition<T> {
       : assert(breakpoint != null || name != null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  const Condition.equals({required String name, T? value, T? landscapeValue})
-      : this.breakpoint = null,
-        this.name = name,
-        this.condition = Conditional.EQUALS,
-        this.value = value,
-        this.landscapeValue = landscapeValue;
+  const Condition.equals({required this.name, this.value, this.landscapeValue})
+      : breakpoint = null,
+        condition = Conditional.EQUALS;
 
   const Condition.largerThan(
-      {int? breakpoint, String? name, T? value, T? landscapeValue})
-      : this.breakpoint = breakpoint,
-        this.name = name,
-        this.condition = Conditional.LARGER_THAN,
-        this.value = value,
-        this.landscapeValue = landscapeValue;
+      {this.breakpoint, this.name, this.value, this.landscapeValue})
+      : condition = Conditional.LARGER_THAN;
 
   const Condition.smallerThan(
-      {int? breakpoint, String? name, T? value, T? landscapeValue})
-      : this.breakpoint = breakpoint,
-        this.name = name,
-        this.condition = Conditional.SMALLER_THAN,
-        this.value = value,
-        this.landscapeValue = landscapeValue;
+      {this.breakpoint, this.name, this.value, this.landscapeValue})
+      : condition = Conditional.SMALLER_THAN;
 
   Condition copyWith({
     int? breakpoint,
@@ -199,8 +191,7 @@ class Condition<T> {
 
   @override
   String toString() =>
-      'Condition(' +
-      'breakpoint: ' +
+      'Condition(' 'breakpoint: ' +
       breakpoint.toString() +
       ', name: ' +
       name.toString() +

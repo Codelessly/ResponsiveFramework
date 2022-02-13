@@ -1,9 +1,10 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:math';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'utils/responsive_utils.dart';
 
@@ -287,12 +288,14 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Special 0 height condition.
     if (activeBreakpointSegment.responsiveBreakpoint.breakpoint == 0) return 0;
     // Check if screenWidth exceeds maxWidth.
-    if (maxWidth != null) if (windowWidth > maxWidth!) {
-      // Check if there is an active breakpoint with autoScale set to true.
-      if (activeBreakpointSegment.breakpoint > maxWidth! &&
-          activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
-        // Scale screen height by the amount the width was scaled.
-        return windowHeight / (screenWidth / maxWidth!);
+    if (maxWidth != null) {
+      if (windowWidth > maxWidth!) {
+        // Check if there is an active breakpoint with autoScale set to true.
+        if (activeBreakpointSegment.breakpoint > maxWidth! &&
+            activeBreakpointSegment.responsiveBreakpoint.isAutoScale) {
+          // Scale screen height by the amount the width was scaled.
+          return windowHeight / (screenWidth / maxWidth!);
+        }
       }
     }
 
@@ -316,14 +319,18 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double scaledWidth = 0;
   double getScaledWidth() {
     // If widget should resize, use screenWidth.
-    if (activeBreakpointSegment.responsiveBreakpoint.isResize)
+    if (activeBreakpointSegment.responsiveBreakpoint.isResize) {
       return screenWidth /
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
+    }
 
     // Screen is larger than max width. Scale from max width.
-    if (maxWidth != null) if (activeBreakpointSegment.breakpoint > maxWidth!)
-      return maxWidth! /
-          activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
+    if (maxWidth != null) {
+      if (activeBreakpointSegment.breakpoint > maxWidth!) {
+        return maxWidth! /
+            activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
+      }
+    }
 
     // Return width from breakpoint with scale factor applied.
     return activeBreakpointSegment.responsiveBreakpoint.breakpoint /
@@ -349,15 +356,18 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
   double scaledHeight = 0;
   double getScaledHeight() {
     // If widget should resize, use screenHeight.
-    if (activeBreakpointSegment.responsiveBreakpoint.isResize)
+    if (activeBreakpointSegment.responsiveBreakpoint.isResize) {
       return screenHeight /
           activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
+    }
 
     // Screen is larger than max width. Calculate height
     // from max width.
-    if (maxWidth != null) if (activeBreakpointSegment.breakpoint > maxWidth!) {
-      return screenHeight /
-          activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
+    if (maxWidth != null) {
+      if (activeBreakpointSegment.breakpoint > maxWidth!) {
+        return screenHeight /
+            activeBreakpointSegment.responsiveBreakpoint.scaleFactor;
+      }
     }
 
     // Find width adjustment scale to proportionally scale height.
@@ -594,7 +604,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
           calcBreakpointSegments(defaultBreakpoints);
       // Add Portrait and Landscape annotations if landscape breakpoints are provided.
       if (widget.breakpointsLandscape != null) {
-        print('**PORTRAIT**');
+        debugPrint('**PORTRAIT**');
       }
       ResponsiveUtils.debugLogBreakpointSegments(defaultBreakpointSegments);
       // Print landscape breakpoints.
@@ -603,7 +613,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
             widget.breakpointsLandscape ?? [];
         List<ResponsiveBreakpointSegment> landscapeBreakpointSegments =
             calcBreakpointSegments(landscapeBreakpoints);
-        print('**LANDSCAPE**');
+        debugPrint('**LANDSCAPE**');
         ResponsiveUtils.debugLogBreakpointSegments(landscapeBreakpointSegments);
       }
     }
@@ -662,16 +672,17 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
     // Initialization check. Window measurements not available until postFrameCallback.
     // Return first frame with empty background.
-    if (screenWidth == 0)
+    if (screenWidth == 0) {
       return buildBackground(
           background: widget.background, color: widget.backgroundColor);
+    }
 
     return InheritedResponsiveWrapper(
       data: ResponsiveWrapperData.fromResponsiveWrapper(this),
       child: Stack(
         alignment: widget.alignment,
         children: [
-          widget.background ?? SizedBox.shrink(),
+          widget.background ?? const SizedBox.shrink(),
           MediaQuery(
             data: calculateMediaQueryData(),
             child: SizedBox(
@@ -799,8 +810,7 @@ class ResponsiveWrapperData {
 
   @override
   String toString() =>
-      'ResponsiveWrapperData(' +
-      'screenWidth: ' +
+      'ResponsiveWrapperData(' 'screenWidth: ' +
       screenWidth.toString() +
       ', screenHeight: ' +
       screenHeight.toString() +
@@ -830,7 +840,7 @@ class ResponsiveWrapperData {
   /// Defaults to false if the [name] cannot be found.
   bool isLargerThan(String? name) {
     // No breakpoints to match.
-    if (breakpoints.length == 0) return false;
+    if (breakpoints.isEmpty) return false;
 
     // Breakpoint is active breakpoint.
     if (activeBreakpoint.name == name) return false;
@@ -858,16 +868,23 @@ class ResponsiveWrapperData {
       screenWidth <
       breakpointSegments
           .firstWhere((element) => element.responsiveBreakpoint.name == name,
-              orElse: () => ResponsiveBreakpointSegment(
+              orElse: () => const ResponsiveBreakpointSegment(
                   breakpoint: 0,
                   segmentType: ResponsiveBreakpointBehavior.TAG,
                   responsiveBreakpoint: ResponsiveBreakpoint.tag(0, name: '')))
           .breakpoint;
 
-  ResponsiveBreakpoint? firstBreakpointNamed(String name) => breakpointSegments
-      .firstWhere((element) => element.responsiveBreakpoint.name == name,
-          orElse: null)
-      .responsiveBreakpoint;
+  ResponsiveBreakpoint? firstBreakpointNamed(String name) {
+    try {
+      return breakpointSegments
+          .firstWhere((element) => element.responsiveBreakpoint.name == name)
+          .responsiveBreakpoint;
+    } on StateError {
+      // ignore: empty_catches
+    }
+
+    return null;
+  }
 }
 
 /// Creates an immutable widget that exposes [ResponsiveWrapperData]
@@ -893,7 +910,7 @@ class InheritedResponsiveWrapper extends InheritedWidget {
   /// Creates a widget that provides [ResponsiveWrapperData] to its descendants.
   ///
   /// The [data] and [child] arguments must not be null.
-  InheritedResponsiveWrapper(
+  const InheritedResponsiveWrapper(
       {Key? key, required this.data, required Widget child})
       : super(key: key, child: child);
 
@@ -939,25 +956,25 @@ class ResponsiveBreakpoint {
 
   const ResponsiveBreakpoint.resize(this.breakpoint,
       {this.name, this.scaleFactor = 1})
-      : this.behavior = ResponsiveBreakpointBehavior.RESIZE,
+      : behavior = ResponsiveBreakpointBehavior.RESIZE,
         assert(breakpoint >= 0,
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
 
   const ResponsiveBreakpoint.autoScale(this.breakpoint,
       {this.name, this.scaleFactor = 1})
-      : this.behavior = ResponsiveBreakpointBehavior.AUTOSCALE,
+      : behavior = ResponsiveBreakpointBehavior.AUTOSCALE,
         assert(breakpoint >= 0,
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
 
   const ResponsiveBreakpoint.autoScaleDown(this.breakpoint,
       {this.name, this.scaleFactor = 1})
-      : this.behavior = ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
+      : behavior = ResponsiveBreakpointBehavior.AUTOSCALEDOWN,
         assert(breakpoint >= 0,
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
 
   const ResponsiveBreakpoint.tag(this.breakpoint, {required String this.name})
-      : this.behavior = ResponsiveBreakpointBehavior.TAG,
-        this.scaleFactor = 1,
+      : behavior = ResponsiveBreakpointBehavior.TAG,
+        scaleFactor = 1,
         assert(breakpoint >= 0,
             'Breakpoints cannot be negative. To control behavior from 0, set `default` parameters in `ResponsiveWrapper`.');
 
@@ -989,16 +1006,16 @@ class ResponsiveBreakpoint {
   ResponsiveBreakpoint merge(ResponsiveBreakpoint responsiveBreakpoint) {
     // Tag does not overwrite existing behavior.
     // Preserve existing values when merging.
-    if (responsiveBreakpoint.isTag && !this.isTag)
-      return this.copyWith(name: responsiveBreakpoint.name ?? this.name);
+    if (responsiveBreakpoint.isTag && !isTag) {
+      return copyWith(name: responsiveBreakpoint.name ?? name);
+    }
     return responsiveBreakpoint.copyWith(
-        name: responsiveBreakpoint.name ?? this.name);
+        name: responsiveBreakpoint.name ?? name);
   }
 
   @override
   String toString() =>
-      'ResponsiveBreakpoint(' +
-      'breakpoint: ' +
+      'ResponsiveBreakpoint(' 'breakpoint: ' +
       breakpoint.toString() +
       ', name: ' +
       name.toString() +
@@ -1077,22 +1094,20 @@ class ResponsiveBreakpointSegment {
       ResponsiveBreakpointSegment responsiveBreakpointSegment) {
     // Tag does not overwrite existing behavior.
     // Preserve existing values when merging.
-    if (responsiveBreakpointSegment.isTag && !this.isTag)
-      return this.copyWith(
-          responsiveBreakpoint: this
-              .responsiveBreakpoint
+    if (responsiveBreakpointSegment.isTag && !isTag) {
+      return copyWith(
+          responsiveBreakpoint: responsiveBreakpoint
               .merge(responsiveBreakpointSegment.responsiveBreakpoint));
+    }
     // Overwrite existing values.
     return responsiveBreakpointSegment.copyWith(
-        responsiveBreakpoint: this
-            .responsiveBreakpoint
+        responsiveBreakpoint: responsiveBreakpoint
             .merge(responsiveBreakpointSegment.responsiveBreakpoint));
   }
 
   @override
   String toString() =>
-      'ResponsiveBreakpointSegment(' +
-      'breakpoint: ' +
+      'ResponsiveBreakpointSegment(' 'breakpoint: ' +
       breakpoint.toString() +
       ', segmentType: ' +
       segmentType.toString() +
@@ -1128,7 +1143,7 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
   // Breakpoint segments holder.
   List<ResponsiveBreakpointSegment> breakpointSegments = [];
   // No breakpoints. Create segment from default breakpoint behavior.
-  if (breakpointsHolder.length == 0) {
+  if (breakpointsHolder.isEmpty) {
     breakpointSegments.add(ResponsiveBreakpointSegment(
         breakpoint: 0,
         segmentType: defaultBreakpoint.behavior,
