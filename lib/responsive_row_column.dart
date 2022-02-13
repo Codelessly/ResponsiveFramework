@@ -106,7 +106,8 @@ class ResponsiveRowColumn extends StatelessWidget {
   List<Widget> buildChildren(
       List<ResponsiveRowColumnItem> children, bool rowColumn, double? spacing) {
     // Sort ResponsiveRowColumnItems by their order.
-    List<ResponsiveRowColumnItem> childrenHolder = children;
+    List<ResponsiveRowColumnItem> childrenHolder = [];
+    childrenHolder.addAll(children);
     childrenHolder.sort((a, b) {
       if (rowColumn) {
         return a.rowOrder.compareTo(b.rowOrder);

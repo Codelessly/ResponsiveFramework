@@ -40,7 +40,8 @@ class ResponsiveValue<T> {
       }
     }
 
-    List<Condition> conditions = valueWhen;
+    List<Condition> conditions = [];
+    conditions.addAll(valueWhen);
     List<ResponsiveBreakpointSegment>? segments =
         ResponsiveWrapper.of(context).breakpointSegments;
     conditions = conditions.map((e) {

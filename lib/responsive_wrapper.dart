@@ -1139,7 +1139,8 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
     List<ResponsiveBreakpoint> breakpoints,
     ResponsiveBreakpoint defaultBreakpoint) {
   // Mutable breakpoints holder.
-  List<ResponsiveBreakpoint> breakpointsHolder = breakpoints;
+  List<ResponsiveBreakpoint> breakpointsHolder = [];
+  breakpointsHolder.addAll(breakpoints);
   // Breakpoint segments holder.
   List<ResponsiveBreakpointSegment> breakpointSegments = [];
   // No breakpoints. Create segment from default breakpoint behavior.
