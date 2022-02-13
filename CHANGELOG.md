@@ -2,7 +2,7 @@
 
 ## 0.1.6
 -  Enable using `background` widget for the 1st render frame if set. This allows for a smoother transition between native mobile splash screen and Flutter application UI.
--  Add generic <T> from ResponsiveValue<T> to List<Condition<T>> to support type safety and automatic type conversion in ResponsiveValue.
+-  Add generic T to support type safety and automatic type conversion in ResponsiveValue.
 
 ## 0.1.5
 - Add `useShortestSide` property to calculate responsiveness based on the shortest side of the screen, instead of the actual landscape orientation.
