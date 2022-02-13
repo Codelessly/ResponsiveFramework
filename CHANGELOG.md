@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.7
+- Fix sort crash in web due to JS converting variables into immutable vals that cannot be sorted.
+
 ## 0.1.6
 -  Enable using `background` widget for the 1st render frame if set. This allows for a smoother transition between native mobile splash screen and Flutter application UI.
 -  Add generic T to support type safety and automatic type conversion in ResponsiveValue.
