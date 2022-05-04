@@ -44,11 +44,13 @@ responsive_framework: ^latest_version
 
 Add `ResponsiveWrapper.builder` to your MaterialApp or CupertinoApp.
 ```dart
+import 'package:responsive_framework/responsive_framework.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, widget) => ResponsiveWrapper.builder(
+      builder: (context, child) => ResponsiveWrapper.builder(
           child,
           maxWidth: 1200,
           minWidth: 480,
