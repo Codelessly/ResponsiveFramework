@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.8
+- Flutter 3 support.
+
 ## 0.1.7
 - Fix sort crash in web due to JS converting variables into immutable vals that cannot be sorted.
 
