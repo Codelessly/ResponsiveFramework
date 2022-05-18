@@ -1,13 +1,14 @@
 name: responsive_framework
 description: Easily make Flutter apps responsive. Automatically adapt UI to different screen sizes. Responsiveness made simple.
-version: 0.1.9
+version: 0.2.0
 homepage: https://codelessly.com
 repository: https://github.com/Codelessly/ResponsiveFramework
 issue_tracker: https://github.com/Codelessly/ResponsiveFramework/issues
 documentation: https://github.com/Codelessly/ResponsiveFramework
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
+  flutter: ^3.0.0
 
 dependencies:
   flutter:
