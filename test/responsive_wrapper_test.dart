@@ -15,8 +15,8 @@ void main() {
       Widget widget = MaterialApp(
         home: ResponsiveWrapper(
           key: key,
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -77,8 +77,8 @@ void main() {
           breakpoints: const [
             ResponsiveBreakpoint.autoScale(450, name: MOBILE),
           ],
-          child: Container(color: Colors.white),
           shrinkWrap: false,
+          child: Container(color: Colors.white),
         ),
       );
       await tester.pumpWidget(widget);
@@ -105,8 +105,8 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           defaultName: defaultName,
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -135,8 +135,8 @@ void main() {
             breakpoints: const [
               ResponsiveBreakpoint.resize(450),
             ],
-            child: Container(),
             shrinkWrap: false,
+            child: Container(),
           ),
         );
         await tester.pumpWidget(widget);
@@ -163,8 +163,8 @@ void main() {
               ResponsiveBreakpoint.resize(500),
               ResponsiveBreakpoint.resize(600, name: TABLET),
             ],
-            child: Container(),
             shrinkWrap: false,
+            child: Container(),
           ),
         );
         await tester.pumpWidget(widget);
@@ -184,8 +184,8 @@ void main() {
           key: key,
           mediaQueryData:
               const MediaQueryData(size: Size(600, 1200), devicePixelRatio: 3),
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -224,8 +224,8 @@ void main() {
           defaultScale: true,
           maxWidth: 0,
           minWidth: 0,
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -241,8 +241,8 @@ void main() {
           defaultScale: true,
           maxWidth: 1073741823,
           minWidth: 1073741823,
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -259,8 +259,8 @@ void main() {
           defaultScale: true,
           maxWidth: 200,
           minWidth: 800,
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -392,8 +392,8 @@ void main() {
             ResponsiveBreakpoint.resize(450),
             ResponsiveBreakpoint.resize(450),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -427,8 +427,8 @@ void main() {
             ResponsiveBreakpoint.resize(450, name: MOBILE),
             ResponsiveBreakpoint.resize(450, name: MOBILE),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -458,8 +458,8 @@ void main() {
             ResponsiveBreakpoint.resize(0, name: '0'),
             ResponsiveBreakpoint.resize(1073741823, name: 'Infinity'),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -507,8 +507,8 @@ void main() {
               ResponsiveBreakpoint.resize(600),
               ResponsiveBreakpoint.resize(800),
             ],
-            child: Container(),
             shrinkWrap: false,
+            child: Container(),
           ),
         );
         await tester.pumpWidget(widget);
@@ -557,8 +557,8 @@ void main() {
               ResponsiveBreakpoint.resize(600, name: TABLET),
               ResponsiveBreakpoint.resize(800, name: DESKTOP),
             ],
-            child: Container(),
             shrinkWrap: false,
+            child: Container(),
           ),
         );
         await tester.pumpWidget(widget);
@@ -586,8 +586,8 @@ void main() {
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -631,8 +631,8 @@ void main() {
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -656,8 +656,8 @@ void main() {
             ResponsiveBreakpoint.resize(600, name: TABLET),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -686,8 +686,8 @@ void main() {
             ResponsiveBreakpoint.resize(700),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -738,8 +738,8 @@ void main() {
             ResponsiveBreakpoint.resize(700, name: DESKTOP),
             ResponsiveBreakpoint.resize(800, name: DESKTOP),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -787,8 +787,8 @@ void main() {
             ResponsiveBreakpoint.resize(550, name: DESKTOP),
             ResponsiveBreakpoint.resize(600),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -829,8 +829,8 @@ void main() {
           breakpoints: const [
             ResponsiveBreakpoint.resize(600),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -857,8 +857,8 @@ void main() {
           breakpoints: const [
             ResponsiveBreakpoint.resize(800),
           ],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -883,8 +883,8 @@ void main() {
         home: ResponsiveWrapper(
           key: key,
           breakpoints: const [],
-          child: Container(),
           shrinkWrap: false,
+          child: Container(),
         ),
       );
       await tester.pumpWidget(widget);
@@ -918,8 +918,8 @@ void main() {
             home: ResponsiveWrapper(
               key: key,
               breakpoints: const [],
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -948,8 +948,8 @@ void main() {
             home: ResponsiveWrapper(
               key: key,
               breakpoints: const [],
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -978,8 +978,8 @@ void main() {
             home: ResponsiveWrapper(
               key: key,
               breakpoints: const [],
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
             // Set target platform to Windows.
           );
@@ -1049,8 +1049,8 @@ void main() {
               breakpointsLandscape: const [
                 ResponsiveBreakpoint.autoScale(800),
               ],
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -1093,8 +1093,8 @@ void main() {
               key: key,
               breakpoints: const [],
               breakpointsLandscape: breakpoints,
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -1146,8 +1146,8 @@ void main() {
               defaultScaleFactorLandscape: 1.2,
               defaultName: 'PORTRAIT',
               defaultNameLandscape: 'LANDSCAPE',
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -1198,8 +1198,8 @@ void main() {
               minWidthLandscape: 800,
               maxWidth: 1200,
               maxWidthLandscape: 2560,
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -1247,8 +1247,8 @@ void main() {
               minWidth: 100,
               useShortestSide: true,
               maxWidth: 400,
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },
@@ -1328,8 +1328,8 @@ void main() {
               minWidth: 100,
               useShortestSide: true,
               maxWidth: 400,
-              child: Container(),
               shrinkWrap: false,
+              child: Container(),
             ),
           );
         },

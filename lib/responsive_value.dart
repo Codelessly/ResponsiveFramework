@@ -192,17 +192,7 @@ class Condition<T> {
 
   @override
   String toString() =>
-      'Condition(' 'breakpoint: ' +
-      breakpoint.toString() +
-      ', name: ' +
-      name.toString() +
-      ', condition: ' +
-      condition.toString() +
-      ', value: ' +
-      value.toString() +
-      ', landscapeValue: ' +
-      landscapeValue.toString() +
-      ')';
+      'Condition(breakpoint: $breakpoint, name: $name, condition: $condition, value: $value, landscapeValue: $landscapeValue)';
 
   int sort(Condition a, Condition b) {
     if (a.breakpoint == b.breakpoint) return 0;
@@ -257,7 +247,6 @@ class ResponsiveVisibility extends StatelessWidget {
         .value;
 
     return Visibility(
-      child: child,
       replacement: replacement,
       visible: visibleValue!,
       maintainState: maintainState,
@@ -265,6 +254,7 @@ class ResponsiveVisibility extends StatelessWidget {
       maintainSize: maintainSize,
       maintainSemantics: maintainSemantics,
       maintainInteractivity: maintainInteractivity,
+      child: child,
     );
   }
 }

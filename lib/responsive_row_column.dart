@@ -176,7 +176,6 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   }
 
   ResponsiveRowColumnItem copyWith({
-    Widget? child,
     int? rowOrder,
     int? columnOrder,
     bool? rowColumn,
@@ -184,9 +183,9 @@ class ResponsiveRowColumnItem extends StatelessWidget {
     int? columnFlex,
     FlexFit? rowFlexFit,
     FlexFit? columnFlexFit,
+    Widget? child,
   }) =>
       ResponsiveRowColumnItem(
-        child: child ?? this.child,
         rowOrder: rowOrder ?? this.rowOrder,
         columnOrder: columnOrder ?? this.columnOrder,
         rowColumn: rowColumn ?? this.rowColumn,
@@ -194,5 +193,6 @@ class ResponsiveRowColumnItem extends StatelessWidget {
         columnFlex: columnFlex ?? this.columnFlex,
         rowFit: rowFlexFit ?? rowFit,
         columnFit: columnFlexFit ?? columnFit,
+        child: child ?? this.child,
       );
 }

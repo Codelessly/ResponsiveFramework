@@ -64,9 +64,8 @@ class ResponsiveUtils {
       stringBuffer.write(' ----- ');
       if (segment.segmentType == ResponsiveBreakpointBehavior.AUTOSCALEDOWN &&
           segment.breakpoint < segment.responsiveBreakpoint.breakpoint) {
-        stringBuffer.write(describeEnum(segment.segmentType) +
-            ' from ' +
-            segment.responsiveBreakpoint.breakpoint.round().toString());
+        stringBuffer.write(
+            '${describeEnum(segment.segmentType)} from ${segment.responsiveBreakpoint.breakpoint.round()}');
       } else {
         stringBuffer.write(describeEnum(segment.responsiveBreakpoint.behavior));
       }

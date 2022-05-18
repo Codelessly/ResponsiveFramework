@@ -165,7 +165,7 @@ class ResponsiveWrapper extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ResponsiveWrapperState createState() => _ResponsiveWrapperState();
+  ResponsiveWrapperState createState() => ResponsiveWrapperState();
 
   static Widget builder(
     Widget? child, {
@@ -190,7 +190,6 @@ class ResponsiveWrapper extends StatefulWidget {
     bool debugLog = false,
   }) {
     return ResponsiveWrapper(
-      child: child,
       breakpoints: breakpoints,
       breakpointsLandscape: breakpointsLandscape,
       landscapePlatforms: landscapePlatforms,
@@ -211,6 +210,7 @@ class ResponsiveWrapper extends StatefulWidget {
       shrinkWrap: false,
       alignment: alignment,
       debugLog: debugLog,
+      child: child,
     );
   }
 
@@ -232,7 +232,7 @@ class ResponsiveWrapper extends StatefulWidget {
   }
 }
 
-class _ResponsiveWrapperState extends State<ResponsiveWrapper>
+class ResponsiveWrapperState extends State<ResponsiveWrapper>
     with WidgetsBindingObserver {
   double devicePixelRatio = 1;
   double getDevicePixelRatio() {
@@ -619,8 +619,8 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     }
 
     // Dimensions are only available after first frame paint.
-    WidgetsBinding.instance!.addObserver(this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // Breakpoints must be initialized before the first frame is drawn.
       setBreakpoints();
       // Directly updating dimensions is safe because frame callbacks
@@ -632,7 +632,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -642,7 +642,7 @@ class _ResponsiveWrapperState extends State<ResponsiveWrapper>
     // When physical dimensions change, update state.
     // The required MediaQueryData is only available
     // on the next frame for physical dimension changes.
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // Widget could be destroyed by resize. Verify widget
       // exists before updating dimensions.
       if (mounted) {
@@ -788,7 +788,7 @@ class ResponsiveWrapperData {
 
   /// Creates data based on the [ResponsiveWrapper] state.
   static ResponsiveWrapperData fromResponsiveWrapper(
-      _ResponsiveWrapperState state) {
+      ResponsiveWrapperState state) {
     return ResponsiveWrapperData(
       screenWidth: state.screenWidth,
       screenHeight: state.screenHeight,
@@ -810,29 +810,7 @@ class ResponsiveWrapperData {
 
   @override
   String toString() =>
-      'ResponsiveWrapperData(' 'screenWidth: ' +
-      screenWidth.toString() +
-      ', screenHeight: ' +
-      screenHeight.toString() +
-      ', scaledWidth: ' +
-      scaledWidth.toString() +
-      ', scaledHeight: ' +
-      scaledHeight.toString() +
-      ', breakpoints: ' +
-      breakpoints.asMap().toString() +
-      ', breakpointSegments: ' +
-      breakpointSegments.toString() +
-      ', activeBreakpoint: ' +
-      activeBreakpoint.toString() +
-      ', isMobile: ' +
-      isMobile.toString() +
-      ', isPhone: ' +
-      isPhone.toString() +
-      ', isTablet: ' +
-      isTablet.toString() +
-      ', isDesktop: ' +
-      isDesktop.toString() +
-      ')';
+      'ResponsiveWrapperData(screenWidth: $screenWidth, screenHeight: $screenHeight, scaledWidth: $scaledWidth, scaledHeight: $scaledHeight, breakpoints: ${breakpoints.asMap()}, breakpointSegments: $breakpointSegments, activeBreakpoint: $activeBreakpoint, isMobile: $isMobile, isPhone: $isPhone, isTablet: $isTablet, isDesktop: $isDesktop)';
 
   bool equals(String? name) => activeBreakpoint.name == name;
 
@@ -1015,15 +993,7 @@ class ResponsiveBreakpoint {
 
   @override
   String toString() =>
-      'ResponsiveBreakpoint(' 'breakpoint: ' +
-      breakpoint.toString() +
-      ', name: ' +
-      name.toString() +
-      ', behavior: ' +
-      behavior.toString() +
-      ', scaleFactor: ' +
-      scaleFactor.toString() +
-      ')';
+      'ResponsiveBreakpoint(breakpoint: $breakpoint, name: $name, behavior: $behavior, scaleFactor: $scaleFactor)';
 
   @override
   bool operator ==(Object other) =>
@@ -1107,13 +1077,7 @@ class ResponsiveBreakpointSegment {
 
   @override
   String toString() =>
-      'ResponsiveBreakpointSegment(' 'breakpoint: ' +
-      breakpoint.toString() +
-      ', segmentType: ' +
-      segmentType.toString() +
-      ', responsiveBreakpoint: ' +
-      responsiveBreakpoint.toString() +
-      ')';
+      'ResponsiveBreakpointSegment(breakpoint: $breakpoint, segmentType: $segmentType, responsiveBreakpoint: $responsiveBreakpoint)';
 
   @override
   bool operator ==(Object other) =>
