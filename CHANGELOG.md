@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.9
+- Flutter 2 compatibility version. This is the last version to support Flutter 2.
+
 ## 0.1.8
 - Flutter 3 support.
 
