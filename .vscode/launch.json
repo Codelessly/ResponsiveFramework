@@ -1,0 +1,37 @@
+
+  {
+    "id": "3970e0fe-8564-4903-9a55-c5f8de49fb8b",
+    "premium": false,
+    "claimed": true,
+    "name": "synergy",
+    "custom_domain": "www.example.com",
+    "url": "http://www.example.com",
+    "admin_url": "https://api.netlify.com/sites/synergy",
+    "screenshot_url": null,
+    "created_at": "2013-09-17T05:13:08Z",
+    "updated_at": "2013-09-17T05:13:19Z",
+    "user_id": "51f60d2d5803545326000005"
+  }   {     "id": "3970e0fe-8564-4903-9a55-c5f8de49fb8b",
+    "premium": false,
+    "claimed": true,
+    "name": "synergy",
+    "custom_domain": "www.example.com",
+    "notification_email": "me@example.com",
+    "url": "http://www.example.com",
+    "admin_url": "https://api.netlify.com/sites/synergy",
+    "screenshot_url": null,
+    "created_at": "2013-09-17T05:13:08Z",
+    "updated_at": "2013-09-17T05:13:19Z",
+    "user_id": "51f60d2d5803545326000005"
+  }  {
+    "css": {"bundle": true, "minify": true},
+    "js": {"bundle": true, "minify": true},
+    "html": {"pretty_urls": true, "canonical_urls": true},
+    "images": {"optimize": true}
+  }
+      
+ 
+        
+       
+
+   
