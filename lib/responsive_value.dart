@@ -187,7 +187,7 @@ class Condition<T> {
         name: name ?? this.name,
         condition: condition ?? this.condition,
         value: value ?? this.value,
-        landscapeValue: landscapeValue ?? this.value,
+        landscapeValue: landscapeValue ?? this.landscapeValue,
       );
 
   @override
