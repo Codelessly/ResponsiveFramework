@@ -629,6 +629,7 @@ class ResponsiveWrapperState extends State<ResponsiveWrapper>
         setDimensions();
         setState(() {});
       }
+      
     });
   }
 
