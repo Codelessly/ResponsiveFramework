@@ -621,12 +621,14 @@ class ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Dimensions are only available after first frame paint.
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Breakpoints must be initialized before the first frame is drawn.
-      setBreakpoints();
-      // Directly updating dimensions is safe because frame callbacks
-      // in initState are guaranteed.
-      setDimensions();
-      setState(() {});
+      if (mounted) {
+        // Breakpoints must be initialized before the first frame is drawn.
+        setBreakpoints();
+        // Directly updating dimensions is safe because frame callbacks
+        // in initState are guaranteed.
+        setDimensions();
+        setState(() {});
+      }
     });
   }
 
