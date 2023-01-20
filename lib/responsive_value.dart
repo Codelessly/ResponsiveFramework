@@ -16,7 +16,7 @@ import 'responsive_framework.dart';
 /// No validation is performed on [Condition]s so
 /// valid conditions must be passed.
 class ResponsiveValue<T> {
-  T? value;
+  late T value;
   final T defaultValue;
   final List<Condition<T>> valueWhen;
 
