@@ -7,11 +7,8 @@ class Breakpoint {
   final String? name;
   final dynamic? data;
 
-  @visibleForTesting
   const Breakpoint(
-      {required this.start,
-        required this.end,
-        this.name, this.data});
+      {required this.start, required this.end, this.name, this.data});
 
   Breakpoint copyWith({
     double? start,
@@ -27,21 +24,17 @@ class Breakpoint {
       );
 
   @override
-  String toString() =>
-      'Breakpoint(start: $start, end: $end, name: $name)';
+  String toString() => 'Breakpoint(start: $start, end: $end, name: $name)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Breakpoint &&
-              runtimeType == other.runtimeType &&
-              start  == other.start  &&
-              end  == other.end  &&
-              name == other.name;
+      other is Breakpoint &&
+          runtimeType == other.runtimeType &&
+          start == other.start &&
+          end == other.end &&
+          name == other.name;
 
   @override
-  int get hashCode =>
-      start.hashCode *
-          end.hashCode *
-          name.hashCode;
+  int get hashCode => start.hashCode * end.hashCode * name.hashCode;
 }

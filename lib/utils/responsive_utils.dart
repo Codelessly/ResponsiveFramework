@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../breakpoint.dart';
 import '../responsive_wrapper.dart';
 
 /// Util functions for the Responsive Framework.
@@ -26,7 +27,7 @@ class ResponsiveUtils {
   /// [ResponsiveBreakpointBehavior] to their
   /// ordering value in [breakpointCompartorList]
   /// and compare.
-  static int breakpointComparator(
+  static int responsiveBreakpointComparator(
       ResponsiveBreakpoint a, ResponsiveBreakpoint b) {
     // If breakpoints are equal, return in comparator order.
     if (a.breakpoint == b.breakpoint) {
@@ -38,9 +39,13 @@ class ResponsiveUtils {
     return a.breakpoint.compareTo(b.breakpoint);
   }
 
+  static int breakpointComparator(Breakpoint a, Breakpoint b) {
+    return a.start.compareTo(b.start);
+  }
+
   /// Print a visual view of [breakpointSegments]
   /// for debugging purposes.
-  static String debugLogBreakpointSegments(
+  static String debugLogResponsiveBreakpointSegments(
       List<ResponsiveBreakpointSegment> responsiveBreakpointSegments) {
     var stringBuffer = StringBuffer();
     stringBuffer.write('|');
@@ -76,6 +81,10 @@ class ResponsiveUtils {
     stringBuffer.write(' ----- ∞ |');
     debugPrint(stringBuffer.toString());
     return stringBuffer.toString();
+  }
+
+  static String debugLogBreakpoints(List<Breakpoint>? breakpoints) {
+    return '';
   }
 }
 
