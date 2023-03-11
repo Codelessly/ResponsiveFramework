@@ -606,7 +606,8 @@ class ResponsiveWrapperState extends State<ResponsiveWrapper>
       if (widget.breakpointsLandscape != null) {
         debugPrint('**PORTRAIT**');
       }
-      ResponsiveUtils.debugLogBreakpointSegments(defaultBreakpointSegments);
+      ResponsiveUtils.debugLogResponsiveBreakpointSegments(
+          defaultBreakpointSegments);
       // Print landscape breakpoints.
       if (widget.breakpointsLandscape != null) {
         List<ResponsiveBreakpoint> landscapeBreakpoints =
@@ -614,7 +615,8 @@ class ResponsiveWrapperState extends State<ResponsiveWrapper>
         List<ResponsiveBreakpointSegment> landscapeBreakpointSegments =
             calcBreakpointSegments(landscapeBreakpoints);
         debugPrint('**LANDSCAPE**');
-        ResponsiveUtils.debugLogBreakpointSegments(landscapeBreakpointSegments);
+        ResponsiveUtils.debugLogResponsiveBreakpointSegments(
+            landscapeBreakpointSegments);
       }
     }
 
@@ -1151,8 +1153,8 @@ List<ResponsiveBreakpointSegment> getBreakpointSegments(
   // Order breakpoints from smallest to largest.
   // Perform ordering operation to allow breakpoints
   // to be accepted in any order.
-  breakpointsHolder.sort(ResponsiveUtils.breakpointComparator);
-  breakpointTags.sort(ResponsiveUtils.breakpointComparator);
+  breakpointsHolder.sort(ResponsiveUtils.responsiveBreakpointComparator);
+  breakpointTags.sort(ResponsiveUtils.responsiveBreakpointComparator);
 
   // Find the first breakpoint behavior.
   ResponsiveBreakpoint initialBreakpoint = breakpointsHolder.first;
