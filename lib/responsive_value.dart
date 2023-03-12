@@ -11,7 +11,7 @@ import 'responsive_framework.dart';
 /// determined by [Condition]s set in [conditionalValues].
 /// Set a [value] for when no condition is
 /// active. Requires a parent [context] that contains
-/// a [ResponsiveWrapper].
+/// a [ResponsiveBreakpoints].
 ///
 /// No validation is performed on [Condition]s so
 /// valid conditions must be passed.
@@ -29,7 +29,7 @@ class ResponsiveValue<T> {
     if (conditionalValues.firstWhereOrNull((element) => element.name != null) !=
         null) {
       try {
-        ResponsiveWrapper.of(context);
+        ResponsiveBreakpoints.of(context);
       } catch (e) {
         throw FlutterError.fromParts(<DiagnosticsNode>[
           ErrorSummary(
@@ -52,7 +52,8 @@ class ResponsiveValue<T> {
     Condition? activeCondition = getActiveCondition(context, conditions);
     if (activeCondition == null) return null;
     // Return landscape value if orientation is landscape and landscape override value is provided.
-    if (ResponsiveWrapper.of(context).orientation == Orientation.landscape &&
+    if (ResponsiveBreakpoints.of(context).orientation ==
+            Orientation.landscape &&
         activeCondition.landscapeValue != null) {
       return activeCondition.landscapeValue;
     }
@@ -64,7 +65,7 @@ class ResponsiveValue<T> {
   /// The active condition is found by matching the
   /// search criteria in order of precedence:
   /// 1. [Conditional.EQUALS]
-  /// Named breakpoints from a parent [ResponsiveWrapper].
+  /// Named breakpoints from a parent [ResponsiveBreakpoints].
   /// 2. [Conditional.SMALLER_THAN]
   ///   a. Named breakpoints.
   ///   b. Unnamed breakpoints.
@@ -74,7 +75,8 @@ class ResponsiveValue<T> {
   /// Returns null if no Active Condition is found.
   Condition? getActiveCondition(
       BuildContext context, List<Condition> conditions) {
-    ResponsiveWrapperData responsiveWrapperData = ResponsiveWrapper.of(context);
+    ResponsiveBreakpointsData responsiveWrapperData =
+        ResponsiveBreakpoints.of(context);
     double screenWidth = responsiveWrapperData.screenWidth;
 
     for (Condition condition in conditions) {
