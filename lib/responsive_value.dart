@@ -8,8 +8,8 @@ import 'responsive_framework.dart';
 /// Conditional values based on the active breakpoint.
 ///
 /// Get a [value] that corresponds to active breakpoint
-/// determined by [Condition]s set in [valueWhen].
-/// Set a [defaultValue] for when no condition is
+/// determined by [Condition]s set in [conditionalValues].
+/// Set a [value] for when no condition is
 /// active. Requires a parent [context] that contains
 /// a [ResponsiveWrapper].
 ///
@@ -17,48 +17,32 @@ import 'responsive_framework.dart';
 /// valid conditions must be passed.
 class ResponsiveValue<T> {
   T? value;
-  final T defaultValue;
-  final List<Condition<T>> valueWhen;
+  final T? defaultValue;
+  final List<Condition<T>> conditionalValues;
 
   final BuildContext context;
 
   ResponsiveValue(this.context,
-      {required this.defaultValue, required this.valueWhen}) {
+      {required this.conditionalValues, this.defaultValue}) {
     // Breakpoint reference check. Verify a parent
     // [ResponsiveWrapper] exists if a reference is found.
-    if (valueWhen.firstWhereOrNull((element) => element.name != null) != null) {
+    if (conditionalValues.firstWhereOrNull((element) => element.name != null) !=
+        null) {
       try {
         ResponsiveWrapper.of(context);
       } catch (e) {
         throw FlutterError.fromParts(<DiagnosticsNode>[
           ErrorSummary(
-              'A ResponsiveCondition was caught referencing a nonexistant breakpoint.'),
+              'A conditional value was caught referencing a nonexistent breakpoint.'),
           ErrorDescription(
-              'A ResponsiveCondition requires a parent ResponsiveWrapper '
+              'ResponsiveValue requires a parent ResponsiveWrapper '
               'to reference breakpoints. Add a ResponsiveWrapper or remove breakpoint references.')
         ]);
       }
     }
 
     List<Condition> conditions = [];
-    conditions.addAll(valueWhen);
-    List<ResponsiveBreakpointSegment>? segments =
-        ResponsiveWrapper.of(context).breakpointSegments;
-    conditions = conditions.map((e) {
-      if (e.breakpoint == null) {
-        return e.copyWith(
-            breakpoint: segments
-                .firstWhere(
-                    (element) => element.responsiveBreakpoint.name == e.name,
-                    orElse: () =>
-                        throw ('No breakpoint named `${e.name}` found.'))
-                .responsiveBreakpoint
-                .breakpoint
-                .toInt());
-      }
-      return e;
-    }).toList();
-    conditions.sort((a, b) => a.breakpoint!.compareTo(b.breakpoint!));
+    conditions.addAll(conditionalValues);
     // Get visible value from active condition.
     value = getValue(context, conditions) ?? defaultValue;
   }
@@ -90,45 +74,49 @@ class ResponsiveValue<T> {
   /// Returns null if no Active Condition is found.
   Condition? getActiveCondition(
       BuildContext context, List<Condition> conditions) {
-    Condition? equalsCondition = conditions.firstWhereOrNull((element) {
-      if (element.condition == Conditional.EQUALS) {
-        return ResponsiveWrapper.of(context).activeBreakpoint.name ==
-            element.name;
-      }
+    ResponsiveWrapperData responsiveWrapperData = ResponsiveWrapper.of(context);
+    double screenWidth = responsiveWrapperData.screenWidth;
 
-      return false;
-    });
-    if (equalsCondition != null) {
-      return equalsCondition;
-    }
-
-    Condition? smallerThanCondition = conditions.firstWhereOrNull((element) {
-      if (element.condition == Conditional.SMALLER_THAN) {
-        if (element.name != null) {
-          return ResponsiveWrapper.of(context).isSmallerThan(element.name!);
+    for (Condition condition in conditions) {
+      if (condition.condition == Conditional.EQUALS) {
+        if (condition.name == responsiveWrapperData.breakpoint.name) {
+          return condition;
         }
 
-        return MediaQuery.of(context).size.width < element.breakpoint!;
+        continue;
       }
-      return false;
-    });
-    if (smallerThanCondition != null) {
-      return smallerThanCondition;
-    }
 
-    Condition? largerThanCondition =
-        conditions.reversed.firstWhereOrNull((element) {
-      if (element.condition == Conditional.LARGER_THAN) {
-        if (element.name != null) {
-          return ResponsiveWrapper.of(context).isLargerThan(element.name);
+      if (condition.condition == Conditional.SMALLER_THAN) {
+        if (condition.name != null) {
+          if (responsiveWrapperData.isSmallerThan(condition.name!)) {
+            return condition;
+          }
         }
 
-        return MediaQuery.of(context).size.width >= element.breakpoint!;
+        if (condition.breakpoint != null) {
+          if (screenWidth < condition.breakpoint!) {
+            return condition;
+          }
+        }
+
+        continue;
       }
-      return false;
-    });
-    if (largerThanCondition != null) {
-      return largerThanCondition;
+
+      if (condition.condition == Conditional.LARGER_THAN) {
+        if (condition.name != null) {
+          if (responsiveWrapperData.isLargerThan(condition.name!)) {
+            return condition;
+          }
+        }
+
+        if (condition.breakpoint != null) {
+          if (screenWidth > condition.breakpoint!) {
+            return condition;
+          }
+        }
+
+        continue;
+      }
     }
 
     return null;
@@ -204,13 +192,13 @@ class Condition<T> {
 /// A convenience wrapper for responsive [Visibility].
 ///
 /// ResponsiveVisibility accepts [Condition]s in
-/// [visibleWhen] and [hiddenWhen] convenience
+/// [visibleConditions] and [hiddenConditions] convenience
 /// fields. The [child] widget is [visible] by default.
 class ResponsiveVisibility extends StatelessWidget {
   final Widget child;
   final bool visible;
-  final List<Condition> visibleWhen;
-  final List<Condition> hiddenWhen;
+  final List<Condition> visibleConditions;
+  final List<Condition> hiddenConditions;
   final Widget replacement;
   final bool maintainState;
   final bool maintainAnimation;
@@ -222,8 +210,8 @@ class ResponsiveVisibility extends StatelessWidget {
     Key? key,
     required this.child,
     this.visible = true,
-    this.visibleWhen = const [],
-    this.hiddenWhen = const [],
+    this.visibleConditions = const [],
+    this.hiddenConditions = const [],
     this.replacement = const SizedBox.shrink(),
     this.maintainState = false,
     this.maintainAnimation = false,
@@ -239,11 +227,11 @@ class ResponsiveVisibility extends StatelessWidget {
     bool? visibleValue = visible;
 
     // Combine Conditions.
-    conditions.addAll(visibleWhen.map((e) => e.copyWith(value: true)));
-    conditions.addAll(hiddenWhen.map((e) => e.copyWith(value: false)));
+    conditions.addAll(visibleConditions.map((e) => e.copyWith(value: true)));
+    conditions.addAll(hiddenConditions.map((e) => e.copyWith(value: false)));
     // Get visible value from active condition.
     visibleValue = ResponsiveValue(context,
-            defaultValue: visibleValue, valueWhen: conditions)
+            defaultValue: visibleValue, conditionalValues: conditions)
         .value;
 
     return Visibility(
@@ -262,13 +250,13 @@ class ResponsiveVisibility extends StatelessWidget {
 class ResponsiveConstraints extends StatelessWidget {
   final Widget child;
   final BoxConstraints? constraint;
-  final List<Condition> constraintsWhen;
+  final List<Condition> conditionalConstraints;
 
   const ResponsiveConstraints(
       {Key? key,
       required this.child,
       this.constraint,
-      this.constraintsWhen = const []})
+      this.conditionalConstraints = const []})
       : super(key: key);
 
   @override
@@ -277,7 +265,8 @@ class ResponsiveConstraints extends StatelessWidget {
     BoxConstraints? constraintValue = constraint;
     // Get value from active condition.
     constraintValue = ResponsiveValue(context,
-            defaultValue: constraintValue, valueWhen: constraintsWhen)
+            defaultValue: constraintValue,
+            conditionalValues: conditionalConstraints)
         .value;
 
     return Container(
