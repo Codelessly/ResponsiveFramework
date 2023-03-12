@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'breakpoint.dart';
 import 'utils/responsive_utils.dart';
 
-class ResponsiveWrapper extends StatefulWidget {
+class ResponsiveBreakpoints extends StatefulWidget {
   final Widget child;
   final List<Breakpoint> breakpoints;
 
@@ -54,7 +54,7 @@ class ResponsiveWrapper extends StatefulWidget {
   final bool debugLog;
 
   /// A wrapper widget that makes child widgets responsive.
-  const ResponsiveWrapper({
+  const ResponsiveBreakpoints({
     Key? key,
     required this.child,
     required this.breakpoints,
@@ -65,7 +65,7 @@ class ResponsiveWrapper extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  ResponsiveWrapperState createState() => ResponsiveWrapperState();
+  ResponsiveBreakpointsState createState() => ResponsiveBreakpointsState();
 
   static Widget builder(
     Widget child,
@@ -75,7 +75,7 @@ class ResponsiveWrapper extends StatefulWidget {
     bool useShortestSide = false,
     bool debugLog = false,
   }) {
-    return ResponsiveWrapper(
+    return ResponsiveBreakpoints(
       breakpoints: breakpoints,
       breakpointsLandscape: breakpointsLandscape,
       landscapePlatforms: landscapePlatforms,
@@ -85,25 +85,25 @@ class ResponsiveWrapper extends StatefulWidget {
     );
   }
 
-  static ResponsiveWrapperData of(BuildContext context) {
-    final InheritedResponsiveWrapper? data = context
-        .dependOnInheritedWidgetOfExactType<InheritedResponsiveWrapper>();
+  static ResponsiveBreakpointsData of(BuildContext context) {
+    final InheritedResponsiveBreakpoints? data = context
+        .dependOnInheritedWidgetOfExactType<InheritedResponsiveBreakpoints>();
     if (data != null) return data.data;
     throw FlutterError.fromParts(
       <DiagnosticsNode>[
         ErrorSummary(
-            'ResponsiveWrapper.of() called with a context that does not contain a ResponsiveWrapper.'),
+            'ResponsiveBreakpoints.of() called with a context that does not contain ResponsiveBreakpoints.'),
         ErrorDescription(
             'No Responsive ancestor could be found starting from the context that was passed '
-            'to ResponsiveWrapper.of(). Place a ResponsiveWrapper at the root of the app '
-            'or supply a ResponsiveWrapper.builder.'),
+            'to ResponsiveBreakpoints.of(). Place a ResponsiveBreakpoints at the root of the app '
+            'or supply a ResponsiveBreakpoints.builder.'),
         context.describeElement('The context used was')
       ],
     );
   }
 }
 
-class ResponsiveWrapperState extends State<ResponsiveWrapper>
+class ResponsiveBreakpointsState extends State<ResponsiveBreakpoints>
     with WidgetsBindingObserver {
   double windowWidth = 0;
   double getWindowWidth() {
@@ -251,7 +251,7 @@ class ResponsiveWrapperState extends State<ResponsiveWrapper>
   }
 
   @override
-  void didUpdateWidget(ResponsiveWrapper oldWidget) {
+  void didUpdateWidget(ResponsiveBreakpoints oldWidget) {
     super.didUpdateWidget(oldWidget);
     // When [ResponsiveWrapper]'s constructor is
     // used directly in the widget tree and a parent
@@ -267,8 +267,8 @@ class ResponsiveWrapperState extends State<ResponsiveWrapper>
     // Platform initialization requires context.
     setPlatform();
 
-    return InheritedResponsiveWrapper(
-      data: ResponsiveWrapperData.fromResponsiveWrapper(this),
+    return InheritedResponsiveBreakpoints(
+      data: ResponsiveBreakpointsData.fromResponsiveWrapper(this),
       child: widget.child,
     );
   }
@@ -283,9 +283,9 @@ const String DESKTOP = 'DESKTOP';
 /// Responsive data about the current screen.
 ///
 /// Resized and scaled values can be accessed
-/// such as [ResponsiveWrapperData.scaledWidth].
+/// such as [ResponsiveBreakpointsData.scaledWidth].
 @immutable
-class ResponsiveWrapperData {
+class ResponsiveBreakpointsData {
   final double screenWidth;
   final double screenHeight;
   final Breakpoint breakpoint;
@@ -298,9 +298,9 @@ class ResponsiveWrapperData {
 
   /// Creates responsive data with explicit values.
   ///
-  /// Alternatively, use [ResponsiveWrapperData.fromResponsiveWrapper]
-  /// to create data based on the [ResponsiveWrapper] state.
-  const ResponsiveWrapperData({
+  /// Alternatively, use [ResponsiveBreakpointsData.fromResponsiveWrapper]
+  /// to create data based on the [ResponsiveBreakpoints] state.
+  const ResponsiveBreakpointsData({
     this.screenWidth = 0,
     this.screenHeight = 0,
     this.breakpoint = const Breakpoint(start: 0, end: 0),
@@ -312,10 +312,10 @@ class ResponsiveWrapperData {
     this.orientation = Orientation.portrait,
   });
 
-  /// Creates data based on the [ResponsiveWrapper] state.
-  static ResponsiveWrapperData fromResponsiveWrapper(
-      ResponsiveWrapperState state) {
-    return ResponsiveWrapperData(
+  /// Creates data based on the [ResponsiveBreakpoints] state.
+  static ResponsiveBreakpointsData fromResponsiveWrapper(
+      ResponsiveBreakpointsState state) {
+    return ResponsiveBreakpointsData(
       screenWidth: state.screenWidth,
       screenHeight: state.screenHeight,
       breakpoint: state.breakpoint,
@@ -351,7 +351,7 @@ class ResponsiveWrapperData {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ResponsiveWrapperData &&
+      other is ResponsiveBreakpointsData &&
           runtimeType == other.runtimeType &&
           screenWidth == other.screenWidth &&
           screenHeight == other.screenHeight &&
@@ -362,34 +362,34 @@ class ResponsiveWrapperData {
       screenWidth.hashCode * screenHeight.hashCode * breakpoint.hashCode;
 }
 
-/// Creates an immutable widget that exposes [ResponsiveWrapperData]
+/// Creates an immutable widget that exposes [ResponsiveBreakpointsData]
 /// to child widgets.
 ///
-/// Access values such as the [ResponsiveWrapperData.scaledWidth]
-/// property through [ResponsiveWrapper.of]
+/// Access values such as the [ResponsiveBreakpointsData.scaledWidth]
+/// property through [ResponsiveBreakpoints.of]
 /// `ResponsiveWrapper.of(context).scaledWidth`.
 ///
-/// Querying this widget with [ResponsiveWrapper.of]
+/// Querying this widget with [ResponsiveBreakpoints.of]
 /// creates a dependency that causes an automatic
-/// rebuild whenever the [ResponsiveWrapperData]
+/// rebuild whenever the [ResponsiveBreakpointsData]
 /// changes.
 ///
-/// If no [ResponsiveWrapper] is in scope then the
+/// If no [ResponsiveBreakpoints] is in scope then the
 /// [MediaQuery.of] method will throw an exception,
 /// unless the `nullOk` argument is set to true, in
 /// which case it returns null.
 @immutable
-class InheritedResponsiveWrapper extends InheritedWidget {
-  final ResponsiveWrapperData data;
+class InheritedResponsiveBreakpoints extends InheritedWidget {
+  final ResponsiveBreakpointsData data;
 
-  /// Creates a widget that provides [ResponsiveWrapperData] to its descendants.
+  /// Creates a widget that provides [ResponsiveBreakpointsData] to its descendants.
   ///
   /// The [data] and [child] arguments must not be null.
-  const InheritedResponsiveWrapper(
+  const InheritedResponsiveBreakpoints(
       {Key? key, required this.data, required Widget child})
       : super(key: key, child: child);
 
   @override
-  bool updateShouldNotify(InheritedResponsiveWrapper oldWidget) =>
+  bool updateShouldNotify(InheritedResponsiveBreakpoints oldWidget) =>
       data != oldWidget.data;
 }
