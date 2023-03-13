@@ -67,9 +67,9 @@ class ResponsiveBreakpoints extends StatefulWidget {
   @override
   ResponsiveBreakpointsState createState() => ResponsiveBreakpointsState();
 
-  static Widget builder(
-    Widget child,
-    List<Breakpoint> breakpoints, {
+  static Widget builder({
+    required Widget child,
+    required List<Breakpoint> breakpoints,
     List<Breakpoint>? breakpointsLandscape,
     List<ResponsiveTargetPlatform>? landscapePlatforms,
     bool useShortestSide = false,
