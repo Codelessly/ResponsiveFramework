@@ -79,7 +79,7 @@ class ResponsiveValue<T> {
         ResponsiveBreakpoints.of(context);
     double screenWidth = responsiveWrapperData.screenWidth;
 
-    for (Condition condition in conditions) {
+    for (Condition condition in conditions.reversed) {
       if (condition.condition == Conditional.EQUALS) {
         if (condition.name == responsiveWrapperData.breakpoint.name) {
           return condition;
