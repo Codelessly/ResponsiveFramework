@@ -22,11 +22,21 @@ class MaxWidthBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+
+    if (maxWidth != null) {
+      if (mediaQuery.size.width > maxWidth!) {
+        mediaQuery =
+            mediaQuery.copyWith(size: Size(maxWidth!, mediaQuery.size.height));
+      }
+    }
+
     return Stack(
       alignment: alignment,
       children: [
         background ?? const SizedBox.shrink(),
-        SizedBox(width: maxWidth, child: child),
+        MediaQuery(
+            data: mediaQuery, child: SizedBox(width: maxWidth, child: child)),
       ],
     );
   }
