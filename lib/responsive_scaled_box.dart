@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class ResponsiveScaledBox extends StatelessWidget {
-  final double width;
+  final double? width;
   final Widget child;
   final bool autoCalculateMediaQueryData;
 
@@ -16,54 +16,58 @@ class ResponsiveScaledBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        MediaQueryData mediaQueryData = MediaQuery.of(context);
+    if (width != null) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          MediaQueryData mediaQueryData = MediaQuery.of(context);
 
-        double aspectRatio = constraints.maxWidth / constraints.maxHeight;
-        double scaledWidth = width;
-        double scaledHeight = width / aspectRatio;
+          double aspectRatio = constraints.maxWidth / constraints.maxHeight;
+          double scaledWidth = width!;
+          double scaledHeight = width! / aspectRatio;
 
-        bool overrideMediaQueryData = autoCalculateMediaQueryData &&
-            (mediaQueryData.size ==
-                Size(constraints.maxWidth, constraints.maxHeight));
+          bool overrideMediaQueryData = autoCalculateMediaQueryData &&
+              (mediaQueryData.size ==
+                  Size(constraints.maxWidth, constraints.maxHeight));
 
-        EdgeInsets scaledViewInsets = getScaledViewInsets(
-            mediaQueryData: mediaQueryData,
-            screenSize: mediaQueryData.size,
-            scaledSize: Size(scaledWidth, scaledHeight));
-        EdgeInsets scaledViewPadding = getScaledViewPadding(
-            mediaQueryData: mediaQueryData,
-            screenSize: mediaQueryData.size,
-            scaledSize: Size(scaledWidth, scaledHeight));
-        EdgeInsets scaledPadding = getScaledPadding(
-            padding: scaledViewPadding, insets: scaledViewInsets);
+          EdgeInsets scaledViewInsets = getScaledViewInsets(
+              mediaQueryData: mediaQueryData,
+              screenSize: mediaQueryData.size,
+              scaledSize: Size(scaledWidth, scaledHeight));
+          EdgeInsets scaledViewPadding = getScaledViewPadding(
+              mediaQueryData: mediaQueryData,
+              screenSize: mediaQueryData.size,
+              scaledSize: Size(scaledWidth, scaledHeight));
+          EdgeInsets scaledPadding = getScaledPadding(
+              padding: scaledViewPadding, insets: scaledViewInsets);
 
-        Widget childHolder = FittedBox(
-          fit: BoxFit.fitWidth,
-          alignment: Alignment.topCenter,
-          child: Container(
-            width: width,
-            height: scaledHeight,
-            alignment: Alignment.center,
-            child: child,
-          ),
-        );
-
-        if (overrideMediaQueryData) {
-          return MediaQuery(
-            data: mediaQueryData.copyWith(
-                size: Size(scaledWidth, scaledHeight),
-                viewInsets: scaledViewInsets,
-                viewPadding: scaledViewPadding,
-                padding: scaledPadding),
-            child: childHolder,
+          Widget childHolder = FittedBox(
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: width,
+              height: scaledHeight,
+              alignment: Alignment.center,
+              child: child,
+            ),
           );
-        }
 
-        return childHolder;
-      },
-    );
+          if (overrideMediaQueryData) {
+            return MediaQuery(
+              data: mediaQueryData.copyWith(
+                  size: Size(scaledWidth, scaledHeight),
+                  viewInsets: scaledViewInsets,
+                  viewPadding: scaledViewPadding,
+                  padding: scaledPadding),
+              child: childHolder,
+            );
+          }
+
+          return childHolder;
+        },
+      );
+    }
+
+    return child;
   }
 
   EdgeInsets getScaledViewInsets(
