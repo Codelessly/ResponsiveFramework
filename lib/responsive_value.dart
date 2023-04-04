@@ -66,10 +66,11 @@ class ResponsiveValue<T> {
   /// search criteria in order of precedence:
   /// 1. [Conditional.EQUALS]
   /// Named breakpoints from a parent [ResponsiveBreakpoints].
-  /// 2. [Conditional.SMALLER_THAN]
+  /// 2. [Conditional.BETWEEN]
+  /// 3. [Conditional.SMALLER_THAN]
   ///   a. Named breakpoints.
   ///   b. Unnamed breakpoints.
-  /// 3. [Conditional.LARGER_THAN]
+  /// 4. [Conditional.LARGER_THAN]
   ///   a. Named breakpoints.
   ///   b. Unnamed breakpoints.
   /// Returns null if no Active Condition is found.
@@ -88,6 +89,15 @@ class ResponsiveValue<T> {
         continue;
       }
 
+      if (condition.condition == Conditional.BETWEEN) {
+        if (screenWidth >= condition.breakpointStart! &&
+            screenWidth <= condition.breakpointEnd!) {
+          return condition;
+        }
+
+        continue;
+      }
+
       if (condition.condition == Conditional.SMALLER_THAN) {
         if (condition.name != null) {
           if (responsiveWrapperData.isSmallerThan(condition.name!)) {
@@ -95,8 +105,8 @@ class ResponsiveValue<T> {
           }
         }
 
-        if (condition.breakpoint != null) {
-          if (screenWidth < condition.breakpoint!) {
+        if (condition.breakpointStart != null) {
+          if (screenWidth < condition.breakpointStart!) {
             return condition;
           }
         }
@@ -111,8 +121,8 @@ class ResponsiveValue<T> {
           }
         }
 
-        if (condition.breakpoint != null) {
-          if (screenWidth > condition.breakpoint!) {
+        if (condition.breakpointStart != null) {
+          if (screenWidth > condition.breakpointStart!) {
             return condition;
           }
         }
@@ -130,6 +140,7 @@ enum Conditional {
   LARGER_THAN,
   EQUALS,
   SMALLER_THAN,
+  BETWEEN,
 }
 
 /// A conditional value provider.
@@ -138,42 +149,59 @@ enum Conditional {
 /// Compare conditions by setting either [breakpoint] or
 /// [name] values.
 class Condition<T> {
-  final int? breakpoint;
+  final int? breakpointStart;
+  final int? breakpointEnd;
   final String? name;
   final Conditional? condition;
   final T? value;
   final T? landscapeValue;
 
   const Condition._(
-      {this.breakpoint,
+      {this.breakpointStart,
+      this.breakpointEnd,
       this.name,
       this.condition,
       this.value,
       this.landscapeValue})
-      : assert(breakpoint != null || name != null),
+      : assert(breakpointStart != null || name != null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
   const Condition.equals({required this.name, this.value, this.landscapeValue})
-      : breakpoint = null,
+      : breakpointStart = null,
+        breakpointEnd = null,
         condition = Conditional.EQUALS;
 
   const Condition.largerThan(
-      {this.breakpoint, this.name, this.value, this.landscapeValue})
-      : condition = Conditional.LARGER_THAN;
+      {int? breakpoint, this.name, this.value, this.landscapeValue})
+      : breakpointStart = breakpoint,
+        breakpointEnd = breakpoint,
+        condition = Conditional.LARGER_THAN;
 
   const Condition.smallerThan(
-      {this.breakpoint, this.name, this.value, this.landscapeValue})
-      : condition = Conditional.SMALLER_THAN;
+      {int? breakpoint, this.name, this.value, this.landscapeValue})
+      : breakpointStart = breakpoint,
+        breakpointEnd = breakpoint,
+        condition = Conditional.SMALLER_THAN;
+
+  /// Conditional when screen width is between [start] and [end] inclusive.
+  const Condition.between(
+      {required int? start, required int? end, this.value, this.landscapeValue})
+      : breakpointStart = start,
+        breakpointEnd = end,
+        name = null,
+        condition = Conditional.BETWEEN;
 
   Condition copyWith({
-    int? breakpoint,
+    int? breakpointStart,
+    int? breakpointEnd,
     String? name,
     Conditional? condition,
     T? value,
     T? landscapeValue,
   }) =>
       Condition._(
-        breakpoint: breakpoint ?? this.breakpoint,
+        breakpointStart: breakpointStart ?? this.breakpointStart,
+        breakpointEnd: breakpointEnd ?? this.breakpointEnd,
         name: name ?? this.name,
         condition: condition ?? this.condition,
         value: value ?? this.value,
@@ -182,12 +210,12 @@ class Condition<T> {
 
   @override
   String toString() =>
-      'Condition(breakpoint: $breakpoint, name: $name, condition: $condition, value: $value, landscapeValue: $landscapeValue)';
+      'Condition(breakpointStart: $breakpointStart, breakpointEnd: $breakpointEnd, name: $name, condition: $condition, value: $value, landscapeValue: $landscapeValue)';
 
   int sort(Condition a, Condition b) {
-    if (a.breakpoint == b.breakpoint) return 0;
+    if (a.breakpointStart == b.breakpointStart) return 0;
 
-    return (a.breakpoint! < b.breakpoint!) ? -1 : 1;
+    return (a.breakpointStart! < b.breakpointStart!) ? -1 : 1;
   }
 }
 
