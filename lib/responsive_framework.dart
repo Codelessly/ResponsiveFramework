@@ -1,6 +1,7 @@
 library responsive_framework;
 
 export 'breakpoint.dart';
+export 'max_width_box.dart';
 export 'responsive_breakpoints.dart';
 export 'responsive_grid.dart';
 export 'responsive_row_column.dart';
