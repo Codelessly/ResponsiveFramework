@@ -83,15 +83,15 @@ For example, if we're building a Material 3 Navigation Rail and want to expand t
 breakpoints: [
   ...
   const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-  const Breakpoint(start: 900, end: double.infinity, name: 'EXPAND_SIDE_PANEL') <- Custom behavior Range.
+  const Breakpoint(start: 900, end: 900, name: 'EXPAND_SIDE_PANEL') <- Custom label.
   const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
   ...
 ]
 ```
 
-Then, in our code, set the value based on if the breakpoint is active.
+Then, in our code, set the value based on the breakpoint condition.
 
-> expand: ResponsiveBreakpoints.of(context).equals('EXPAND_SIDE_PANEL')
+> expand: ResponsiveBreakpoints.of(context).isLargerThan('EXPAND_SIDE_PANEL')
 
 ### Responsive Framework Widgets
 The ResponsiveFramework includes a few custom widgets that to supplement Flutter's responsive capabilities. They are showcased in the demo projects.
