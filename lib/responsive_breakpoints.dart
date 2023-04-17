@@ -332,21 +332,51 @@ class ResponsiveBreakpointsData {
   String toString() =>
       'ResponsiveWrapperData(breakpoint: $breakpoint, breakpoints: ${breakpoints.asMap()}, isMobile: $isMobile, isPhone: $isPhone, isTablet: $isTablet, isDesktop: $isDesktop)';
 
-  bool equals(String? name) => breakpoint.name == name;
+  /// Returns if the active breakpoint is [name].
+  bool equals(String name) => breakpoint.name == name;
 
-  /// Is the width larger than or equal to [name]?
+  /// Is the [screenWidth] larger than [name]?
   /// Defaults to false if the [name] cannot be found.
-  bool isLargerThan(String? name) =>
+  bool largerThan(String name) =>
       screenWidth >
       (breakpoints.firstWhereOrNull((element) => element.name == name)?.end ??
           double.infinity);
 
+  /// Is the [screenWidth] larger than or equal to [name]?
+  /// Defaults to false if the [name] cannot be found.
+  bool largerOrEqualTo(String name) =>
+      screenWidth >=
+      (breakpoints.firstWhereOrNull((element) => element.name == name)?.start ??
+          double.infinity);
+
   /// Is the [screenWidth] smaller than the [name]?
   /// Defaults to false if the [name] cannot be found.
-  bool isSmallerThan(String? name) =>
+  bool smallerThan(String name) =>
       screenWidth <
       (breakpoints.firstWhereOrNull((element) => element.name == name)?.start ??
           0);
+
+  /// Is the [screenWidth] smaller than or equal to the [name]?
+  /// Defaults to false if the [name] cannot be found.
+  bool smallerOrEqualTo(String name) =>
+      screenWidth <=
+      (breakpoints.firstWhereOrNull((element) => element.name == name)?.end ??
+          0);
+
+  /// Is the [screenWidth] smaller than or equal to the [name]?
+  /// Defaults to false if the [name] cannot be found.
+  bool between(String name, String name1) {
+    return (screenWidth >=
+            (breakpoints
+                    .firstWhereOrNull((element) => element.name == name)
+                    ?.start ??
+                0) &&
+        screenWidth <=
+            (breakpoints
+                    .firstWhereOrNull((element) => element.name == name1)
+                    ?.end ??
+                0));
+  }
 
   @override
   bool operator ==(Object other) =>

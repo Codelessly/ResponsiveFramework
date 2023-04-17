@@ -59,7 +59,7 @@ Use the labels you defined for layouts and values.
 
 ```dart
 // Example: if the screen is bigger than the Mobile breakpoint, build full width AppBar icons and labels.
-if (ResponsiveBreakpoints.of(context).isLargerThan(MOBILE))
+if (ResponsiveBreakpoints.of(context).largerThan(MOBILE))
     FullWidthAppBarItems()
 
 // Booleans
@@ -70,8 +70,9 @@ ResponsiveBreakpoints.of(context).isPhone;
 
 // Conditionals
 ResponsiveBreakpoints.of(context).equals(DESKTOP)
-ResponsiveBreakpoints.of(context).isLargerThan(MOBILE)
-ResponsiveBreakpoints.of(context).isSmallerThan(TABLET)
+ResponsiveBreakpoints.of(context).largerThan(MOBILE)
+ResponsiveBreakpoints.of(context).smallerThan(TABLET)
+...
 ```
 
 ### Customization
@@ -91,7 +92,7 @@ breakpoints: [
 
 Then, in our code, set the value based on the breakpoint condition.
 
-> expand: ResponsiveBreakpoints.of(context).isLargerThan('EXPAND_SIDE_PANEL')
+> expand: ResponsiveBreakpoints.of(context).largerThan('EXPAND_SIDE_PANEL')
 
 ### Responsive Framework Widgets
 The ResponsiveFramework includes a few custom widgets that to supplement Flutter's responsive capabilities. They are showcased in the demo projects.

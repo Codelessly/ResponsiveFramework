@@ -100,7 +100,7 @@ class ResponsiveValue<T> {
 
       if (condition.condition == Conditional.SMALLER_THAN) {
         if (condition.name != null) {
-          if (responsiveWrapperData.isSmallerThan(condition.name!)) {
+          if (responsiveWrapperData.smallerThan(condition.name!)) {
             return condition;
           }
         }
@@ -116,7 +116,7 @@ class ResponsiveValue<T> {
 
       if (condition.condition == Conditional.LARGER_THAN) {
         if (condition.name != null) {
-          if (responsiveWrapperData.isLargerThan(condition.name!)) {
+          if (responsiveWrapperData.largerThan(condition.name!)) {
             return condition;
           }
         }
