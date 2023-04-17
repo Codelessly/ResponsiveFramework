@@ -95,7 +95,7 @@ Then, in our code, set the value based on the breakpoint condition.
 > expand: ResponsiveBreakpoints.of(context).largerThan('EXPAND_SIDE_PANEL')
 
 ### Responsive Framework Widgets
-The ResponsiveFramework includes a few custom widgets that to supplement Flutter's responsive capabilities. They are showcased in the demo projects.
+The ResponsiveFramework includes a few custom widgets that supplement Flutter's responsive capabilities. They are showcased in the demo projects.
 
 - *[ResponsiveValue](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
 - *[ResponsiveRowColumn](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_row_column.dart)*
@@ -107,9 +107,9 @@ The ResponsiveFramework includes a few custom widgets that to supplement Flutter
 ## Legacy ReadMe (v0.2.0 and below)
 
 ### ResponsiveWrapper Migration
-The legacy ResponsiveWrapper combined multiple features into one widget. This made it difficult to use at times when custom behavior was required. The updated V1 implementation separates each feature into its own widget and is now more modular.
+The legacy ResponsiveWrapper combined multiple features into one widget. This made it difficult to use at times when custom behavior was required. The updated V1 implementation separates each feature into its own widget.
 
-Responsive Framework v1 introduces some new widgets:
+Responsive Framework v1 introduces some new widgets as well:
 
 - ResponsiveScaledBox
 - MaxWidthBox
@@ -120,15 +120,21 @@ Responsive Framework v1 introduces some new widgets:
 
 Replaces the core AutoScale functionality of ResponsiveWrapper. ResponsiveScaledBox renders the `child` widget with the specified `width`. 
 
-This widget simply wraps the Flutter `FittedBox` widget with a `LayoutBuilder` and `MediaQuery`. Use a `ResponsiveScaledBox` instead of a `FittedBox` if the layout being wrapped is full screen as the widget helps calculate scaled `MediaQueryData`.
+This widget wraps the Flutter `FittedBox` widget with a `LayoutBuilder` and `MediaQuery`. 
+
+**Why should you use a `ResponsiveScaledBox`?**
+
+Use a `ResponsiveScaledBox` instead of a `FittedBox` if the layout is full screen as the widget helps calculate correctly scaled `MediaQueryData`.
 
 #### MaxWidthBox
 > MaxWidthBox(maxWidth: maxWidth, background: background, child: child);
 
-Limits the `child` widget to the `maxWidth` and paints an optional `background` behind the widget. This widget is helpful for limiting the content width on large desktop displays and creating gutters on the left and right side of the page.
+Limit the `child` widget to the `maxWidth` and paints an optional `background` behind the widget. 
+
+This widget is helpful for limiting the content width on large desktop displays and creating gutters on the left and right side of the page.
 
 
-### The remainder of the legacy ReadMe is preserved below as the concepts are useful and supported by the new widgets. ResponsiveWrapper has been deprecated and removed.
+### The remainder of the legacy ReadMe is preserved below as the concepts are still useful and used by the new widgets. ResponsiveWrapper has been deprecated and removed.
 
 ### The Problem
 Supporting multiple display sizes often means recreating the same layout multiple times. Under the traditional _Bootstrap_ approach, building responsive UI is time consuming, frustrating and repetitive. Furthermore, getting everything pixel perfect is near impossible and simple edits take hours.
