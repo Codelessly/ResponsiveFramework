@@ -6,17 +6,7 @@
 
 > ### Responsiveness made simple
 
-Responsive Framework adapts your UI to different screen sizes automatically. Create your UI once and have it display pixel perfect on mobile, tablet, and desktop!
-
-### The Problem
-Supporting multiple display sizes often means recreating the same layout multiple times. Under the traditional _Bootstrap_ approach, building responsive UI is time consuming, frustrating and repetitive. Furthermore, getting everything pixel perfect is near impossible and simple edits take hours.
-
-![Screenshots](packages/Bad%20Viewport%20Selector%20Animated.gif)
-
-### The Solution
-Use Responsive Framework to automatically scale your UI.
-
-> **ResponsiveBreakpoint.autoScale(600);**
+The Responsive Framework includes widgets that help developers build responsive apps for mobile, desktop, and website layouts.
 
 ## Demo
 
@@ -42,7 +32,7 @@ Import this library into your project:
 responsive_framework: ^latest_version
 ```
 
-Add `ResponsiveWrapper.builder` to your MaterialApp or CupertinoApp.
+Add `ResponsiveBreakpoints.builder` to your MaterialApp or CupertinoApp. Define your own breakpoints and labels.
 ```dart
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -50,23 +40,105 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, child) => ResponsiveWrapper.builder(
-          child,
-          maxWidth: 1200,
-          minWidth: 480,
-          defaultScale: true,
-          breakpoints: [
-            ResponsiveBreakpoint.resize(480, name: MOBILE),
-            ResponsiveBreakpoint.autoScale(800, name: TABLET),
-            ResponsiveBreakpoint.resize(1000, name: DESKTOP),
-          ],
-          background: Container(color: Color(0xFFF5F5F5))),
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        child: child!,
+        breakpoints: [
+          const Breakpoint(start: 0, end: 450, name: MOBILE),
+          const Breakpoint(start: 451, end: 800, name: TABLET),
+          const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+          const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+        ],
+      ),
       initialRoute: "/",
     );
   }
 }
 ```
-That's it!
+
+Use the labels you defined for layouts and values.
+
+```dart
+// Example: if the screen is bigger than the Mobile breakpoint, build full width AppBar icons and labels.
+if (ResponsiveBreakpoints.of(context).isLargerThan(MOBILE))
+    FullWidthAppBarItems()
+
+// Booleans
+ResponsiveBreakpoints.of(context).isDesktop;
+ResponsiveBreakpoints.of(context).isTablet;
+ResponsiveBreakpoints.of(context).isMobile;
+ResponsiveBreakpoints.of(context).isPhone;
+
+// Conditionals
+ResponsiveBreakpoints.of(context).equals(DESKTOP)
+ResponsiveBreakpoints.of(context).isLargerThan(MOBILE)
+ResponsiveBreakpoints.of(context).isSmallerThan(TABLET)
+```
+
+### Customization
+You can define your own breakpoint labels and use them in your conditionals.
+
+For example, if we're building a Material 3 Navigation Rail and want to expand the menu to full width once there is enough room, we can add a custom `EXPAND_SIDE_PANEL` breakpoint.
+
+```dart
+breakpoints: [
+  ...
+  const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+  const Breakpoint(start: 900, end: double.infinity, name: 'EXPAND_SIDE_PANEL') <- Custom behavior Range.
+  const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+  ...
+]
+```
+
+Then, in our code, set the value based on if the breakpoint is active.
+
+> expand: ResponsiveBreakpoints.of(context).equals('EXPAND_SIDE_PANEL')
+
+### Responsive Framework Widgets
+The ResponsiveFramework includes a few custom widgets that to supplement Flutter's responsive capabilities. They are showcased in the demo projects.
+
+- *[ResponsiveValue](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
+- *[ResponsiveRowColumn](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_row_column.dart)*
+- *[ResponsiveGridView](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_grid.dart)*
+- *[ResponsiveScaledBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_scaled_box.dart)*
+- *[MaxWidthBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/max_width_box.dart)*
+
+
+## Legacy ReadMe (v0.2.0 and below)
+
+### ResponsiveWrapper Migration
+The legacy ResponsiveWrapper combined multiple features into one widget. This made it difficult to use at times when custom behavior was required. The updated V1 implementation separates each feature into its own widget and is now more modular.
+
+Responsive Framework v1 introduces some new widgets:
+
+- ResponsiveScaledBox
+- MaxWidthBox
+- ConditionalRouteWidget
+
+#### ResponsiveScaledBox
+> ResponsiveScaledBox(width: width, child: child);
+
+Replaces the core AutoScale functionality of ResponsiveWrapper. ResponsiveScaledBox renders the `child` widget with the specified `width`. 
+
+This widget simply wraps the Flutter `FittedBox` widget with a `LayoutBuilder` and `MediaQuery`. Use a `ResponsiveScaledBox` instead of a `FittedBox` if the layout being wrapped is full screen as the widget helps calculate scaled `MediaQueryData`.
+
+#### MaxWidthBox
+> MaxWidthBox(maxWidth: maxWidth, background: background, child: child);
+
+Limits the `child` widget to the `maxWidth` and paints an optional `background` behind the widget. This widget is helpful for limiting the content width on large desktop displays and creating gutters on the left and right side of the page.
+
+
+### The remainder of the legacy ReadMe is preserved below as the concepts are useful and supported by the new widgets. ResponsiveWrapper has been deprecated and removed.
+
+### The Problem
+Supporting multiple display sizes often means recreating the same layout multiple times. Under the traditional _Bootstrap_ approach, building responsive UI is time consuming, frustrating and repetitive. Furthermore, getting everything pixel perfect is near impossible and simple edits take hours.
+
+![Screenshots](packages/Bad%20Viewport%20Selector%20Animated.gif)
+
+### The Solution
+Use Responsive Framework to automatically scale your UI.
+
+> **ResponsiveBreakpoint.autoScale(600);**
+
 
 ## AutoScale
 
