@@ -5,7 +5,7 @@ class Breakpoint {
   final double start;
   final double end;
   final String? name;
-  final dynamic? data;
+  final dynamic data;
 
   const Breakpoint(
       {required this.start, required this.end, this.name, this.data});

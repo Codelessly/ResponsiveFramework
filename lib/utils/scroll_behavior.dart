@@ -31,7 +31,7 @@ class BouncingScrollWrapper extends StatelessWidget {
 
   static Widget builder(BuildContext context, Widget child,
       {bool dragWithMouse = false}) {
-    return BouncingScrollWrapper(child: child, dragWithMouse: dragWithMouse);
+    return BouncingScrollWrapper(dragWithMouse: dragWithMouse, child: child);
   }
 
   @override
@@ -74,7 +74,7 @@ class ClampingScrollWrapper extends StatelessWidget {
 
   static Widget builder(BuildContext context, Widget child,
       {bool dragWithMouse = false}) {
-    return ClampingScrollWrapper(child: child, dragWithMouse: dragWithMouse);
+    return ClampingScrollWrapper(dragWithMouse: dragWithMouse, child: child);
   }
 
   @override
