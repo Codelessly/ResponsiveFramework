@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+- Breaking Change - Responsive Value Condition is no longer constant to support inheriting type nullability.
+- Simplify example.
+
 ## 1.0.0
 - New ResponsiveBreakpoints widget.
 - Deprecated ResponsiveWrapper widget.

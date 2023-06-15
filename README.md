@@ -72,13 +72,14 @@ ResponsiveBreakpoints.of(context).isPhone;
 ResponsiveBreakpoints.of(context).equals(DESKTOP)
 ResponsiveBreakpoints.of(context).largerThan(MOBILE)
 ResponsiveBreakpoints.of(context).smallerThan(TABLET)
+ResponsiveBreakpoints.of(context).between(MOBILE, TABLET)
 ...
 ```
 
 ### Customization
 You can define your own breakpoint labels and use them in your conditionals.
 
-For example, if we're building a Material 3 Navigation Rail and want to expand the menu to full width once there is enough room, we can add a custom `EXPAND_SIDE_PANEL` breakpoint.
+For example, if you're building a Material 3 Navigation Rail and want to expand the menu to full width once there is enough room, you can add a custom `EXPAND_SIDE_PANEL` breakpoint.
 
 ```dart
 breakpoints: [
@@ -90,14 +91,16 @@ breakpoints: [
 ]
 ```
 
-Then, in our code, set the value based on the breakpoint condition.
+Then, in your code, set the value based on the breakpoint condition.
 
 > expand: ResponsiveBreakpoints.of(context).largerThan('EXPAND_SIDE_PANEL')
 
 ### Responsive Framework Widgets
-The ResponsiveFramework includes a few custom widgets that supplement Flutter's responsive capabilities. They are showcased in the demo projects.
+The ResponsiveFramework includes a few custom widgets that supplement Flutter's responsive capabilities. Their usages are showcased in the demo projects.
 
 - *[ResponsiveValue](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
+  - *[ResponsiveVisibility](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
+  - *[ResponsiveConstraints](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
 - *[ResponsiveRowColumn](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_row_column.dart)*
 - *[ResponsiveGridView](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_grid.dart)*
 - *[ResponsiveScaledBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_scaled_box.dart)*
