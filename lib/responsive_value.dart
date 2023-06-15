@@ -153,40 +153,48 @@ class Condition<T> {
   final int? breakpointEnd;
   final String? name;
   final Conditional? condition;
-  final T? value;
-  final T? landscapeValue;
+  final T value;
+  late T landscapeValue;
 
-  const Condition._(
+  Condition._(
       {this.breakpointStart,
       this.breakpointEnd,
       this.name,
       this.condition,
-      this.value,
-      this.landscapeValue})
-      : assert(breakpointStart != null || name != null),
+      required this.value,
+      T? landscapeValue})
+      : landscapeValue = (landscapeValue ?? value),
+        assert(breakpointStart != null || name != null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  const Condition.equals({required this.name, this.value, this.landscapeValue})
-      : breakpointStart = null,
+  Condition.equals({required this.name, required this.value, T? landscapeValue})
+      : landscapeValue = (landscapeValue ?? value),
+        breakpointStart = null,
         breakpointEnd = null,
         condition = Conditional.EQUALS;
 
-  const Condition.largerThan(
-      {int? breakpoint, this.name, this.value, this.landscapeValue})
-      : breakpointStart = breakpoint,
+  Condition.largerThan(
+      {int? breakpoint, this.name, required this.value, T? landscapeValue})
+      : landscapeValue = (landscapeValue ?? value),
+        breakpointStart = breakpoint,
         breakpointEnd = breakpoint,
         condition = Conditional.LARGER_THAN;
 
-  const Condition.smallerThan(
-      {int? breakpoint, this.name, this.value, this.landscapeValue})
-      : breakpointStart = breakpoint,
+  Condition.smallerThan(
+      {int? breakpoint, this.name, required this.value, T? landscapeValue})
+      : landscapeValue = (landscapeValue ?? value),
+        breakpointStart = breakpoint,
         breakpointEnd = breakpoint,
         condition = Conditional.SMALLER_THAN;
 
   /// Conditional when screen width is between [start] and [end] inclusive.
-  const Condition.between(
-      {required int? start, required int? end, this.value, this.landscapeValue})
-      : breakpointStart = start,
+  Condition.between(
+      {required int? start,
+      required int? end,
+      required this.value,
+      T? landscapeValue})
+      : landscapeValue = (landscapeValue ?? value),
+        breakpointStart = start,
         breakpointEnd = end,
         name = null,
         condition = Conditional.BETWEEN;
