@@ -159,8 +159,7 @@ class ResponsiveBreakpointsState extends State<ResponsiveBreakpoints>
   bool get isLandscapePlatform =>
       (widget.landscapePlatforms ?? _landscapePlatforms).contains(platform);
 
-  bool get isLandscape =>
-      orientation == Orientation.landscape && isLandscapePlatform;
+  bool get isLandscape => true;
 
   bool get useShortestSide => widget.useShortestSide;
 
@@ -253,7 +252,7 @@ class ResponsiveBreakpointsState extends State<ResponsiveBreakpoints>
   @override
   void didUpdateWidget(ResponsiveBreakpoints oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // When [ResponsiveWrapper]'s constructor is
+    // When [ResponsiveBreakpoints]'s constructor is
     // used directly in the widget tree and a parent
     // MediaQueryData changes, update state.
     // The screen dimensions are passed immediately.
@@ -268,7 +267,7 @@ class ResponsiveBreakpointsState extends State<ResponsiveBreakpoints>
     setPlatform();
 
     return InheritedResponsiveBreakpoints(
-      data: ResponsiveBreakpointsData.fromResponsiveWrapper(this),
+      data: ResponsiveBreakpointsData.fromWidgetState(this),
       child: widget.child,
     );
   }
@@ -298,7 +297,7 @@ class ResponsiveBreakpointsData {
 
   /// Creates responsive data with explicit values.
   ///
-  /// Alternatively, use [ResponsiveBreakpointsData.fromResponsiveWrapper]
+  /// Alternatively, use [ResponsiveBreakpointsData.fromWidgetState]
   /// to create data based on the [ResponsiveBreakpoints] state.
   const ResponsiveBreakpointsData({
     this.screenWidth = 0,
@@ -313,7 +312,7 @@ class ResponsiveBreakpointsData {
   });
 
   /// Creates data based on the [ResponsiveBreakpoints] state.
-  static ResponsiveBreakpointsData fromResponsiveWrapper(
+  static ResponsiveBreakpointsData fromWidgetState(
       ResponsiveBreakpointsState state) {
     return ResponsiveBreakpointsData(
       screenWidth: state.screenWidth,
@@ -330,7 +329,7 @@ class ResponsiveBreakpointsData {
 
   @override
   String toString() =>
-      'ResponsiveWrapperData(breakpoint: $breakpoint, breakpoints: ${breakpoints.asMap()}, isMobile: $isMobile, isPhone: $isPhone, isTablet: $isTablet, isDesktop: $isDesktop)';
+      'ResponsiveBreakpoints(breakpoint: $breakpoint, breakpoints: ${breakpoints.asMap()}, isMobile: $isMobile, isPhone: $isPhone, isTablet: $isTablet, isDesktop: $isDesktop)';
 
   /// Returns if the active breakpoint is [name].
   bool equals(String name) => breakpoint.name == name;
@@ -394,10 +393,6 @@ class ResponsiveBreakpointsData {
 
 /// Creates an immutable widget that exposes [ResponsiveBreakpointsData]
 /// to child widgets.
-///
-/// Access values such as the [ResponsiveBreakpointsData.scaledWidth]
-/// property through [ResponsiveBreakpoints.of]
-/// `ResponsiveWrapper.of(context).scaledWidth`.
 ///
 /// Querying this widget with [ResponsiveBreakpoints.of]
 /// creates a dependency that causes an automatic

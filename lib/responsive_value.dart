@@ -25,7 +25,7 @@ class ResponsiveValue<T> {
   ResponsiveValue(this.context,
       {required this.conditionalValues, this.defaultValue}) {
     // Breakpoint reference check. Verify a parent
-    // [ResponsiveWrapper] exists if a reference is found.
+    // [ResponsiveBreakpoint] exists if a reference is found.
     if (conditionalValues.firstWhereOrNull((element) => element.name != null) !=
         null) {
       try {
@@ -35,8 +35,8 @@ class ResponsiveValue<T> {
           ErrorSummary(
               'A conditional value was caught referencing a nonexistent breakpoint.'),
           ErrorDescription(
-              'ResponsiveValue requires a parent ResponsiveWrapper '
-              'to reference breakpoints. Add a ResponsiveWrapper or remove breakpoint references.')
+              'ResponsiveValue requires a parent ResponsiveBreakpoint '
+              'to reference breakpoints. Add a ResponsiveBreakpoint or remove breakpoint references.')
         ]);
       }
     }
@@ -76,13 +76,13 @@ class ResponsiveValue<T> {
   /// Returns null if no Active Condition is found.
   Condition? getActiveCondition(
       BuildContext context, List<Condition> conditions) {
-    ResponsiveBreakpointsData responsiveWrapperData =
+    ResponsiveBreakpointsData responsiveBreakpointsData =
         ResponsiveBreakpoints.of(context);
-    double screenWidth = responsiveWrapperData.screenWidth;
+    double screenWidth = responsiveBreakpointsData.screenWidth;
 
     for (Condition condition in conditions.reversed) {
       if (condition.condition == Conditional.EQUALS) {
-        if (condition.name == responsiveWrapperData.breakpoint.name) {
+        if (condition.name == responsiveBreakpointsData.breakpoint.name) {
           return condition;
         }
 
@@ -100,7 +100,7 @@ class ResponsiveValue<T> {
 
       if (condition.condition == Conditional.SMALLER_THAN) {
         if (condition.name != null) {
-          if (responsiveWrapperData.smallerThan(condition.name!)) {
+          if (responsiveBreakpointsData.smallerThan(condition.name!)) {
             return condition;
           }
         }
@@ -116,7 +116,7 @@ class ResponsiveValue<T> {
 
       if (condition.condition == Conditional.LARGER_THAN) {
         if (condition.name != null) {
-          if (responsiveWrapperData.largerThan(condition.name!)) {
+          if (responsiveBreakpointsData.largerThan(condition.name!)) {
             return condition;
           }
         }
