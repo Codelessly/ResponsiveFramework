@@ -91,7 +91,7 @@ breakpoints: [
 ]
 ```
 
-Then, in your code, set the value based on the breakpoint condition.
+Then, in your code, show the Rail based on the breakpoint condition.
 
 > expand: ResponsiveBreakpoints.of(context).largerThan('EXPAND_SIDE_PANEL')
 
@@ -110,32 +110,7 @@ The ResponsiveFramework includes a few custom widgets that supplement Flutter's 
 ## Legacy ReadMe (v0.2.0 and below)
 
 ### ResponsiveWrapper Migration
-The legacy ResponsiveWrapper combined multiple features into one widget. This made it difficult to use at times when custom behavior was required. The updated V1 implementation separates each feature into its own widget.
-
-Responsive Framework v1 introduces some new widgets as well:
-
-- ResponsiveScaledBox
-- MaxWidthBox
-- ConditionalRouteWidget
-
-#### ResponsiveScaledBox
-> ResponsiveScaledBox(width: width, child: child);
-
-Replaces the core AutoScale functionality of ResponsiveWrapper. ResponsiveScaledBox renders the `child` widget with the specified `width`. 
-
-This widget wraps the Flutter `FittedBox` widget with a `LayoutBuilder` and `MediaQuery`. 
-
-**Why should you use a `ResponsiveScaledBox`?**
-
-Use a `ResponsiveScaledBox` instead of a `FittedBox` if the layout is full screen as the widget helps calculate correctly scaled `MediaQueryData`.
-
-#### MaxWidthBox
-> MaxWidthBox(maxWidth: maxWidth, background: background, child: child);
-
-Limit the `child` widget to the `maxWidth` and paints an optional `background` behind the widget. 
-
-This widget is helpful for limiting the content width on large desktop displays and creating gutters on the left and right side of the page.
-
+[v1.0.0 Migration Guide](https://github.com/Codelessly/ResponsiveFramework/blob/master/migration_0.2.0_to_1.0.0.md)
 
 ### The remainder of the legacy ReadMe is preserved below as the concepts are still useful and used by the new widgets. ResponsiveWrapper has been deprecated and removed.
 
