@@ -1,4 +1,8 @@
 # Changelog
+## 1.1.1
+- v1.0.0 migration guide: [Migration Guide](https://github.com/Codelessly/ResponsiveFramework/blob/master/migration_0.2.0_to_1.0.0.md)
+- Fix landscape values null.
+- Remove names and comments of deprecated `ResponsiveWrapper` in code.
 
 ## 1.1.0
 - Breaking Change - Responsive Value Condition is no longer constant to support inheriting type nullability.
