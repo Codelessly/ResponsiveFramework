@@ -8,8 +8,8 @@ enum ResponsiveRowColumnType {
   COLUMN,
 }
 
-/// A convenience wrapper for responsive [Row] and
-/// [Column] switching with padding and spacing.
+/// A convenience wrapper that use [Flex] for responsive horizontal and
+/// vertical layout switching with padding and spacing.
 ///
 /// ResponsiveRowColumn combines responsiveness
 /// behaviors for managing rows and columns into one
@@ -72,7 +72,8 @@ class ResponsiveRowColumn extends StatelessWidget {
     if (layout == ResponsiveRowColumnType.ROW) {
       return Padding(
         padding: rowPadding,
-        child: Row(
+        child: Flex(
+          direction: Axis.horizontal,
           mainAxisAlignment: rowMainAxisAlignment,
           mainAxisSize: rowMainAxisSize,
           crossAxisAlignment: rowCrossAxisAlignment,
@@ -88,7 +89,8 @@ class ResponsiveRowColumn extends StatelessWidget {
 
     return Padding(
       padding: columnPadding,
-      child: Column(
+      child: Flex(
+        direction: Axis.vertical,
         mainAxisAlignment: columnMainAxisAlignment,
         mainAxisSize: columnMainAxisSize,
         crossAxisAlignment: columnCrossAxisAlignment,
