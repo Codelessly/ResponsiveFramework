@@ -1,4 +1,11 @@
 # Changelog
+## 1.2.0
+- Flutter v3.19 update.
+- ResponsiveValue nullable type support.
+- Update ResponsiveRowColumn to use underlying Flex instead of Row and Columns.
+  - Preserves nested widget state when switching between Rows and Columns.
+- Fix `landscape` incorrectly set to always true.
+
 ## 1.1.1
 - v1.0.0 migration guide: [Migration Guide](https://github.com/Codelessly/ResponsiveFramework/blob/master/migration_0.2.0_to_1.0.0.md)
 - Fix landscape values null.
