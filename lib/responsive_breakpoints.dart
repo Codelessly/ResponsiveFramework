@@ -159,7 +159,8 @@ class ResponsiveBreakpointsState extends State<ResponsiveBreakpoints>
   bool get isLandscapePlatform =>
       (widget.landscapePlatforms ?? _landscapePlatforms).contains(platform);
 
-  bool get isLandscape => true;
+  bool get isLandscape =>
+      orientation == Orientation.landscape && isLandscapePlatform;
 
   bool get useShortestSide => widget.useShortestSide;
 
