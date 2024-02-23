@@ -16,7 +16,7 @@ import 'responsive_framework.dart';
 /// No validation is performed on [Condition]s so
 /// valid conditions must be passed.
 class ResponsiveValue<T> {
-  T? value;
+  late T value;
   final T? defaultValue;
   final List<Condition<T>> conditionalValues;
 
@@ -44,7 +44,7 @@ class ResponsiveValue<T> {
     List<Condition> conditions = [];
     conditions.addAll(conditionalValues);
     // Get visible value from active condition.
-    value = getValue(context, conditions) ?? defaultValue;
+    value = (getValue(context, conditions) ?? defaultValue) as T;
   }
 
   T? getValue(BuildContext context, List<Condition> conditions) {
@@ -153,8 +153,8 @@ class Condition<T> {
   final int? breakpointEnd;
   final String? name;
   final Conditional? condition;
-  final T value;
-  late T landscapeValue;
+  final T? value;
+  late T? landscapeValue;
 
   Condition._(
       {this.breakpointStart,
@@ -167,21 +167,21 @@ class Condition<T> {
         assert(breakpointStart != null || name != null),
         assert((condition == Conditional.EQUALS) ? name != null : true);
 
-  Condition.equals({required this.name, required this.value, T? landscapeValue})
+  Condition.equals({required this.name, this.value, T? landscapeValue})
       : landscapeValue = (landscapeValue ?? value),
         breakpointStart = null,
         breakpointEnd = null,
         condition = Conditional.EQUALS;
 
   Condition.largerThan(
-      {int? breakpoint, this.name, required this.value, T? landscapeValue})
+      {int? breakpoint, this.name, this.value, T? landscapeValue})
       : landscapeValue = (landscapeValue ?? value),
         breakpointStart = breakpoint,
         breakpointEnd = breakpoint,
         condition = Conditional.LARGER_THAN;
 
   Condition.smallerThan(
-      {int? breakpoint, this.name, required this.value, T? landscapeValue})
+      {int? breakpoint, this.name, this.value, T? landscapeValue})
       : landscapeValue = (landscapeValue ?? value),
         breakpointStart = breakpoint,
         breakpointEnd = breakpoint,
@@ -189,10 +189,7 @@ class Condition<T> {
 
   /// Conditional when screen width is between [start] and [end] inclusive.
   Condition.between(
-      {required int? start,
-      required int? end,
-      required this.value,
-      T? landscapeValue})
+      {required int? start, required int? end, this.value, T? landscapeValue})
       : landscapeValue = (landscapeValue ?? value),
         breakpointStart = start,
         breakpointEnd = end,
