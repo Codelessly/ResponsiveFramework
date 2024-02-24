@@ -1,4 +1,12 @@
 # Changelog
+## 1.3.0
+- Refactor Library Imports. 
+  - Unify library imports.
+- Restore const Conditions.
+  - Fix `copyWith` type.
+- Update examples.
+- Fix ResponsiveVisibility nullable type error.
+
 ## 1.2.0
 - Flutter v3.19 update.
 - ResponsiveValue nullable type support.
