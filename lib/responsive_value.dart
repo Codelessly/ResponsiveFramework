@@ -3,7 +3,7 @@
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/widgets.dart';
 
-import 'responsive_framework.dart';
+import 'responsive_breakpoints.dart';
 
 /// Conditional values based on the active breakpoint.
 ///
@@ -196,7 +196,7 @@ class Condition<T> {
         name = null,
         condition = Conditional.BETWEEN;
 
-  Condition copyWith({
+  Condition<T> copyWith({
     int? breakpointStart,
     int? breakpointEnd,
     String? name,
@@ -204,7 +204,7 @@ class Condition<T> {
     T? value,
     T? landscapeValue,
   }) =>
-      Condition._(
+      Condition<T>._(
         breakpointStart: breakpointStart ?? this.breakpointStart,
         breakpointEnd: breakpointEnd ?? this.breakpointEnd,
         name: name ?? this.name,
@@ -232,8 +232,8 @@ class Condition<T> {
 class ResponsiveVisibility extends StatelessWidget {
   final Widget child;
   final bool visible;
-  final List<Condition> visibleConditions;
-  final List<Condition> hiddenConditions;
+  final List<Condition<bool>> visibleConditions;
+  final List<Condition<bool>> hiddenConditions;
   final Widget replacement;
   final bool maintainState;
   final bool maintainAnimation;
@@ -258,20 +258,20 @@ class ResponsiveVisibility extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initialize mutable value holders.
-    List<Condition> conditions = [];
-    bool? visibleValue = visible;
+    List<Condition<bool>> conditions = [];
+    bool visibleValue = visible;
 
     // Combine Conditions.
     conditions.addAll(visibleConditions.map((e) => e.copyWith(value: true)));
     conditions.addAll(hiddenConditions.map((e) => e.copyWith(value: false)));
     // Get visible value from active condition.
-    visibleValue = ResponsiveValue(context,
+    visibleValue = ResponsiveValue<bool>(context,
             defaultValue: visibleValue, conditionalValues: conditions)
         .value;
 
     return Visibility(
       replacement: replacement,
-      visible: visibleValue!,
+      visible: visibleValue,
       maintainState: maintainState,
       maintainAnimation: maintainAnimation,
       maintainSize: maintainSize,
@@ -285,7 +285,7 @@ class ResponsiveVisibility extends StatelessWidget {
 class ResponsiveConstraints extends StatelessWidget {
   final Widget child;
   final BoxConstraints? constraint;
-  final List<Condition> conditionalConstraints;
+  final List<Condition<BoxConstraints?>> conditionalConstraints;
 
   const ResponsiveConstraints(
       {super.key,
@@ -298,7 +298,7 @@ class ResponsiveConstraints extends StatelessWidget {
     // Initialize mutable value holders.
     BoxConstraints? constraintValue = constraint;
     // Get value from active condition.
-    constraintValue = ResponsiveValue(context,
+    constraintValue = ResponsiveValue<BoxConstraints?>(context,
             defaultValue: constraintValue,
             conditionalValues: conditionalConstraints)
         .value;
