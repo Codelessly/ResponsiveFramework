@@ -46,7 +46,7 @@ class ResponsiveRowColumn extends StatelessWidget {
   get isColumn => layout == ResponsiveRowColumnType.COLUMN;
 
   const ResponsiveRowColumn(
-      {Key? key,
+      {super.key,
       this.children = const [],
       required this.layout,
       this.rowMainAxisAlignment = MainAxisAlignment.start,
@@ -64,8 +64,7 @@ class ResponsiveRowColumn extends StatelessWidget {
       this.rowSpacing,
       this.columnSpacing,
       this.rowPadding = EdgeInsets.zero,
-      this.columnPadding = EdgeInsets.zero})
-      : super(key: key);
+      this.columnPadding = EdgeInsets.zero});
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +152,7 @@ class ResponsiveRowColumnItem extends StatelessWidget {
   final FlexFit? columnFit;
 
   const ResponsiveRowColumnItem(
-      {Key? key,
+      {super.key,
       required this.child,
       this.rowOrder = 1073741823,
       this.columnOrder = 1073741823,
@@ -161,8 +160,7 @@ class ResponsiveRowColumnItem extends StatelessWidget {
       this.rowFlex,
       this.columnFlex,
       this.rowFit,
-      this.columnFit})
-      : super(key: key);
+      this.columnFit});
 
   @override
   Widget build(BuildContext context) {

@@ -13,12 +13,11 @@ class MaxWidthBox extends StatelessWidget {
   final Widget? background;
 
   const MaxWidthBox(
-      {Key? key,
+      {super.key,
       required this.maxWidth,
       required this.child,
       this.background,
-      this.alignment = Alignment.topCenter})
-      : super(key: key);
+      this.alignment = Alignment.topCenter});
 
   @override
   Widget build(BuildContext context) {

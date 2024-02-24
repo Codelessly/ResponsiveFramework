@@ -55,14 +55,14 @@ class ResponsiveBreakpoints extends StatefulWidget {
 
   /// A wrapper widget that makes child widgets responsive.
   const ResponsiveBreakpoints({
-    Key? key,
+    super.key,
     required this.child,
     required this.breakpoints,
     this.breakpointsLandscape,
     this.landscapePlatforms,
     this.useShortestSide = false,
     this.debugLog = false,
-  }) : super(key: key);
+  });
 
   @override
   ResponsiveBreakpointsState createState() => ResponsiveBreakpointsState();
@@ -412,8 +412,7 @@ class InheritedResponsiveBreakpoints extends InheritedWidget {
   ///
   /// The [data] and [child] arguments must not be null.
   const InheritedResponsiveBreakpoints(
-      {Key? key, required this.data, required Widget child})
-      : super(key: key, child: child);
+      {super.key, required this.data, required super.child});
 
   @override
   bool updateShouldNotify(InheritedResponsiveBreakpoints oldWidget) =>

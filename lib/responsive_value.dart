@@ -242,7 +242,7 @@ class ResponsiveVisibility extends StatelessWidget {
   final bool maintainInteractivity;
 
   const ResponsiveVisibility({
-    Key? key,
+    super.key,
     required this.child,
     this.visible = true,
     this.visibleConditions = const [],
@@ -253,7 +253,7 @@ class ResponsiveVisibility extends StatelessWidget {
     this.maintainSize = false,
     this.maintainSemantics = false,
     this.maintainInteractivity = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -288,11 +288,10 @@ class ResponsiveConstraints extends StatelessWidget {
   final List<Condition> conditionalConstraints;
 
   const ResponsiveConstraints(
-      {Key? key,
+      {super.key,
       required this.child,
       this.constraint,
-      this.conditionalConstraints = const []})
-      : super(key: key);
+      this.conditionalConstraints = const []});
 
   @override
   Widget build(BuildContext context) {

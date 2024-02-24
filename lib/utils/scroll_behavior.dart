@@ -26,8 +26,7 @@ class BouncingScrollWrapper extends StatelessWidget {
   final bool dragWithMouse;
 
   const BouncingScrollWrapper(
-      {Key? key, required this.child, this.dragWithMouse = false})
-      : super(key: key);
+      {super.key, required this.child, this.dragWithMouse = false});
 
   static Widget builder(BuildContext context, Widget child,
       {bool dragWithMouse = false}) {
@@ -69,8 +68,7 @@ class ClampingScrollWrapper extends StatelessWidget {
   final bool dragWithMouse;
 
   const ClampingScrollWrapper(
-      {Key? key, required this.child, this.dragWithMouse = false})
-      : super(key: key);
+      {super.key, required this.child, this.dragWithMouse = false});
 
   static Widget builder(BuildContext context, Widget child,
       {bool dragWithMouse = false}) {

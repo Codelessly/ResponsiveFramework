@@ -8,11 +8,10 @@ class ResponsiveScaledBox extends StatelessWidget {
   final bool autoCalculateMediaQueryData;
 
   const ResponsiveScaledBox(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.child,
-      this.autoCalculateMediaQueryData = true})
-      : super(key: key);
+      this.autoCalculateMediaQueryData = true});
 
   @override
   Widget build(BuildContext context) {
