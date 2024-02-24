@@ -1,10 +1,10 @@
 library responsive_framework;
 
-export 'breakpoint.dart';
-export 'max_width_box.dart';
-export 'responsive_breakpoints.dart';
-export 'responsive_grid.dart';
-export 'responsive_row_column.dart';
-export 'responsive_scaled_box.dart';
-export 'responsive_value.dart';
-export 'utils/scroll_behavior.dart';
+export 'src/breakpoint.dart';
+export 'src/max_width_box.dart';
+export 'src/responsive_breakpoints.dart';
+export 'src/responsive_grid.dart';
+export 'src/responsive_row_column.dart';
+export 'src/responsive_scaled_box.dart';
+export 'src/responsive_value.dart';
+export 'src/utils/scroll_behavior.dart';
