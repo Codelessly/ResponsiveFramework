@@ -1,4 +1,7 @@
 # Changelog
+## 1.4.0
+- Update license.
+
 ## 1.3.0
 - Refactor Library Imports. 
   - Unify library imports.
