@@ -8,3 +8,4 @@ export 'src/responsive_row_column.dart';
 export 'src/responsive_scaled_box.dart';
 export 'src/responsive_value.dart';
 export 'src/utils/scroll_behavior.dart';
+export 'src/utils/responsive_utils.dart';
