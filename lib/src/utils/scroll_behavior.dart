@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 class BouncingScrollBehavior extends ScrollBehavior {
+  const BouncingScrollBehavior();
+
   // Disable overscroll glow.
   @override
   Widget buildOverscrollIndicator(
@@ -35,20 +37,23 @@ class BouncingScrollWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScrollBehavior scrollBehavior = const BouncingScrollBehavior();
+    if (dragWithMouse) {
+      // If mouse dragging is desired, add it to the drag devices.
+      scrollBehavior = scrollBehavior.copyWith(
+        dragDevices: scrollBehavior.dragDevices..add(PointerDeviceKind.mouse),
+      );
+    }
     return ScrollConfiguration(
-      behavior: BouncingScrollBehavior().copyWith(
-          dragDevices: dragWithMouse
-              ? {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                }
-              : null),
+      behavior: scrollBehavior,
       child: child,
     );
   }
 }
 
 class ClampingScrollBehavior extends ScrollBehavior {
+  const ClampingScrollBehavior();
+
   // Disable overscroll glow.
   @override
   Widget buildOverscrollIndicator(
@@ -77,14 +82,15 @@ class ClampingScrollWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScrollBehavior scrollBehavior = const ClampingScrollBehavior();
+    if (dragWithMouse) {
+      // If mouse dragging is desired, add it to the drag devices.
+      scrollBehavior = scrollBehavior.copyWith(
+        dragDevices: scrollBehavior.dragDevices..add(PointerDeviceKind.mouse),
+      );
+    }
     return ScrollConfiguration(
-      behavior: ClampingScrollBehavior().copyWith(
-          dragDevices: dragWithMouse
-              ? {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                }
-              : null),
+      behavior: scrollBehavior,
       child: child,
     );
   }
