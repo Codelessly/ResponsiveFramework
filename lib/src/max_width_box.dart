@@ -1,6 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class MaxWidthBox extends StatelessWidget {
+class MaxWidthBox extends StatefulWidget {
   final double? maxWidth;
 
   /// Control the internal Stack alignment. This widget
@@ -20,23 +21,90 @@ class MaxWidthBox extends StatelessWidget {
       this.alignment = Alignment.topCenter});
 
   @override
+  State<MaxWidthBox> createState() => _MaxWidthBoxState();
+}
+
+class _MaxWidthBoxState extends State<MaxWidthBox> {
+  final _scrollController = ScrollController();
+
+  @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
 
-    if (maxWidth != null) {
-      if (mediaQuery.size.width > maxWidth!) {
-        mediaQuery =
-            mediaQuery.copyWith(size: Size(maxWidth!, mediaQuery.size.height));
+    if (widget.maxWidth != null) {
+      if (mediaQuery.size.width > widget.maxWidth!) {
+        mediaQuery = mediaQuery.copyWith(
+            size: Size(widget.maxWidth!, mediaQuery.size.height));
       }
     }
 
     return Stack(
-      alignment: alignment,
+      alignment: widget.alignment,
       children: [
-        background ?? const SizedBox.shrink(),
+        Scrollbar(
+          controller: _scrollController,
+          trackVisibility: true,
+          thumbVisibility: true,
+          child: Listener(
+            onPointerSignal: (pointerSignal) {
+              if (pointerSignal is PointerScrollEvent) {
+                final newOffset =
+                    _scrollController.offset + pointerSignal.scrollDelta.dy;
+
+                if (newOffset < _scrollController.position.minScrollExtent) {
+                  _scrollController
+                      .jumpTo(_scrollController.position.minScrollExtent);
+                } else if (newOffset >=
+                        _scrollController.position.minScrollExtent &&
+                    newOffset <= _scrollController.position.maxScrollExtent) {
+                  _scrollController.jumpTo(newOffset);
+                } else if (newOffset >
+                    _scrollController.position.maxScrollExtent) {
+                  _scrollController
+                      .jumpTo(_scrollController.position.maxScrollExtent);
+                }
+              }
+            },
+            child: widget.background ??
+                Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.transparent),
+          ),
+        ),
         MediaQuery(
-            data: mediaQuery, child: SizedBox(width: maxWidth, child: child)),
+          data: mediaQuery,
+          child: SizedBox(
+            width: widget.maxWidth,
+            child: PrimaryScrollController(
+              controller: _scrollController,
+              child: widget.child,
+            ),
+          ),
+        ),
       ],
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 }
+
+// NotificationListener<ScrollNotification>(
+//   onNotification: (scrollNotification) {
+//     // Forward the scroll notification to the child
+//     if (scrollNotification is ScrollUpdateNotification) {
+//       _scrollController.jumpTo(_scrollController.offset +
+//           scrollNotification.scrollDelta!.toDouble());
+//     }
+//     return false; // Don't consume the notification
+//   },
+//   child: widget.background ??
+//       Container(
+//           width: double.infinity,
+//           height: double.infinity,
+//           color: Colors.transparent),
+// ),
