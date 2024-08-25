@@ -89,3 +89,11 @@ class ClampingScrollWrapper extends StatelessWidget {
     );
   }
 }
+
+class NoScrollbarBehavior extends ScrollBehavior {
+  @override
+  Widget buildScrollbar(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child; // This prevents the ListView from showing a scrollbar.
+  }
+}
