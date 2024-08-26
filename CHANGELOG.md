@@ -1,4 +1,11 @@
 # Changelog
+## 1.5.0
+- Create new MaxWidthBox implementation that only uses constraints for setting max width.
+- Create NoScrollBarBehavior.
+- Update ScrollBehavior to inherit default behavior.
+- Fix imports. Added responsive_utils.dart to the library file.
+- Update examples.
+
 ## 1.4.0
 - Update license.
 
