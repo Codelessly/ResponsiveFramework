@@ -37,15 +37,11 @@ class BouncingScrollWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScrollBehavior scrollBehavior = const BouncingScrollBehavior();
-    if (dragWithMouse) {
-      // If mouse dragging is desired, add it to the drag devices.
-      scrollBehavior = scrollBehavior.copyWith(
-        dragDevices: scrollBehavior.dragDevices..add(PointerDeviceKind.mouse),
-      );
-    }
     return ScrollConfiguration(
-      behavior: scrollBehavior,
+      behavior: dragWithMouse
+          ? const BouncingScrollBehavior()
+              .copyWith(dragDevices: {PointerDeviceKind.mouse})
+          : const BouncingScrollBehavior(),
       child: child,
     );
   }
@@ -82,15 +78,11 @@ class ClampingScrollWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScrollBehavior scrollBehavior = const ClampingScrollBehavior();
-    if (dragWithMouse) {
-      // If mouse dragging is desired, add it to the drag devices.
-      scrollBehavior = scrollBehavior.copyWith(
-        dragDevices: scrollBehavior.dragDevices..add(PointerDeviceKind.mouse),
-      );
-    }
     return ScrollConfiguration(
-      behavior: scrollBehavior,
+      behavior: dragWithMouse
+          ? const ClampingScrollBehavior()
+              .copyWith(dragDevices: {PointerDeviceKind.mouse})
+          : const ClampingScrollBehavior(),
       child: child,
     );
   }
@@ -100,6 +92,24 @@ class NoScrollbarBehavior extends ScrollBehavior {
   @override
   Widget buildScrollbar(
       BuildContext context, Widget child, ScrollableDetails details) {
-    return child; // This prevents the ListView from showing a scrollbar.
+    return child;
+  }
+}
+
+class NoScrollbarWrapper extends StatelessWidget {
+  final Widget child;
+
+  const NoScrollbarWrapper({super.key, required this.child});
+
+  static Widget builder(BuildContext context, Widget child) {
+    return NoScrollbarWrapper(child: child);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScrollConfiguration(
+      behavior: NoScrollbarBehavior(),
+      child: child,
+    );
   }
 }
