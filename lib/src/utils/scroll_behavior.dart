@@ -39,8 +39,10 @@ class BouncingScrollWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: dragWithMouse
-          ? const BouncingScrollBehavior()
-              .copyWith(dragDevices: {PointerDeviceKind.mouse})
+          ? const BouncingScrollBehavior().copyWith(dragDevices: {
+              ...const BouncingScrollBehavior().dragDevices,
+              PointerDeviceKind.mouse
+            })
           : const BouncingScrollBehavior(),
       child: child,
     );
@@ -80,8 +82,10 @@ class ClampingScrollWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: dragWithMouse
-          ? const ClampingScrollBehavior()
-              .copyWith(dragDevices: {PointerDeviceKind.mouse})
+          ? const ClampingScrollBehavior().copyWith(dragDevices: {
+              ...const ClampingScrollBehavior().dragDevices,
+              PointerDeviceKind.mouse
+            })
           : const ClampingScrollBehavior(),
       child: child,
     );
