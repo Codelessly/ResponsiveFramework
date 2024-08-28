@@ -98,13 +98,13 @@ Then, in your code, show the Rail based on the breakpoint condition.
 ### Responsive Framework Widgets
 The ResponsiveFramework includes a few custom widgets that supplement Flutter's responsive capabilities. Their usages are showcased in the demo projects.
 
-- *[ResponsiveValue](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
-  - *[ResponsiveVisibility](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
-  - *[ResponsiveConstraints](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_value.dart)*
-- *[ResponsiveRowColumn](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_row_column.dart)*
-- *[ResponsiveGridView](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_grid.dart)*
-- *[ResponsiveScaledBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/responsive_scaled_box.dart)*
-- *[MaxWidthBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/max_width_box.dart)*
+- *[ResponsiveValue](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/responsive_value.dart)*
+  - *[ResponsiveVisibility](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/responsive_value.dart)*
+  - *[ResponsiveConstraints](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/responsive_value.dart)*
+- *[ResponsiveRowColumn](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/responsive_row_column.dart)*
+- *[ResponsiveGridView](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/responsive_grid.dart)*
+- *[ResponsiveScaledBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/responsive_scaled_box.dart)*
+- *[MaxWidthBox](https://github.com/Codelessly/ResponsiveFramework/blob/master/lib/src/max_width_box.dart)*
 
 
 ## Legacy ReadMe (v0.2.0 and below)
