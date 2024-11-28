@@ -6,11 +6,13 @@ class ResponsiveScaledBox extends StatelessWidget {
   final double? width;
   final Widget child;
   final bool autoCalculateMediaQueryData;
+  final bool autoScaleUp;
 
   const ResponsiveScaledBox(
       {super.key,
       required this.width,
       required this.child,
+      this.autoScaleUp = false,
       this.autoCalculateMediaQueryData = true});
 
   @override
@@ -20,13 +22,15 @@ class ResponsiveScaledBox extends StatelessWidget {
         builder: (context, constraints) {
           MediaQueryData mediaQueryData = MediaQuery.of(context);
 
-          double aspectRatio = constraints.maxWidth / constraints.maxHeight;
+          double availableWidth = constraints.maxWidth;
+          double availableHeight = constraints.maxHeight;
+
+          double aspectRatio = availableWidth / availableHeight;
           double scaledWidth = width!;
           double scaledHeight = width! / aspectRatio;
 
           bool overrideMediaQueryData = autoCalculateMediaQueryData &&
-              (mediaQueryData.size ==
-                  Size(constraints.maxWidth, constraints.maxHeight));
+              (mediaQueryData.size == Size(availableWidth, availableHeight));
 
           EdgeInsets scaledViewInsets = getScaledViewInsets(
               mediaQueryData: mediaQueryData,
@@ -40,7 +44,7 @@ class ResponsiveScaledBox extends StatelessWidget {
               padding: scaledViewPadding, insets: scaledViewInsets);
 
           Widget childHolder = FittedBox(
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
             alignment: Alignment.topCenter,
             child: Container(
               width: width,
@@ -49,6 +53,13 @@ class ResponsiveScaledBox extends StatelessWidget {
               child: child,
             ),
           );
+
+          if (autoScaleUp && width! < availableWidth) {
+            childHolder = Transform.scale(
+              scale: availableWidth / width!,
+              child: childHolder,
+            );
+          }
 
           if (overrideMediaQueryData) {
             return MediaQuery(
