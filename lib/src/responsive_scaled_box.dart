@@ -44,7 +44,7 @@ class ResponsiveScaledBox extends StatelessWidget {
               padding: scaledViewPadding, insets: scaledViewInsets);
 
           Widget childHolder = FittedBox(
-            fit: BoxFit.cover,
+            fit: BoxFit.fitWidth,
             alignment: Alignment.topCenter,
             child: Container(
               width: width,
