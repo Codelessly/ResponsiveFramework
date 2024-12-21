@@ -26,7 +26,8 @@ class ResponsiveGridView extends StatelessWidget {
 
   /// A custom [SliverGridDelegate] with item size control.
   final ResponsiveGridDelegate gridDelegate;
-  final IndexedWidgetBuilder itemBuilder;
+  final IndexedWidgetBuilder? itemBuilder;
+  final List<Widget>? children;
   final int? itemCount;
   final int? maxRowCount;
   final bool addAutomaticKeepAlives;
@@ -38,6 +39,32 @@ class ResponsiveGridView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final Clip clipBehavior;
   final String? restorationId;
+
+  const ResponsiveGridView({
+    super.key,
+    this.scrollDirection = Axis.vertical,
+    this.reverse = false,
+    this.controller,
+    this.primary,
+    this.physics,
+    this.shrinkWrap = false,
+    this.padding,
+    this.alignment = Alignment.centerLeft,
+    required this.gridDelegate,
+    this.children = const <Widget>[],
+    this.maxRowCount,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.cacheExtent,
+    this.semanticChildCount,
+    this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.clipBehavior = Clip.hardEdge,
+    this.restorationId,
+  })  : itemBuilder = null,
+        itemCount = children?.length,
+        assert(children != null);
 
   const ResponsiveGridView.builder({
     super.key,
@@ -62,7 +89,7 @@ class ResponsiveGridView extends StatelessWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-  });
+  }) : children = null;
 
   @override
   Widget build(BuildContext context) {
@@ -163,12 +190,24 @@ class ResponsiveGridView extends StatelessWidget {
         maxItemCount = maxRowCount! * crossAxisCount;
       }
       // Internal children builder delegate.
-      SliverChildDelegate childrenDelegate = SliverChildBuilderDelegate(
-          itemBuilder,
+      SliverChildDelegate childrenDelegate;
+      if (itemBuilder != null) {
+        childrenDelegate = SliverChildBuilderDelegate(
+          itemBuilder!,
           childCount: maxItemCount ?? itemCount,
           addAutomaticKeepAlives: addAutomaticKeepAlives,
           addRepaintBoundaries: addRepaintBoundaries,
-          addSemanticIndexes: addSemanticIndexes);
+          addSemanticIndexes: addSemanticIndexes,
+        );
+      } else {
+        childrenDelegate = SliverChildListDelegate(
+          children!,
+          addAutomaticKeepAlives: addAutomaticKeepAlives,
+          addRepaintBoundaries: addRepaintBoundaries,
+          addSemanticIndexes: addSemanticIndexes,
+        );
+      }
+
       return Container(
         padding: alignmentPadding,
         child: _ResponsiveGridViewLayout(
