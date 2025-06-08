@@ -18,26 +18,9 @@ class ResponsiveScaledBox extends StatelessWidget {
     if (width != null) {
       return LayoutBuilder(
         builder: (context, constraints) {
-          MediaQueryData mediaQueryData = MediaQuery.of(context);
-
           double aspectRatio = constraints.maxWidth / constraints.maxHeight;
           double scaledWidth = width!;
           double scaledHeight = width! / aspectRatio;
-
-          bool overrideMediaQueryData = autoCalculateMediaQueryData &&
-              (mediaQueryData.size ==
-                  Size(constraints.maxWidth, constraints.maxHeight));
-
-          EdgeInsets scaledViewInsets = getScaledViewInsets(
-              mediaQueryData: mediaQueryData,
-              screenSize: mediaQueryData.size,
-              scaledSize: Size(scaledWidth, scaledHeight));
-          EdgeInsets scaledViewPadding = getScaledViewPadding(
-              mediaQueryData: mediaQueryData,
-              screenSize: mediaQueryData.size,
-              scaledSize: Size(scaledWidth, scaledHeight));
-          EdgeInsets scaledPadding = getScaledPadding(
-              padding: scaledViewPadding, insets: scaledViewInsets);
 
           Widget childHolder = FittedBox(
             fit: BoxFit.fitWidth,
@@ -50,15 +33,33 @@ class ResponsiveScaledBox extends StatelessWidget {
             ),
           );
 
-          if (overrideMediaQueryData) {
-            return MediaQuery(
-              data: mediaQueryData.copyWith(
-                  size: Size(scaledWidth, scaledHeight),
-                  viewInsets: scaledViewInsets,
-                  viewPadding: scaledViewPadding,
-                  padding: scaledPadding),
-              child: childHolder,
-            );
+          if (autoCalculateMediaQueryData) {
+            MediaQueryData mediaQueryData = MediaQuery.of(context);
+
+            bool overrideMediaQueryData = (mediaQueryData.size ==
+                Size(constraints.maxWidth, constraints.maxHeight));
+
+            EdgeInsets scaledViewInsets = getScaledViewInsets(
+                mediaQueryData: mediaQueryData,
+                screenSize: mediaQueryData.size,
+                scaledSize: Size(scaledWidth, scaledHeight));
+            EdgeInsets scaledViewPadding = getScaledViewPadding(
+                mediaQueryData: mediaQueryData,
+                screenSize: mediaQueryData.size,
+                scaledSize: Size(scaledWidth, scaledHeight));
+            EdgeInsets scaledPadding = getScaledPadding(
+                padding: scaledViewPadding, insets: scaledViewInsets);
+
+            if (overrideMediaQueryData) {
+              return MediaQuery(
+                data: mediaQueryData.copyWith(
+                    size: Size(scaledWidth, scaledHeight),
+                    viewInsets: scaledViewInsets,
+                    viewPadding: scaledViewPadding,
+                    padding: scaledPadding),
+                child: childHolder,
+              );
+            }
           }
 
           return childHolder;
